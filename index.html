@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f9f8f4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e1014" media="(prefers-color-scheme: dark)" />
+    <meta name="application-name" content="TopPerformers" />
+    <meta name="apple-mobile-web-app-title" content="TopPerformers" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>TopPerformers — The world's most active developers, ranked by country</title>
+    <meta
+      name="description"
+      content="Explore TopPerformers: daily-updated rankings of the most active open-source developers by country, with public commit data and contributor profiles."
+    />
+    <meta
+      name="keywords"
+      content="top developers by country, GitHub committers ranking, open source leaderboard, developer rankings, most active developers, contributor profiles"
+    />
+    <meta name="author" content="Rensith Udara Gonalagoda" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://topperformers.vercel.app/" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://avatars.githubusercontent.com" />
+    <link rel="preconnect" href="https://flagcdn.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TopPerformers" />
+    <meta
+      property="og:title"
+      content="TopPerformers — The world's most active developers, ranked by country"
+    />
+    <meta
+      property="og:description"
+      content="Daily-updated rankings of the most active open-source developers by country, with public commit data and contributor profiles."
+    />
+    <meta property="og:url" content="https://topperformers.vercel.app/" />
+    <meta property="og:image" content="https://topperformers.vercel.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="TopPerformers — The world's most active developers, ranked by country"
+    />
+    <meta
+      name="twitter:description"
+      content="Daily-updated rankings of the most active open-source developers by country, with public commit data and contributor profiles."
+    />
+    <meta name="twitter:image" content="https://topperformers.vercel.app/og-image.png" />
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
+          document.documentElement.classList.remove("light", "dark");
+          document.documentElement.classList.add(theme);
+          document.documentElement.style.colorScheme = theme;
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
