@@ -1,82 +1,115 @@
 # TopPerformers
 
-**TopPerformers** is a focused, daily-updated index of the most active open-source developers, ranked by country. It turns public GitHub commit activity into clear, readable leaderboards — no accounts, no backend, no noise.
+**TopPerformers** is an open-source project that makes it easier to discover active developers around the world. It turns public GitHub commit activity into country-based leaderboards, giving developers a simple way to explore open-source contributions across different countries and regions.
 
-🌐 **Live site:** https://topperformers.vercel.app
-🐙 **Source:** https://github.com/RensithUdara/Github-Commiters-Top-Rank
-👨‍💻 **Developer:** [Rensith Udara Gonalagoda](https://rensithudara.com/)
-
----
-
-## What it does
-
-- Browse ranked developers across 151 countries and regions.
-- Search countries and filter by continent.
-- Open any country for a full, sortable leaderboard.
-- Inspect contributor profiles enriched with public GitHub data.
-- Generate shareable contributor badges.
-- Switch between light and dark themes.
-- Explore fully responsive layouts on desktop, tablet, and mobile.
-
-The ranking data is sourced from [`committers.top`](https://committers.top) and refreshed every day by a GitHub Action. TopPerformers itself does not calculate rankings from followers, stars, or private activity.
+🌐 **Live site:** [topperformers.vercel.app](https://topperformers.vercel.app)  
+🐙 **Source code:** [Yonela-Johannes/TopPerformers](https://github.com/Yonela-Johannes/TopPerformers)
 
 ---
 
-## Tech stack
+## Overview
+
+Open-source development happens everywhere, but discovering the people contributing to it can be difficult.
+
+TopPerformers brings public GitHub commit activity into one place, organised by country and presented through searchable, sortable leaderboards.
+
+The goal is simple: make open-source activity easier to explore, recognise, and understand.
+
+### Features
+
+- **Global leaderboards** — Explore developer rankings across 151 countries and regions.
+- **Country discovery** — Search for countries and filter results by continent.
+- **Developer profiles** — Explore contributor information using publicly available GitHub data.
+- **Sortable rankings** — Browse country leaderboards and compare contributor activity.
+- **Shareable badges** — Generate badges featuring contributor rankings.
+- **Light and dark themes** — Choose the appearance that works best for you.
+- **Responsive interface** — Browse on desktop, tablet, or mobile.
+- **Automated data updates** — Refresh ranking data daily.
+- **Search engine optimisation** — Structured metadata and country-specific pages help make rankings discoverable.
+
+## How rankings work
+
+TopPerformers uses publicly available ranking data from `committers.top`, which tracks GitHub commit activity by country.
+
+The data is collected and stored as static JSON files, allowing the application to serve leaderboards without requiring a dedicated backend server.
+
+Rankings reflect the source data and its methodology. They should not be interpreted as a complete measure of a developer's skill, experience, or overall open-source impact.
+
+GitHub followers, repository stars, and private contributions are not used by TopPerformers itself to calculate rankings.
+
+---
+
+## Technology stack
 
 | Area | Technology |
 |---|---|
 | Frontend | React 18, TypeScript |
-| Build | Vite 7 |
+| Build tool | Vite 7 |
 | Styling | Tailwind CSS, CSS custom properties |
 | Components | Radix UI primitives, shadcn/ui patterns |
-| Data | Redux Toolkit Query over static JSON |
+| Data fetching | Redux Toolkit Query |
 | Routing | React Router 7 |
 | Icons | Lucide React |
 | SEO | React Helmet Async, JSON-LD, sitemap, robots.txt |
 | Hosting | Vercel |
+| Automation | GitHub Actions |
+| Data storage | Static JSON |
+
+The application is designed to remain lightweight, with pre-generated ranking data and no dedicated application server required for the core experience.
 
 ---
 
-## Design system
+## Design and interface
 
-The interface is built on a small set of shared tokens rather than per-screen styles:
+TopPerformers follows a consistent design system built around reusable components and shared design tokens.
 
-- **Canvas** — warm paper light mode; deep ink dark mode.
-- **Accent** — a single volt green used for rank highlights and active states.
-- **Typography** — Instrument Serif for editorial headings, Inter for UI, JetBrains Mono for data and labels.
-- **Surfaces** — consistent `rounded-xl` cards, one-pixel borders, and a restrained two-level shadow scale.
-- **Components** — shared button, input, select, dialog, table, and tooltip primitives with aligned focus, hover, disabled, and loading states.
+The interface prioritises readability, clear information hierarchy, responsive layouts, and straightforward navigation.
 
-Tokens live in `src/index.css` and `tailwind.config.js`. Reusable primitives live in `src/components/ui`, shared product components in `src/components/common`.
+### Design principles
+
+- **Clarity first** — Rankings and contributor information remain easy to scan.
+- **Consistent components** — Shared primitives keep interactions and layouts predictable.
+- **Purposeful styling** — Colours, typography, borders, and spacing serve a clear function.
+- **Accessible interactions** — Interactive elements support appropriate focus and state indicators.
+- **Responsive by design** — Layouts adapt to different screen sizes without sacrificing usability.
+- **Theme support** — Light and dark modes provide consistent experiences across the application.
+
+### Design system structure
+
+Design tokens are maintained in:
+
+- `src/index.css`
+- `tailwind.config.js`
+
+Reusable UI primitives live in `src/components/ui`, while shared application components live in `src/components/common`.
 
 ---
 
 ## Project structure
 
-```txt
+```text
 .
 ├── public/
 │   ├── data/
-│   │   ├── countries.json          # Country index
-│   │   ├── flags.json              # Flags and continent metadata
-│   │   ├── metadata.json           # Last generation timestamp
-│   │   └── committers/             # One JSON file per country
+│   │   ├── countries.json
+│   │   ├── flags.json
+│   │   ├── metadata.json
+│   │   └── committers/
 │   ├── favicon.svg
 │   ├── og-image.svg
 │   ├── robots.txt
 │   ├── sitemap.xml
 │   └── site.webmanifest
 ├── scripts/
-│   └── generate-data.mjs           # Static data generator
+│   └── generate-data.mjs
 ├── src/
-│   ├── api/                        # RTK Query slices
+│   ├── api/
 │   ├── components/
-│   │   ├── common/                 # Product components
-│   │   └── ui/                     # Design-system primitives
+│   │   ├── common/
+│   │   └── ui/
 │   ├── hooks/
-│   ├── lib/                        # SEO and formatting helpers
-│   ├── pages/                      # Home, Country, NotFound
+│   ├── lib/
+│   ├── pages/
 │   ├── routes/
 │   └── store/
 ├── generate-sitemap.cjs
@@ -84,15 +117,36 @@ Tokens live in `src/index.css` and `tailwind.config.js`. Reusable primitives liv
 └── vercel.json
 ```
 
+### Key directories
+
+| Path | Purpose |
+|---|---|
+| `public/data/` | Generated country, metadata, and contributor data |
+| `public/data/committers/` | Individual country leaderboard files |
+| `scripts/` | Data generation and maintenance scripts |
+| `src/api/` | Redux Toolkit Query API definitions |
+| `src/components/common/` | Shared application components |
+| `src/components/ui/` | Reusable UI primitives |
+| `src/hooks/` | Custom React hooks |
+| `src/lib/` | Shared utilities, formatting, and SEO helpers |
+| `src/pages/` | Application pages |
+| `src/routes/` | Routing configuration |
+| `src/store/` | Redux store configuration |
+
 ---
 
 ## Data model
 
-Rankings are scraped from `https://committers.top/{country}` and saved as static JSON.
+Each country leaderboard is stored as a JSON file containing country metadata, a generation timestamp, and its ranked contributors.
+
+Example:
 
 ```json
 {
-  "country": { "slug": "sri_lanka", "name": "Sri Lanka" },
+  "country": {
+    "slug": "south_africa",
+    "name": "South Africa"
+  },
   "generatedAt": "2026-10-29T07:55:58.788Z",
   "users": [
     {
@@ -101,100 +155,187 @@ Rankings are scraped from `https://committers.top/{country}` and saved as static
       "realname": "Example Developer",
       "profile": "https://github.com/example",
       "commits": 12345,
-      "avatar": "https://avatars.githubusercontent.com/..."
+      "avatar": "https://avatars.githubusercontent.com/u/123456"
     }
   ]
 }
 ```
 
-The frontend reads:
+The example values are illustrative and do not represent actual rankings.
 
-```txt
+### Data files
+
+The frontend consumes the following files:
+
+```text
 /data/countries.json
 /data/flags.json
 /data/metadata.json
 /data/committers/{country}.json
 ```
 
-No backend server is required.
+This static-data approach keeps the application simple to deploy and reduces the need for server-side infrastructure.
 
 ---
 
-## Daily updates
+## Automated data updates
 
-`scripts/generate-data.mjs` fetches the source data, writes country files, regenerates metadata, and reports any failures. A GitHub Action runs the pipeline daily at 02:00 UTC; Vercel redeploys automatically when data changes. The workflow also supports manual dispatch.
+Ranking data is refreshed automatically through a GitHub Actions workflow.
 
-```txt
-GitHub Action → data generator → static JSON → sitemap → commit → Vercel deploy
+The data generation script:
+
+1. Fetches the available source ranking data.
+2. Generates individual country leaderboard files.
+3. Updates the dataset metadata and generation timestamp.
+4. Reports failures encountered during collection.
+5. Supports the repository's automated update and deployment workflow.
+
+The scheduled workflow runs daily at **02:00 UTC** and also supports manual execution.
+
+### Update pipeline
+
+```text
+GitHub Actions
+      ↓
+Data generation script
+      ↓
+Country leaderboard JSON
+      ↓
+Metadata and sitemap generation
+      ↓
+Commit updated data
+      ↓
+Vercel deployment
 ```
 
+The exact deployment behaviour depends on the repository's GitHub Actions and Vercel configuration.
+
 ---
 
-## Local development
+## Getting started
+
+### Requirements
+
+- Node.js compatible with the project's dependencies.
+- pnpm.
+- Git.
+
+### Installation
+
+Clone the repository and install its dependencies:
 
 ```bash
+git clone https://github.com/Yonela-Johannes/TopPerformers.git
+cd TopPerformers
 pnpm install
+```
+
+Start the development server:
+
+```bash
 pnpm dev
 ```
 
-Open `http://localhost:5173`.
+Open `http://localhost:5173` in your browser.
 
-### Scripts
+### Available scripts
 
 | Command | Description |
 |---|---|
-| `pnpm dev` | Start the Vite development server |
-| `pnpm data:update` | Regenerate country and contributor JSON |
-| `pnpm sitemap` | Regenerate `public/sitemap.xml` |
-| `pnpm build` | Generate sitemap, type-check, and build for production |
+| `pnpm dev` | Start the development server |
+| `pnpm data:update` | Regenerate country and contributor data |
+| `pnpm sitemap` | Regenerate the sitemap |
+| `pnpm build` | Generate the sitemap, type-check, and build for production |
 | `pnpm lint` | Run ESLint |
 | `pnpm preview` | Preview the production build |
 
-### Environment variables
+---
 
-```txt
-VITE_GITHUB_TOKEN=    # Optional: raises GitHub API rate limits for profile dialogs
-VITE_SITE_URL=        # Optional: overrides the canonical production URL
-VITE_DATA_BASE_URL=   # Optional: overrides the static data base path
-```
+## Configuration
 
-Default site URL: `https://topperformers.vercel.app`
+The application supports the following environment variables:
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_GITHUB_TOKEN` | No | Optional GitHub token for higher API rate limits |
+| `VITE_SITE_URL` | No | Override the canonical site URL |
+| `VITE_DATA_BASE_URL` | No | Override the base URL used to load static data |
+
+Configure these variables in your local environment when needed.
+
+The default production URL is:
+
+`https://topperformers.vercel.app`
+
+Do not commit API tokens or other secrets to the repository.
 
 ---
 
 ## Deployment
 
-The project is configured for Vercel with SPA rewrites in `vercel.json`.
+TopPerformers is configured for deployment on Vercel.
 
 | Setting | Value |
 |---|---|
 | Framework | Vite |
+| Install command | `pnpm install` |
 | Build command | `pnpm build` |
 | Output directory | `dist` |
-| Install command | `pnpm install` |
+
+The application uses SPA rewrites configured in `vercel.json`.
+
+To deploy, connect the repository to Vercel and configure the build settings and environment variables as required.
 
 ---
 
-## SEO
+## SEO and discoverability
 
-- Server-agnostic per-page titles, descriptions, and canonicals.
+The application includes several features to improve search engine discoverability:
+
+- Page-specific titles and descriptions.
+- Canonical URLs.
 - Open Graph and Twitter card metadata.
-- JSON-LD for `WebSite`, `Dataset`, `WebPage`, `BreadcrumbList`, `ItemList`, and `Person`.
-- Auto-generated sitemap for every indexed country.
-- Installable web manifest with matching icons and theme colours.
+- Structured JSON-LD data.
+- Country-specific sitemap entries.
+- A `robots.txt` file.
+- A web manifest and application icons.
+
+Structured data supports relevant types such as `WebSite`, `Dataset`, `WebPage`, `BreadcrumbList`, `ItemList`, and `Person`, where appropriate.
+
+The sitemap is generated from the available country data to help search engines discover indexed leaderboard pages.
 
 ---
 
-## Notes
+## Limitations
 
-- Rankings depend on the public structure of `committers.top`. If its markup changes, update `scripts/generate-data.mjs`.
-- Ranking eligibility is determined by the source and by a public GitHub location. Followers are not a ranking factor.
-- Country flags are loaded from `flagcdn.com`; avatars from GitHub.
+- **Source dependency:** Rankings depend on the availability and structure of the upstream dataset.
+- **Data freshness:** Rankings reflect the latest successful data generation, not necessarily real-time activity.
+- **Public information:** Contributor details come from publicly available sources and may be incomplete.
+- **Ranking methodology:** Results reflect commit activity as represented by the source, not a comprehensive assessment of developer performance.
+- **Country attribution:** Country-based rankings depend on the source's country attribution and eligibility rules.
+
+If the upstream data structure changes, the data generation script may need to be updated.
+
+---
+
+## Contributing
+
+Contributions that improve the interface, accessibility, data reliability, performance, and overall developer experience are welcome.
+
+Before submitting changes:
+
+1. Keep changes focused and consistent with the existing architecture.
+2. Follow the project's established coding and styling conventions.
+3. Run the available linting, type-checking, and build commands.
+4. Include a clear description of the changes.
 
 ---
 
 ## License
 
-Released under the MIT License.
+This project is released under the MIT License. See the repository's `LICENSE` file for the applicable terms.
 
-Built with care by **Rensith Udara Gonalagoda**.
+---
+
+**TopPerformers**  
+Built by **Yonela Johannes**.
