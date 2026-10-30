@@ -1,22 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useSearchParams } from "react-router-dom";
+
 import {
   ArrowDownAZ,
   ArrowRight,
   ArrowUpAZ,
-  ArrowUpRight,
   Loader2,
   Search,
   ServerCrash,
-  Sparkles,
   X,
 } from "lucide-react";
-import { useGetCountriesQuery, useGetMetadataQuery } from "@/api/countriesApi";
-import { useGetFlagsQuery } from "@/api/flagsApi";
+import { useGetMetadataQuery } from "@/api/countriesApi";
 import type { Committer } from "@/types";
 import { CountryCard } from "@/components/common/CountryCard";
 import { UserDialog } from "@/components/common/UserDialog";
+import { useCountrySearch } from "@/hooks/useCountrySearch";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { formatDate } from "@/lib/format";
 import {
@@ -30,16 +28,9 @@ import {
   SITE_URL,
   toTitle,
 } from "@/lib/seo";
+import { ALL_REGIONS } from "@/lib/countries";
 
 const COUNTRIES_PER_PAGE = 18;
-const REGION_ORDER = [
-  "Africa",
-  "Americas",
-  "Asia",
-  "Europe",
-  "Oceania",
-  "Other",
-];
 type SortDirection = "asc" | "desc";
 
 const HomeLoading = () => (
@@ -72,92 +63,51 @@ const HomeLoading = () => (
 );
 
 const Home = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const {
-    data: allCountries = [],
-    isLoading: isLoadingCountries,
-    error: countriesError,
-    refetch: refetchCountries,
-  } = useGetCountriesQuery();
-  const { data: flagsData = [] } = useGetFlagsQuery();
+    allCountries,
+    filteredCountries: matchedCountries,
+    isLoadingCountries,
+    countriesError,
+    refetchCountries,
+    countryToRegion,
+    regionOptions,
+    search,
+    activeRegion,
+    selectRegion,
+    resetFilters,
+  } = useCountrySearch();
   const { data: metadata } = useGetMetadataQuery();
 
   const [selectedUser, setSelectedUser] = useState<Committer | null>(null);
   const [visibleCount, setVisibleCount] = useState(COUNTRIES_PER_PAGE);
-  const [search, setSearch] = useState(() => searchParams.get("search") || "");
   const [sortOrder, setSortOrder] = useState<SortDirection>("asc");
-  const [activeRegion, setActiveRegion] = useState(
-    () => searchParams.get("region") || "All",
-  );
-
-  useEffect(() => {
-    setSearch(searchParams.get("search") || "");
-    setActiveRegion(searchParams.get("region") || "All");
-  }, [searchParams]);
-
-  const countryToRegion = useMemo(() => {
-    const map: Record<string, string> = {};
-    if (Array.isArray(flagsData)) {
-      flagsData.forEach((item) => {
-        if (item.name && item.continent) {
-          map[item.name.toLowerCase()] = item.continent;
-        }
-      });
-    }
-    return map;
-  }, [flagsData]);
-
-  const regionOptions = useMemo(() => {
-    const counts = new Map<string, number>();
-    allCountries.forEach((country) => {
-      const region = countryToRegion[country.name.toLowerCase()] || "Other";
-      counts.set(region, (counts.get(region) || 0) + 1);
-    });
-
-    return REGION_ORDER.filter((region) => counts.has(region)).map(
-      (region) => ({
-        name: region,
-        count: counts.get(region) || 0,
-      }),
-    );
-  }, [allCountries, countryToRegion]);
 
   const filteredCountries = useMemo(() => {
-    let filtered = [...allCountries];
-
-    if (search.trim()) {
-      const query = search.toLowerCase().trim();
-      filtered = filtered.filter(
-        (country) =>
-          country.name.toLowerCase().includes(query) ||
-          country.slug.toLowerCase().includes(query),
-      );
-    }
-
-    if (activeRegion !== "All") {
-      filtered = filtered.filter(
-        (country) =>
-          (countryToRegion[country.name.toLowerCase()] || "Other") ===
-          activeRegion,
-      );
-    }
-
-    filtered.sort((a, b) => {
+    const sorted = [...matchedCountries];
+    sorted.sort((a, b) => {
       const nameA = a.name.toLowerCase();
       const nameB = b.name.toLowerCase();
       return sortOrder === "asc"
         ? nameA.localeCompare(nameB)
         : nameB.localeCompare(nameA);
     });
+    return sorted;
+  }, [matchedCountries, sortOrder]);
 
-    return filtered;
-  }, [allCountries, search, activeRegion, countryToRegion, sortOrder]);
-
-  const visibleCountries = useMemo(
-    () => filteredCountries.slice(0, visibleCount),
-    [filteredCountries, visibleCount],
+  const visibleCountForResults = Math.min(
+    visibleCount,
+    filteredCountries.length,
   );
-  const hasMoreCountries = visibleCount < filteredCountries.length;
+  const visibleCountries = useMemo(
+    () => filteredCountries.slice(0, visibleCountForResults),
+    [filteredCountries, visibleCountForResults],
+  );
+  const hasMoreCountries = visibleCountForResults < filteredCountries.length;
+
+  // A new query or region restarts the list; sorting keeps the current depth.
+  useEffect(() => {
+    setVisibleCount(COUNTRIES_PER_PAGE);
+  }, [search, activeRegion]);
 
   useInfiniteScroll({
     isLoading: isLoadingCountries,
@@ -166,42 +116,17 @@ const Home = () => {
     threshold: 320,
   });
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setVisibleCount(COUNTRIES_PER_PAGE);
-
-    const nextParams = new URLSearchParams(searchParams);
-    if (value.trim()) nextParams.set("search", value.trim());
-    else nextParams.delete("search");
-    setSearchParams(nextParams, { replace: true });
-  };
-
-  const clearSearch = () => handleSearchChange("");
-
-  const selectRegion = (region: string) => {
-    setActiveRegion(region);
-    setVisibleCount(COUNTRIES_PER_PAGE);
-
-    const nextParams = new URLSearchParams(searchParams);
-    if (region === "All") nextParams.delete("region");
-    else nextParams.set("region", region);
-    setSearchParams(nextParams, { replace: true });
-  };
+  const showMore = () =>
+    setVisibleCount(visibleCountForResults + COUNTRIES_PER_PAGE);
 
   const toggleSort = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     setVisibleCount(COUNTRIES_PER_PAGE);
   };
 
-  const resetFilters = () => {
-    setActiveRegion("All");
-    setSearch("");
+  const resetExploration = () => {
+    resetFilters();
     setVisibleCount(COUNTRIES_PER_PAGE);
-
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete("search");
-    nextParams.delete("region");
-    setSearchParams(nextParams, { replace: true });
   };
 
   const homeTitle = toTitle("Global developer rankings by country");
@@ -445,81 +370,56 @@ const Home = () => {
           </dl>
         </section>
         <div className="sticky top-16 z-30 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          {/* Search and sort */}
-          <div className="flex items-stretch gap-2 sm:gap-3">
-            <div className="relative min-w-0 flex-1">
-              <label htmlFor="country-search" className="sr-only">
-                Search countries
-              </label>
+          {/* Region navigation and sort. Country search lives in the navbar. */}
+          <div>
+            {/* Region filter row: label, sort and the active query */}
+            <div className="mb-2.5 flex items-center justify-between gap-3">
+              <p className="min-w-0 truncate font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                Explore by region
 
-              <Search
-                className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-foreground"
-                aria-hidden="true"
-              />
+                <span className="text-foreground">
+                  {" · "}
+                  {activeRegion === ALL_REGIONS ? "Worldwide" : activeRegion}
+                </span>
 
-              <input
-                id="country-search"
-                type="search"
-                value={search}
-                onChange={(event) => handleSearchChange(event.target.value)}
-                placeholder="Find a country..."
-                autoComplete="off"
-                className="h-12 w-full rounded-none border-2 border-foreground bg-card pl-10 pr-10 font-medium text-foreground shadow-[3px_3px_0_var(--foreground)] outline-none transition-[box-shadow,transform] placeholder:font-normal placeholder:text-muted-foreground focus-visible:translate-x-0.5 focus-visible:translate-y-0.5 focus-visible:shadow-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              />
+                {search.trim() && (
+                  <span className="text-foreground">
+                    {" · “"}
+                    <span className="normal-case">{search.trim()}</span>
+                    {"”"}
+                  </span>
+                )}
+              </p>
 
-              {search && (
+              <div className="flex shrink-0 items-center gap-2">
                 <button
                   type="button"
-                  onClick={clearSearch}
-                  className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label="Clear search"
+                  onClick={toggleSort}
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border-2 border-foreground bg-card px-2.5 font-mono text-[10px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
+                  title={`Sort ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                 >
-                  <X className="h-4 w-4" aria-hidden="true" />
+                  {sortOrder === "asc" ? (
+                    <ArrowDownAZ className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <ArrowUpAZ className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  <span>{sortOrder === "asc" ? "A–Z" : "Z–A"}</span>
                 </button>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={toggleSort}
-              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 border-2 border-foreground bg-card px-3 font-mono text-xs font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-4"
-              aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
-              title={`Sort ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
-            >
-              {sortOrder === "asc" ? (
-                <ArrowDownAZ className="h-[18px] w-[18px]" aria-hidden="true" />
-              ) : (
-                <ArrowUpAZ className="h-[18px] w-[18px]" aria-hidden="true" />
-              )}
-              <span className="hidden sm:inline">
-                {sortOrder === "asc" ? "A–Z" : "Z–A"}
-              </span>
-            </button>
-          </div>
-
-          {/* Region navigation */}
-          <div className="mt-5">
-            <div className="mb-2.5 flex items-center justify-between gap-3">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Explore by region
-              </span>
-
-              <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                {activeRegion === "All" ? "Worldwide" : activeRegion}
-              </span>
+              </div>
             </div>
 
             <div
-              className="no-scrollbar -mx-1 flex snap-x items-center gap-2 overflow-x-auto px-1 pb-2 pt-1"
+              className="no-scrollbar -mx-1 flex snap-x items-center gap-2 overflow-x-auto px-1 pb-1 pt-1"
               role="group"
               aria-label="Filter countries by region"
             >
               <button
                 type="button"
-                onClick={() => selectRegion("All")}
-                aria-pressed={activeRegion === "All"}
+                onClick={() => selectRegion(ALL_REGIONS)}
+                aria-pressed={activeRegion === ALL_REGIONS}
                 className={`inline-flex min-h-10 shrink-0 snap-start items-center gap-2 border-2 px-3.5 font-mono text-[11px] font-bold uppercase tracking-wide transition-[background-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                  activeRegion === "All"
+                  activeRegion === ALL_REGIONS
                     ? "border-foreground bg-foreground text-background shadow-[3px_3px_0_var(--tangerine)]"
                     : "border-foreground/20 bg-card text-muted-foreground hover:border-foreground hover:text-foreground"
                 }`}
@@ -527,7 +427,7 @@ const Home = () => {
                 <span>All regions</span>
                 <span
                   className={`border px-1.5 py-0.5 text-[10px] ${
-                    activeRegion === "All"
+                    activeRegion === ALL_REGIONS
                       ? "border-background/30"
                       : "border-current/20"
                   }`}
@@ -536,7 +436,7 @@ const Home = () => {
                 </span>
               </button>
 
-              {regionOptions.map((region, index) => {
+              {regionOptions.map((region) => {
                 const isActive = activeRegion === region.name;
 
                 return (
@@ -576,7 +476,7 @@ const Home = () => {
                   id="explore-heading"
                   className="font-display text-3xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground sm:text-5xl"
                 >
-                  {activeRegion === "All" ? (
+                  {activeRegion === ALL_REGIONS ? (
                     <>
                       Explore the
                       <br className="sm:hidden" />{" "}
@@ -697,14 +597,14 @@ const Home = () => {
               <p className="relative mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
                 {search
                   ? `We couldn't find a country matching "${search}"${
-                      activeRegion !== "All" ? ` in ${activeRegion}` : ""
+                      activeRegion !== ALL_REGIONS ? ` in ${activeRegion}` : ""
                     }. Try another search or reset your filters.`
                   : "There are no countries to display for this region right now. Try exploring another region."}
               </p>
 
               <button
                 type="button"
-                onClick={resetFilters}
+                onClick={resetExploration}
                 className="button-secondary relative mt-6"
               >
                 <X className="h-4 w-4" aria-hidden="true" />
@@ -715,7 +615,7 @@ const Home = () => {
             <>
               {/* Country directory */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {visibleCountries.map((country, index) => (
+                {visibleCountries.map((country) => (
                   <div key={country.slug} className="min-w-0">
                     <CountryCard
                       country={country}
@@ -744,9 +644,7 @@ const Home = () => {
                   {hasMoreCountries && (
                     <button
                       type="button"
-                      onClick={() =>
-                        setVisibleCount((prev) => prev + COUNTRIES_PER_PAGE)
-                      }
+                      onClick={showMore}
                       className="button-secondary w-full sm:w-auto"
                     >
                       Load more countries

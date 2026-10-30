@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Github, Globe, Info, ArrowUpRight } from "lucide-react";
 
 import { Brand } from "./Brand";
+import { NavSearch } from "./NavSearch";
 import { Switcher } from "./Switcher";
 
 import {
@@ -21,14 +22,14 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-50 border-b-2 border-foreground bg-background/95 backdrop-blur-md">
       <div className="shell">
-        <div className="flex h-16 items-center justify-between gap-3 sm:gap-5">
+        <div className="flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-4">
           {/* Brand and primary navigation */}
-          <div className="flex min-w-0 items-center gap-4 sm:gap-6 lg:gap-9">
-            <Brand />
+          <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none sm:gap-6 lg:gap-7">
+            <Brand className="min-w-0 [&>span:last-child]:hidden min-[375px]:[&>span:last-child]:inline" />
 
             <div
               aria-hidden="true"
-              className="hidden h-7 w-px bg-foreground/20 sm:block"
+              className="hidden h-7 w-px bg-foreground/20 md:block"
             />
 
             <nav
@@ -48,13 +49,13 @@ export const Header = () => {
                   className="h-4 w-4 shrink-0"
                   aria-hidden="true"
                 />
-                <span>Countries</span>
+                <span className="hidden md:inline">Countries</span>
               </Link>
 
               <Link
                 to="/#how-it-works"
                 aria-current={isHowItWorks ? "location" : undefined}
-                className={`hidden h-10 items-center gap-2 border-2 px-3 font-mono text-[11px] font-bold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:inline-flex ${
+                className={`hidden h-10 items-center gap-2 border-2 px-3 font-mono text-[11px] font-bold uppercase tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 xl:inline-flex ${
                   isHowItWorks
                     ? "border-foreground bg-secondary text-foreground"
                     : "border-transparent text-muted-foreground hover:border-foreground/20 hover:bg-secondary hover:text-foreground"
@@ -65,12 +66,10 @@ export const Header = () => {
             </nav>
           </div>
 
+          <NavSearch />
+
           {/* Utilities */}
           <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground xl:block">
-              Open source / Worldwide
-            </span>
-
             <div
               aria-hidden="true"
               className="hidden h-7 w-px bg-foreground/20 xl:block"
@@ -106,13 +105,13 @@ export const Header = () => {
               href={GITHUB_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden h-10 items-center gap-2 border-2 border-foreground bg-card px-3 font-mono text-[10px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:inline-flex"
+              className="hidden h-10 items-center gap-2 border-2 border-foreground bg-card px-3 font-mono text-[10px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 lg:inline-flex"
               aria-label="View the project on GitHub"
             >
               <Github className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden lg:inline">GitHub</span>
+              <span className="hidden 2xl:inline">GitHub</span>
               <ArrowUpRight
-                className="hidden h-3 w-3 lg:inline"
+                className="hidden h-3 w-3 2xl:inline"
                 aria-hidden="true"
               />
             </a>

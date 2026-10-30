@@ -5,6 +5,7 @@ export * from "./UserTable";
 export * from "./UserDialog";
 export * from "./Switcher";
 export * from "./Header";
+export * from "./NavSearch";
 export * from "./FilterBar";
 export * from "./Toast";
 export * from "./Footer";
