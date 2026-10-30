@@ -222,10 +222,13 @@ const Home = () => {
         <meta property="og:url" content={homeUrl} />
         <meta property="og:image" content={defaultOgImage} />
         <meta property="og:image:alt" content={`${SITE_NAME} preview`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={homeTitle} />
         <meta name="twitter:description" content={SITE_DESCRIPTION} />
         <meta name="twitter:image" content={defaultOgImage} />
+        <meta name="twitter:image:alt" content={`${SITE_NAME} preview`} />
         <script type="application/ld+json">
           {JSON.stringify(homeStructuredData)}
         </script>

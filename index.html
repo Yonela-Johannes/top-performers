@@ -63,9 +63,9 @@
       property="og:image"
       content="https://topperformers.vercel.app/og-image.png"
     />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta data-rh="true" property="og:image:type" content="image/png" />
+    <meta data-rh="true" property="og:image:width" content="1200" />
+    <meta data-rh="true" property="og:image:height" content="630" />
     <meta data-rh="true" name="twitter:card" content="summary_large_image" />
     <meta
       data-rh="true"
@@ -83,8 +83,18 @@
       content="https://topperformers.vercel.app/og-image.png"
     />
     <script>
-      // One-time cleanup: the site is light-only now, so drop the old theme key.
-      try { localStorage.removeItem("theme"); } catch (e) {}
+      // Single light theme. Pin the colour scheme before first paint and clear
+      // any dark preference saved by an earlier version, so a returning
+      // visitor does not flash dark. Kept in step with src/hooks/useTheme.ts.
+      (function () {
+        try {
+          var root = document.documentElement;
+          root.classList.remove("dark");
+          root.classList.add("light");
+          root.style.colorScheme = "light";
+          localStorage.removeItem("topperformers-theme");
+        } catch (e) {}
+      })();
     </script>
   </head>
   <body>

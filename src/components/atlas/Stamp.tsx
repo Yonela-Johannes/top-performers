@@ -21,7 +21,7 @@ export const Stamp = ({
 
   return (
     <span
-      className={`stamp-badge !rotate-[2deg] !bg-paper !px-3 !py-1.5 !text-[11px] ${className}`}
+      className={`stamp-badge !rotate-[2deg] !bg-paper !px-3 !py-1.5 !text-[11px] max-w-full flex-wrap ${className}`}
     >
       <span
         aria-hidden="true"

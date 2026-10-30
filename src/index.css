@@ -73,6 +73,9 @@
     --brand: 44 100% 55%;
     --brand-foreground: 270 15% 8%;
     --brand-ink: 270 15% 8%;
+    /* Tinted brand pair for chips, badges and highlights */
+    --brand-soft: 44 100% 94%;
+    --brand-soft-ink: 30 80% 24%;
     --chart-1: 44 100% 55%;
     --chart-2: 148 78% 27%;
     --chart-3: 207 100% 78%;
@@ -81,8 +84,23 @@
     --shadow-color: 270 15% 8%;
     --radius: 0.75rem;
 
+    /* Semantic pairs used by the GitHub/card components */
+    --success: 148 78% 27%;
+    --success-soft: 148 46% 93%;
+    --warning: 32 88% 38%;
+    --warning-soft: 40 92% 94%;
+    --info: 207 90% 38%;
+    --info-soft: 207 90% 95%;
+    --danger-ink: 0 68% 42%;
+    --danger-soft: 0 78% 96%;
+
     color-scheme: light;
   }
+
+  /*
+   * Light mode only. The palette above is complete and self-contained, so no
+   * `.dark` overrides exist and `color-scheme: light` is pinned on <html>.
+   */
 
   * {
     @apply border-border;
@@ -106,6 +124,9 @@
       color-mix(in srgb, var(--rule) 36%, transparent) 31px,
       color-mix(in srgb, var(--rule) 36%, transparent) 32px
     );
+    transition:
+      background-color var(--transition-normal) var(--ease),
+      color var(--transition-normal) var(--ease);
     background-repeat: repeat;
     font-feature-settings: "cv11", "ss01";
     text-rendering: optimizeLegibility;
@@ -131,11 +152,11 @@
     font: inherit;
   }
 
-  /* Light-only form controls, even when the OS is dark */
+  /* Form controls follow the active theme, not the OS. */
   input,
   select,
   textarea {
-    color-scheme: light;
+    color-scheme: inherit;
   }
   input:-webkit-autofill,
   textarea:-webkit-autofill,
@@ -151,8 +172,10 @@
 
   ::selection {
     background: var(--sun);
-    color: var(--ink);
+    color: #141218;
   }
+
+
 
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -217,17 +240,56 @@
   }
 
   .icon-button {
-    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:border-foreground/25 hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
-    border: 2px solid var(--ink);
-    color: var(--ink);
-    box-shadow: var(--shadow-small);
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-card transition-colors hover:border-foreground/25 hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
   }
   .icon-button:hover:not(:disabled) {
-    background: var(--sun);
+    background: var(--secondary);
   }
 
   .skeleton {
     @apply animate-pulse rounded-md bg-muted;
+  }
+
+  /* Chips — one shape for filters, topics and labels. */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors;
+  }
+  .chip:hover {
+    @apply border-foreground/25 text-foreground;
+  }
+  .chip[aria-pressed="true"],
+  .chip[data-active="true"] {
+    @apply border-transparent bg-foreground text-background;
+  }
+
+  /* One shared card language: resting surface, lifts slightly on hover. */
+  .panel {
+    @apply rounded-xl border bg-card text-card-foreground;
+    border-color: var(--rule);
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--ink) 5%, transparent),
+      0 10px 24px -20px color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+
+  .panel-hover {
+    @apply transition-[transform,box-shadow,border-color] duration-200 ease-out;
+  }
+  .panel-hover:hover {
+    border-color: color-mix(in srgb, var(--ink) 30%, var(--rule));
+    box-shadow:
+      0 2px 4px color-mix(in srgb, var(--ink) 6%, transparent),
+      0 18px 34px -22px color-mix(in srgb, var(--ink) 55%, transparent);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .panel-hover:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  /* Small label above a value — the card hierarchy, everywhere. */
+  .card-label {
+    @apply font-mono text-[10px] font-medium uppercase tracking-[0.14em];
+    color: var(--muted-ink);
   }
 
   .skip-link {
@@ -254,7 +316,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border: 2px solid var(--ink);
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
     border-radius: 0.625rem;
     padding: 0 1rem;
     font-size: 0.875rem;
@@ -266,24 +328,31 @@
       background-color var(--transition-fast) var(--ease);
   }
   .button-primary {
-    background: var(--sun);
-    color: var(--ink);
-    box-shadow: 3px 3px 0 var(--ink);
+    background: var(--tangerine);
+    color: #141218;
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent),
+      0 8px 18px -14px color-mix(in srgb, var(--ink) 60%, transparent);
   }
   .button-secondary {
     background: var(--surface);
     color: var(--ink);
-    box-shadow: 2px 2px 0 var(--ink);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent);
   }
   .button-primary:hover,
   .button-secondary:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0 var(--ink);
+    transform: translateY(-1px);
+    box-shadow:
+      0 2px 4px color-mix(in srgb, var(--ink) 10%, transparent),
+      0 14px 24px -16px color-mix(in srgb, var(--ink) 65%, transparent);
+  }
+  .button-secondary:hover {
+    background: var(--surface-muted);
   }
   .button-primary:active,
   .button-secondary:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--ink);
+    transform: translateY(0);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent);
   }
 
   /* Stamp-style technical label used for factual metadata only */
@@ -327,6 +396,12 @@
     background-color: var(--band-bg);
     color: var(--band-fg);
   }
+  .indigo-band .surface,
+  .indigo-band .icon-button {
+    color: var(--band-fg);
+  }
+
+
 
   /* Geometric lattice band: generic star-and-grid geometry, low contrast */
   .pattern-lattice {
@@ -364,6 +439,16 @@
     }
     to {
       clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* Brand mark: the leading bar rises once on first paint */
+  @keyframes brandBar {
+    from {
+      transform: scaleY(0.35);
+    }
+    to {
+      transform: scaleY(1);
     }
   }
 

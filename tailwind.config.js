@@ -63,6 +63,13 @@ export default {
           DEFAULT: "hsl(var(--brand))",
           foreground: "hsl(var(--brand-foreground))",
           ink: "hsl(var(--brand-ink))",
+          soft: "hsl(var(--brand-soft))",
+          "soft-ink": "hsl(var(--brand-soft-ink))",
+        },
+        ink: {
+          DEFAULT: "var(--ink)",
+          secondary: "var(--ink-secondary)",
+          muted: "var(--muted-ink)",
         },
         indigo: {
           DEFAULT: "var(--band-bg)",

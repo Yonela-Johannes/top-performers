@@ -415,10 +415,16 @@ const Country = () => {
           property="og:image:alt"
           content={`Top developers in ${formattedCountryName}`}
         />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={titleText} />
         <meta name="twitter:description" content={descriptionText} />
         <meta name="twitter:image" content={defaultOgImage} />
+        <meta
+          name="twitter:image:alt"
+          content={`Top developers in ${formattedCountryName}`}
+        />
         <script type="application/ld+json">
           {JSON.stringify(countryStructuredData)}
         </script>
@@ -462,14 +468,14 @@ const Country = () => {
           aria-labelledby="country-heading"
           className="notebook-surface relative -mx-5 border-b-2 border-foreground px-5 pb-10 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
         >
-          <div className="flex items-start gap-4 sm:items-center sm:gap-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
             {/* key resets the failed-image state when navigating between countries */}
             <CountryFlag
               key={country?.flagUrl}
               src={country?.flagUrl}
               className="h-11 w-16 sm:h-14 sm:w-20"
             />
-            <div className="min-w-0">
+            <div className="min-w-0 w-full">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <RegionBadge region={region} />
               {generatedAt && (
@@ -482,7 +488,7 @@ const Country = () => {
               </div>
               <h1
                 id="country-heading"
-                className="mt-1 break-words font-display text-[clamp(2.75rem,8vw,5.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] text-foreground [text-shadow:0.04em_0.04em_0_var(--tangerine)]"
+                className="mt-1 break-words font-display text-[clamp(2.25rem,8vw,5.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] text-foreground [text-shadow:0.04em_0.04em_0_var(--tangerine)]"
               >
                 {formattedCountryName}
               </h1>

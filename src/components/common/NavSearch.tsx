@@ -3,7 +3,7 @@ import { ArrowRight, Globe, Search, X } from "lucide-react";
 import { useCountrySearch } from "@/hooks/useCountrySearch";
 
 const inputClassName =
-  "h-10 w-full min-w-0 border-2 border-foreground bg-card pl-9 pr-9 text-base font-medium text-foreground shadow-[3px_3px_0_var(--foreground)] outline-none transition-[background-color,box-shadow] placeholder:font-normal placeholder:text-muted-foreground placeholder:text-sm hover:bg-surface-muted focus-visible:bg-card [&::-webkit-search-cancel-button]:appearance-none";
+  "h-9 w-full min-w-0 rounded-lg border border-border bg-[var(--surface-muted)] pl-9 pr-9 text-sm font-medium text-foreground outline-none transition-[background-color,border-color,box-shadow] placeholder:font-normal placeholder:text-muted-foreground hover:border-foreground/20 focus-visible:border-foreground/30 focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [&::-webkit-search-cancel-button]:appearance-none";
 
 export const NavSearch = () => {
   const inputId = useId();
@@ -84,7 +84,7 @@ export const NavSearch = () => {
         <button
           type="button"
           onClick={clearSearch}
-          className="absolute right-0.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="absolute right-0.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Clear country search"
         >
           <X className="h-4 w-4" aria-hidden="true" />
@@ -95,9 +95,9 @@ export const NavSearch = () => {
 
   return (
     <>
-      {/* Desktop / tablet: inline in the navbar */}
-      <div className="hidden min-w-[7.5rem] flex-1 basis-0 items-center justify-center pl-1 md:flex">
-        <div className="w-full max-w-[13rem] lg:max-w-[18rem] xl:max-w-sm">
+      {/* Desktop / tablet: inline in the header, centred between nav and utilities */}
+      <div className="hidden min-w-0 flex-1 items-center justify-center px-1 md:flex">
+        <div className="w-full max-w-md">
           {renderField(inputId, desktopInputRef, "Search countries")}
         </div>
       </div>
@@ -108,10 +108,10 @@ export const NavSearch = () => {
         onClick={() => setMobileOpen((open) => !open)}
         aria-expanded={mobileOpen}
         aria-controls={`${mobileInputId}-panel`}
-        className={`inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 transition-[background-color,border-color,box-shadow] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden ${
+        className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:hidden ${
           mobileOpen || search
-            ? "border-foreground bg-[var(--tangerine)] text-foreground shadow-[3px_3px_0_var(--foreground)]"
-            : "border-transparent text-muted-foreground hover:border-foreground/20 hover:bg-secondary hover:text-foreground"
+            ? "bg-secondary text-foreground"
+            : "text-muted-foreground hover:bg-secondary hover:text-foreground"
         }`}
         aria-label={mobileOpen ? "Close country search" : "Search countries"}
       >
@@ -121,7 +121,7 @@ export const NavSearch = () => {
       {mobileOpen && (
         <div
           id={`${mobileInputId}-panel`}
-          className="border-t-2 border-foreground bg-background/95 px-5 py-3 backdrop-blur-md md:hidden"
+          className="absolute inset-x-0 top-full border-t border-border bg-background px-5 py-3 shadow-pop sm:px-6 md:hidden"
         >
           <div className="flex items-center gap-2">
             {renderField(
@@ -133,7 +133,7 @@ export const NavSearch = () => {
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="inline-flex h-10 shrink-0 items-center gap-1.5 border-2 border-foreground bg-card px-3 font-mono text-[10px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-sm font-semibold text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               Done
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
