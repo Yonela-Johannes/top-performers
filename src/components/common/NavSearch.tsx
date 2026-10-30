@@ -80,6 +80,14 @@ export const NavSearch = () => {
         spellCheck={false}
         className={inputClassName}
       />
+      {!search && (
+        <kbd
+          className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 items-center border border-border bg-background/80 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground select-none md:inline-flex"
+          aria-hidden="true"
+        >
+          /
+        </kbd>
+      )}
       {search && (
         <button
           type="button"

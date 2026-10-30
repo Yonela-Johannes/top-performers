@@ -242,10 +242,12 @@ export const CountryCard = ({
                     aria-label={`Open the developer page for ${user.username}`}
                   >
                     <span
-                      className={`flex h-6 w-7 shrink-0 items-center justify-center font-mono text-xs font-medium ${
+                      className={`flex h-6 w-7 shrink-0 items-center justify-center font-mono text-xs font-semibold ${
                         index === 0
-                          ? "border border-brand/40 bg-brand-soft text-brand-soft-ink"
-                          : "text-muted-foreground"
+                          ? "border border-amber-500/40 bg-amber-400/20 text-amber-950"
+                          : index === 1
+                            ? "border border-slate-300 bg-slate-100 text-slate-800"
+                            : "border border-amber-800/25 bg-amber-100/80 text-amber-900"
                       }`}
                     >
                       {index + 1}

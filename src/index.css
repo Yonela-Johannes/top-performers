@@ -124,17 +124,9 @@
     @apply bg-background font-sans text-foreground antialiased;
     min-height: 100vh;
     background-color: var(--paper);
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 31px,
-      color-mix(in srgb, var(--rule) 36%, transparent) 31px,
-      color-mix(in srgb, var(--rule) 36%, transparent) 32px
-    );
     transition:
       background-color var(--transition-normal) var(--ease),
       color var(--transition-normal) var(--ease);
-    background-repeat: repeat;
     font-feature-settings: "cv11", "ss01";
     text-rendering: optimizeLegibility;
     overflow-x: clip;
@@ -347,16 +339,9 @@
     @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
   }
 
-  /* Notebook page surface for editorial (level A) sections */
+  /* Plain surface for editorial (level A) sections */
   .notebook-surface {
     background-color: var(--paper);
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 31px,
-      color-mix(in srgb, var(--rule) 56%, transparent) 31px,
-      color-mix(in srgb, var(--rule) 56%, transparent) 32px
-    );
   }
 
   /* Buttons */
@@ -367,43 +352,40 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
-    border-radius: 0.625rem;
-    padding: 0 1rem;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 20%, transparent);
+    border-radius: 0;
+    padding: 0 1.25rem;
     font-size: 0.875rem;
     font-weight: 700;
     text-decoration: none;
     transition:
       transform var(--transition-fast) var(--ease),
       box-shadow var(--transition-fast) var(--ease),
-      background-color var(--transition-fast) var(--ease);
+      background-color var(--transition-fast) var(--ease),
+      border-color var(--transition-fast) var(--ease);
   }
   .button-primary {
     background: var(--tangerine);
     color: #141218;
-    box-shadow:
-      0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent),
-      0 8px 18px -14px color-mix(in srgb, var(--ink) 60%, transparent);
+    box-shadow: 2px 2px 0 var(--ink);
   }
   .button-secondary {
     background: var(--surface);
     color: var(--ink);
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent);
+    box-shadow: 2px 2px 0 var(--ink);
   }
   .button-primary:hover,
   .button-secondary:hover {
-    transform: translateY(-1px);
-    box-shadow:
-      0 2px 4px color-mix(in srgb, var(--ink) 10%, transparent),
-      0 14px 24px -16px color-mix(in srgb, var(--ink) 65%, transparent);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--ink);
   }
   .button-secondary:hover {
     background: var(--surface-muted);
   }
   .button-primary:active,
   .button-secondary:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent);
+    transform: translate(0, 0);
+    box-shadow: 1px 1px 0 var(--ink);
   }
 
   /* Stamp-style technical label used for factual metadata only */

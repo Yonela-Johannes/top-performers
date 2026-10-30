@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/logo.png" alt="TopPerformers Logo" width="120" />
+</p>
+
 # TopPerformers
 
 **TopPerformers** is an open-source project that makes it easier to discover active developers around the world. It turns public GitHub commit activity into country-based leaderboards, giving developers a simple way to explore open-source contributions across different countries and regions.
@@ -96,7 +100,10 @@ Reusable UI primitives live in `src/components/ui`, while shared application com
 │   │   ├── metadata.json
 │   │   └── committers/
 │   ├── favicon.svg
-│   ├── og-image.svg
+│   ├── icon-192.png
+│   ├── icon-512.png
+│   ├── logo.png
+│   ├── og-image.png
 │   ├── robots.txt
 │   ├── sitemap.xml
 │   └── site.webmanifest

@@ -61,9 +61,13 @@ export const UserTable = ({
   }, [deepLinkedUser, users]);
 
   const rankStyle = (rank: number) => {
-    if (rank === 1) return "bg-brand text-brand-foreground";
-    if (rank === 2 || rank === 3) return "bg-secondary text-foreground";
-    return "text-muted-foreground";
+    if (rank === 1)
+      return "border border-amber-500/40 bg-amber-400/20 text-amber-950 font-bold shadow-xs";
+    if (rank === 2)
+      return "border border-slate-300 bg-slate-100 text-slate-800 font-semibold";
+    if (rank === 3)
+      return "border border-amber-800/25 bg-amber-100/80 text-amber-900 font-semibold";
+    return "text-muted-foreground font-mono";
   };
 
   return (
@@ -128,8 +132,15 @@ export const UserTable = ({
                       <img
                         src={user.avatar}
                         alt=""
-                        className="h-9 w-9 shrink-0 border border-border bg-[var(--surface-muted)]"
+                        className="h-9 w-9 shrink-0 border border-border bg-[var(--surface-muted)] object-cover"
                         loading="lazy"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.fallback) {
+                            target.dataset.fallback = "true";
+                            target.src = `https://github.com/${user.username}.png?size=80`;
+                          }
+                        }}
                       />
                       <span className="min-w-0">
                         <span className="flex items-center gap-1.5">

@@ -42,7 +42,7 @@ const GoToTop = ({ children }: GoToTopProps) => {
         type="button"
         onClick={scrollToTop}
         aria-label="Back to top"
-        className="flex h-11 w-11 items-center justify-center border border-border bg-card text-foreground transition-colors duration-150 ease-out hover:border-foreground/25 hover:bg-secondary"
+        className="flex h-11 w-11 items-center justify-center border-2 border-foreground bg-card text-foreground shadow-[2px_2px_0px_0px_var(--ink)] transition-all duration-150 ease-out hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_var(--ink)] active:translate-x-[0px] active:translate-y-[0px] active:shadow-[1px_1px_0px_0px_var(--ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <ArrowUp className="h-4 w-4" aria-hidden="true" />
       </button>
