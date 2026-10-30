@@ -11,58 +11,21 @@ export const BrandMark = ({
 }) => (
   <span
     className={cn(
-      "relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden",
+      "relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md",
       "bg-[var(--ink)] text-[var(--paper)]",
       "ring-1 ring-inset ring-black/10",
       className,
     )}
     aria-hidden="true"
   >
-    <span
-      className="pointer-events-none absolute inset-0 opacity-90"
-      style={{
-        backgroundImage:
-          "radial-gradient(120% 90% at 100% 0%, hsl(var(--brand) / 0.9) 0%, transparent 55%)",
-      }}
+    <img
+      src="/logo.png"
+      alt={`${SITE_NAME} logo`}
+      className={cn(
+        "h-full w-full object-contain p-0.5",
+        animated && "transition-transform duration-300 hover:scale-105",
+      )}
     />
-    <svg
-      viewBox="0 0 64 64"
-      className="relative h-[22px] w-[22px]"
-      fill="none"
-      focusable="false"
-    >
-      <rect
-        x="12"
-        y="37"
-        width="9"
-        height="15"
-        rx="2.5"
-        fill="currentColor"
-        opacity="0.65"
-      />
-      <rect
-        x="27"
-        y="26"
-        width="9"
-        height="26"
-        rx="2.5"
-        fill="currentColor"
-        opacity="0.85"
-      />
-      <rect
-        x="42"
-        y="14"
-        width="9"
-        height="38"
-        rx="2.5"
-        fill="hsl(var(--brand))"
-        className={
-          animated
-            ? "origin-bottom animate-[brandBar_600ms_var(--ease)_both]"
-            : undefined
-        }
-      />
-    </svg>
   </span>
 );
 
