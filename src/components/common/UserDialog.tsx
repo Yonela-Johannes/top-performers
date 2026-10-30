@@ -269,11 +269,12 @@ export const UserDialog = ({
                     <button
                       type="button"
                       onClick={copyBadge}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center bg-foreground text-background transition-opacity hover:opacity-90"
+                      title={copied ? "Copied!" : "Copy markdown"}
+                      className="flex h-11 w-11 shrink-0 items-center justify-center bg-foreground text-background transition-all hover:bg-foreground/90 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       aria-label="Copy badge markdown"
                     >
                       {copied ? (
-                        <Check className="h-4 w-4" aria-hidden="true" />
+                        <Check className="h-4 w-4 text-emerald-400" aria-hidden="true" />
                       ) : (
                         <Copy className="h-4 w-4" aria-hidden="true" />
                       )}

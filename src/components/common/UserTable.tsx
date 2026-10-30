@@ -128,8 +128,15 @@ export const UserTable = ({
                       <img
                         src={user.avatar}
                         alt=""
-                        className="h-9 w-9 shrink-0 border border-border bg-[var(--surface-muted)]"
+                        className="h-9 w-9 shrink-0 border border-border bg-[var(--surface-muted)] object-cover"
                         loading="lazy"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.dataset.fallback) {
+                            target.dataset.fallback = "true";
+                            target.src = `https://github.com/${user.username}.png?size=80`;
+                          }
+                        }}
                       />
                       <span className="min-w-0">
                         <span className="flex items-center gap-1.5">

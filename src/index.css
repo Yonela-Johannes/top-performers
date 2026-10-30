@@ -124,17 +124,9 @@
     @apply bg-background font-sans text-foreground antialiased;
     min-height: 100vh;
     background-color: var(--paper);
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 31px,
-      color-mix(in srgb, var(--rule) 36%, transparent) 31px,
-      color-mix(in srgb, var(--rule) 36%, transparent) 32px
-    );
     transition:
       background-color var(--transition-normal) var(--ease),
       color var(--transition-normal) var(--ease);
-    background-repeat: repeat;
     font-feature-settings: "cv11", "ss01";
     text-rendering: optimizeLegibility;
     overflow-x: clip;
@@ -347,16 +339,9 @@
     @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
   }
 
-  /* Notebook page surface for editorial (level A) sections */
+  /* Plain surface for editorial (level A) sections */
   .notebook-surface {
     background-color: var(--paper);
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 31px,
-      color-mix(in srgb, var(--rule) 56%, transparent) 31px,
-      color-mix(in srgb, var(--rule) 56%, transparent) 32px
-    );
   }
 
   /* Buttons */
