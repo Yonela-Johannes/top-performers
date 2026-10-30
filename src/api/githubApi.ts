@@ -10,20 +10,6 @@ import type {
 } from "@/types";
 import { GITHUB_API_BASE_URL } from "./config";
 
-/**
- * GitHub REST data.
- *
- * Expanded from "fetch a profile" to the set of reads a developer page
- * actually needs: the profile, their recently pushed repositories, their
- * public events (the only real activity feed the REST API exposes
- * unauthenticated) and a language-file inventory for repository-level
- * language chips. Everything is public, read-only data — no OAuth, no token
- * storage, nothing beyond the optional `VITE_GITHUB_TOKEN` the project already
- * documented for higher rate limits.
- *
- * Responses are cached by RTK Query per username for ten minutes, so opening
- * the same developer twice (dialog, then page) costs one request.
- */
 
 const CACHE_SECONDS = 600;
 const DEFAULT_REPO_LIMIT = 8;
@@ -38,11 +24,6 @@ const githubBaseQuery = fetchBaseQuery({
   },
 });
 
-/**
- * A GitHub 403/429 is almost always the unauthenticated rate limit, which the
- * UI surfaces differently from "this profile does not exist". Turning it into a
- * typed error lets callers say so instead of guessing.
- */
 type GithubErrorPayload = {
   status?: number;
   data?: { message?: string };
@@ -62,7 +43,6 @@ export const classifyGithubError = (error: unknown): GithubFailureKind => {
   return payload?.status === undefined ? "network" : "unknown";
 };
 
-/** Sort keys accepted by `GET /users/:login/repos`. */
 export type RepoSort = "pushed" | "updated" | "created" | "full_name";
 
 export interface RepoQueryArgs {
@@ -75,11 +55,6 @@ export interface RepoQueryArgs {
   page?: number;
 }
 
-/**
- * The repository list endpoint paginates, but a profile only samples it. The
- * "all" scope is the largest the page will request in one go (GitHub caps
- * `per_page` at 100).
- */
 export const MAX_REPOS_PER_PAGE = 100;
 
 export const githubApi = createApi({
@@ -123,11 +98,6 @@ export const githubApi = createApi({
         `repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/languages`,
     }),
 
-    /**
-     * Recent followers. The reference project rendered these as a "contributor
-     * network" strip; a small, visual sample of the people around an account
-     * says more about them than the follower count alone.
-     */
     getGitHubFollowers: builder.query<
       GitHubFollower[],
       { username: string; perPage?: number }
@@ -136,10 +106,6 @@ export const githubApi = createApi({
         `users/${encodeURIComponent(username)}/followers?per_page=${perPage}`,
     }),
 
-    /**
-     * Public gists. A profile section of its own: gists are the snippets and
-     * notes a developer keeps, and they are not visible from repositories.
-     */
     getGitHubGists: builder.query<
       GitHubGist[],
       { username: string; perPage?: number }
@@ -148,10 +114,6 @@ export const githubApi = createApi({
         `users/${encodeURIComponent(username)}/gists?per_page=${perPage}`,
     }),
 
-    /**
-     * Remaining unauthenticated quota. Used to show *why* a profile is
-     * unavailable and when it will work again, instead of a generic error.
-     */
     getRateLimit: builder.query<GitHubRateLimit, void>({
       query: () => "rate_limit",
     }),

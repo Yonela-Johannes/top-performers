@@ -43,12 +43,6 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   {
-    to: "/",
-    label: "Countries",
-    icon: Globe,
-    matches: (path) => path === "/",
-  },
-  {
     to: "/explore",
     label: "Explore",
     icon: Compass,
@@ -100,7 +94,6 @@ export const Header = () => {
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-xl [transform:translateZ(0)]">
       <div className="shell">
         <div className="flex h-16 min-w-0 items-center gap-3">
-          {/* Brand + primary navigation */}
           <Brand responsive />
 
           <div
@@ -139,11 +132,6 @@ export const Header = () => {
 
           {/* Utilities */}
           <div className="flex shrink-0 items-center gap-1">
-            {/*
-              A magnifier beside a search field reads as a second search.
-              “Find a developer” lives in the nav (desktop) and in the mobile
-              panel, so it is not repeated as an icon here.
-            */}
 
             <Tooltip>
               <TooltipTrigger asChild>
