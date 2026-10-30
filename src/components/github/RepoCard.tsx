@@ -59,7 +59,7 @@ export const RepoCard = ({
             href={repo.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-w-0 items-center gap-1.5 text-[15px] font-semibold leading-snug text-foreground after:absolute after:inset-0 after:rounded-xl after:ring-inset focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
+            className="flex min-w-0 items-center gap-1.5 text-[15px] font-semibold leading-snug text-foreground after:absolute after:inset-0 after:after:ring-inset focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-[var(--focus)]"
           >
             <span className="truncate">{repo.name}</span>
             <ArrowUpRight
@@ -86,7 +86,7 @@ export const RepoCard = ({
         <div className="flex shrink-0 items-center gap-1.5">
           {repo.archived ? (
             <span
-              className="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--warning)/0.35)] bg-[hsl(var(--warning-soft))] px-2 py-0.5 font-mono text-[10px] font-medium text-[hsl(var(--warning))]"
+              className="inline-flex items-center gap-1 border border-[hsl(var(--warning)/0.35)] bg-[hsl(var(--warning-soft))] px-2 py-0.5 font-mono text-[10px] font-medium text-[hsl(var(--warning))]"
               title="Archived repository"
             >
               <Archive className="h-3 w-3" aria-hidden="true" />
@@ -94,7 +94,7 @@ export const RepoCard = ({
             </span>
           ) : null}
           {repo.fork ? (
-            <span className="rounded-full border border-border bg-secondary px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground">
+            <span className="border border-border bg-secondary px-2 py-0.5 font-mono text-[10px] font-medium text-muted-foreground">
               Fork
             </span>
           ) : null}
@@ -110,7 +110,7 @@ export const RepoCard = ({
           {topics.map((topic) => (
             <li
               key={topic}
-              className="rounded-full border border-border bg-[var(--surface-muted)] px-2 py-0.5 font-mono text-[10px] font-medium text-ink-secondary"
+              className="border border-border bg-[var(--surface-muted)] px-2 py-0.5 font-mono text-[10px] font-medium text-ink-secondary"
             >
               {topic}
             </li>
@@ -122,10 +122,10 @@ export const RepoCard = ({
         {showLanguageBar ? (
           <div className="mb-3" aria-hidden={languageStats.length === 0}>
             {languagesLoading && !languageStats.length ? (
-              <SkeletonBlock className="h-1.5 w-full rounded-full" />
+              <SkeletonBlock className="h-1.5 w-full" />
             ) : languageStats.length > 0 ? (
               <>
-                <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                <div className="flex h-1.5 w-full overflow-hidden bg-secondary">
                   {languageStats.map((language) => (
                     <span
                       key={language.name}
@@ -155,7 +155,7 @@ export const RepoCard = ({
             <span className="inline-flex items-center gap-1.5">
               <span
                 aria-hidden="true"
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2.5 w-2.5"
                 style={{ backgroundColor: languageColor(repo.language) }}
               />
               {repo.language}

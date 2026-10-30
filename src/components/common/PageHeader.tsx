@@ -124,7 +124,7 @@ export const Breadcrumbs = ({
             {item.to && !last ? (
               <a
                 href={item.to}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded font-medium underline-offset-4 hover:text-foreground hover:underline"
+                className="inline-flex shrink-0 items-center gap-1.5 font-medium underline-offset-4 hover:text-foreground hover:underline"
               >
                 {item.icon}
                 {item.label}

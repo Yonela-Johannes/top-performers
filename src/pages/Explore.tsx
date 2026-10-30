@@ -30,13 +30,13 @@ const ExploreLoading = () => (
           </div>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-2">
-          <SkeletonBlock className="h-16 rounded-lg" />
-          <SkeletonBlock className="h-16 rounded-lg" />
+          <SkeletonBlock className="h-16" />
+          <SkeletonBlock className="h-16" />
         </div>
         <div className="mt-4 space-y-3">
           {[0, 1, 2].map((row) => (
             <div key={row} className="flex items-center gap-3">
-              <SkeletonBlock className="h-7 w-7 rounded-full" />
+              <SkeletonBlock className="h-7 w-7" />
               <SkeletonBlock className="h-3.5 flex-1" />
               <SkeletonBlock className="h-3 w-10" />
             </div>
@@ -221,7 +221,7 @@ const Explore = () => {
                 <img
                   src={featuredCountry.flagUrl}
                   alt=""
-                  className="h-14 w-20 rounded-lg border border-border object-cover"
+                  className="h-14 w-20 border border-border object-cover"
                 />
                 <div className="min-w-0 flex-1">
                   <RegionBadge
@@ -310,14 +310,14 @@ const Explore = () => {
                   onChange={(event) => updateSearch(event.target.value)}
                   placeholder="Filter countries"
                   autoComplete="off"
-                  className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground hover:border-foreground/20 focus-visible:border-foreground/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [&::-webkit-search-cancel-button]:appearance-none"
+                  className="h-10 w-full border border-border bg-card pl-9 pr-9 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground hover:border-foreground/20 focus-visible:border-foreground/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [&::-webkit-search-cancel-button]:appearance-none"
                 />
                 {search ? (
                   <button
                     type="button"
                     onClick={clearSearch}
                     aria-label="Clear country filter"
-                    className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                    className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                   >
                     <X className="h-4 w-4" aria-hidden="true" />
                   </button>
@@ -347,7 +347,7 @@ const Explore = () => {
                   >
                     <span
                       aria-hidden="true"
-                      className="h-2 w-2 rounded-full border border-foreground/30"
+                      className="h-2 w-2 border border-foreground/30"
                       style={{ background: regionTheme(region.name).fill }}
                     />
                     {region.name}
@@ -425,7 +425,7 @@ const Explore = () => {
                               block: "start",
                             });
                         }}
-                        className="mt-2 inline-flex items-center gap-1 rounded px-1 py-1 text-xs font-medium text-ink-secondary transition-colors hover:text-brand-ink"
+                        className="mt-2 inline-flex items-center gap-1 px-1 py-1 text-xs font-medium text-ink-secondary transition-colors hover:text-brand-ink"
                         aria-pressed={false}
                       >
                         <Trophy className="h-3 w-3" aria-hidden="true" />

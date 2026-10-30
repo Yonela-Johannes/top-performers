@@ -51,13 +51,13 @@ const HomeLoading = () => (
           </div>
         </div>
         <div className="mt-5 grid grid-cols-2 gap-2">
-          <div className="skeleton h-16 rounded-lg" />
-          <div className="skeleton h-16 rounded-lg" />
+          <div className="skeleton h-16" />
+          <div className="skeleton h-16" />
         </div>
         <div className="mt-4 space-y-3">
           {[0, 1, 2].map((row) => (
             <div key={row} className="flex items-center gap-3">
-              <div className="skeleton h-7 w-7 rounded-full" />
+              <div className="skeleton h-7 w-7" />
               <div className="skeleton h-3.5 flex-1" />
               <div className="skeleton h-3 w-10" />
             </div>
@@ -185,7 +185,7 @@ const Home = () => {
     return (
       <span
         aria-hidden="true"
-        className={`inline-block animate-pulse rounded-md bg-foreground/10 ${className}`}
+        className={`inline-block animate-pulse bg-foreground/10 ${className}`}
       />
     );
   }
@@ -324,7 +324,7 @@ const Home = () => {
                 {GRID_LEVELS.map((level, i) => (
                   <span
                     key={i}
-                    className={`h-3 rounded-[2px] ${GRID_FILL[level]}`}
+                    className={`h-3 ${GRID_FILL[level]}`}
                   />
                 ))}
               </div>
@@ -335,7 +335,7 @@ const Home = () => {
             {facts.map((fact, index) => (
               <div
                 key={fact.label}
-                className={`group relative overflow-hidden border-2 border-foreground p-5 transition-transform duration-200 hover:-translate-y-1  rounded-lg ${
+                className={`group relative overflow-hidden border-2 border-foreground p-5 transition-transform duration-200 hover:-translate-y-1  ${
                   index === 0
                     ? "bg-[var(--tangerine)] text-foreground shadow-[5px_5px_0_var(--foreground)]"
                     : index === 1
@@ -371,7 +371,7 @@ const Home = () => {
 
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-3 right-4 h-2 w-2 rounded-full border-2 border-current"
+                  className="absolute bottom-3 right-4 h-2 w-2 border-2 border-current"
                 />
               </div>
             ))}
@@ -409,7 +409,7 @@ const Home = () => {
                 <button
                   type="button"
                   onClick={toggleSort}
-                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border border-border bg-card px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                   title={`Sort ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                 >
@@ -435,7 +435,7 @@ const Home = () => {
                 className="chip min-h-9 shrink-0 snap-start gap-2 px-3.5 text-[11px] font-semibold uppercase tracking-[0.06em]"
               >
                 <span>All regions</span>
-                <span className="rounded-full bg-[var(--surface-muted)] px-1.5 py-0.5 text-[10px] leading-none text-muted-foreground">
+                <span className="bg-[var(--surface-muted)] px-1.5 py-0.5 text-[10px] leading-none text-muted-foreground">
                   {allCountries.length}
                 </span>
               </button>
@@ -453,12 +453,12 @@ const Home = () => {
                   >
                     <span
                       aria-hidden="true"
-                      className="h-2.5 w-2.5 shrink-0 rounded-full border border-black/20"
+                      className="h-2.5 w-2.5 shrink-0 border border-black/20"
                       style={{ background: regionTheme(region.name).fill }}
                     />
                     <span>{region.name}</span>
                     <span
-                      className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none ${
+                      className={`px-1.5 py-0.5 text-[10px] leading-none ${
                         isActive
                           ? "bg-primary-foreground/15 text-primary-foreground"
                           : "bg-[var(--surface-muted)] text-muted-foreground"
@@ -505,13 +505,13 @@ const Home = () => {
 
               {/* Results indicator */}
               <div
-                className="flex shrink-0 items-center gap-3 rounded-lg border border-border bg-card px-3.5 py-2.5"
+                className="flex shrink-0 items-center gap-3 border border-border bg-card px-3.5 py-2.5"
                 aria-live="polite"
                 aria-atomic="true"
               >
                 <span
                   aria-hidden="true"
-                  className={`h-2 w-2 rounded-full ${
+                  className={`h-2 w-2 ${
                     isLoadingCountries
                       ? "animate-pulse bg-[var(--tangerine)]"
                       : countriesError
@@ -622,7 +622,10 @@ const Home = () => {
               {/* Country directory */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {visibleCountries.map((country) => (
-                  <div key={country.slug} className="min-w-0">
+                  <div
+                    key={country.slug}
+                    className="min-w-0 motion-safe:animate-fade-in-up"
+                  >
                     <CountryCard
                       country={country}
                       region={countryToRegion[country.name.toLowerCase()]}

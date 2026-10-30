@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface UseInfiniteScrollProps {
   isLoading: boolean;
@@ -7,28 +7,50 @@ interface UseInfiniteScrollProps {
   threshold?: number;
 }
 
+/**
+ * Load more when the page nears its end.
+ *
+ * Two things keep this cheap during a scroll: the position is read inside a
+ * `requestAnimationFrame` (never in the scroll handler itself, which forces a
+ * layout on every event), and `onLoadMore` is held in a ref so a parent
+ * re-render does not tear down and re-attach the listener mid-scroll.
+ */
 export const useInfiniteScroll = ({
   isLoading,
   hasMore,
   onLoadMore,
   threshold = 200,
 }: UseInfiniteScrollProps) => {
-  useEffect(() => {
-    if (isLoading || !hasMore) return;
+  const callback = useRef(onLoadMore);
+  callback.current = onLoadMore;
 
-    const handleScroll = () => {
+  useEffect(() => {
+    if (isLoading || !hasMore) return undefined;
+
+    let ticking = false;
+    let armed = true;
+
+    const check = () => {
+      ticking = false;
+      if (!armed) return;
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-
       if (scrollTop + clientHeight >= scrollHeight - threshold) {
-        onLoadMore();
+        // One load per arrival at the bottom; re-armed when `hasMore` or the
+        // loading state changes.
+        armed = false;
+        callback.current();
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, hasMore, onLoadMore, threshold]);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(check);
+    };
 
-  return null;
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isLoading, hasMore, threshold]);
 };

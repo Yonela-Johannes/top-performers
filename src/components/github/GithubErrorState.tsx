@@ -61,7 +61,7 @@ export const GithubErrorState = ({
   return (
     <div role="alert" className="panel mx-auto max-w-xl px-6 py-12 text-center">
       <span
-        className={`mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full ${tone}`}
+        className={`mx-auto inline-flex h-12 w-12 items-center justify-center ${tone}`}
       >
         <Icon className="h-5 w-5" aria-hidden="true" />
       </span>

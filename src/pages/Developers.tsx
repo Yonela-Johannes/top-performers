@@ -143,7 +143,7 @@ const Developers = () => {
               autoCapitalize="none"
               spellCheck={false}
               enterKeyHint="search"
-              className="h-14 w-full rounded-xl border border-border bg-card pl-12 pr-32 text-base text-foreground shadow-[0_1px_2px_rgba(20,18,24,0.04)] outline-none transition-colors placeholder:text-muted-foreground hover:border-foreground/20 focus-visible:border-foreground/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [&::-webkit-search-cancel-button]:appearance-none"
+              className="h-14 w-full border border-border bg-card pl-12 pr-32 text-base text-foreground shadow-[0_1px_2px_rgba(20,18,24,0.04)] outline-none transition-colors placeholder:text-muted-foreground hover:border-foreground/20 focus-visible:border-foreground/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background [&::-webkit-search-cancel-button]:appearance-none"
             />
             <button
               type="submit"
@@ -165,7 +165,7 @@ const Developers = () => {
           {isLoading || isFetching ? (
             <Card className="mt-4" aria-busy="true">
               <div className="flex items-center gap-4">
-                <SkeletonBlock className="h-14 w-14 rounded-xl" />
+                <SkeletonBlock className="h-14 w-14" />
                 <div className="flex-1 space-y-2">
                   <SkeletonBlock className="h-4 w-40" />
                   <SkeletonBlock className="h-3 w-24" />
@@ -187,7 +187,7 @@ const Developers = () => {
                 <img
                   src={user.avatar_url}
                   alt=""
-                  className="h-14 w-14 shrink-0 rounded-xl border border-border bg-secondary object-cover"
+                  className="h-14 w-14 shrink-0 border border-border bg-secondary object-cover"
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -267,7 +267,7 @@ const Developers = () => {
                       <img
                         src={country.flagUrl}
                         alt=""
-                        className="h-4 w-6 rounded-sm object-cover"
+                        className="h-4 w-6 object-cover"
                       />
                       <span className="flex-1 truncate">{country.name}</span>
                       <ArrowUpRight
@@ -280,7 +280,7 @@ const Developers = () => {
               </ul>
             </Card>
           ) : (
-            <div className="mt-10 rounded-xl border border-dashed border-border px-6 py-10 text-center">
+            <div className="mt-10 border border-dashed border-border px-6 py-10 text-center">
               <p className="text-sm font-medium text-foreground">
                 Start with a handle
               </p>

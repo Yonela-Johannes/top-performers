@@ -73,9 +73,9 @@ export const GistsCard = ({
                 href={gist.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group -mx-2 flex items-start gap-3 rounded-lg px-2 py-2.5 transition-colors hover:bg-[var(--surface-muted)]"
+                className="group -mx-2 flex items-start gap-3 px-2 py-2.5 transition-colors hover:bg-[var(--surface-muted)]"
               >
-                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-[var(--surface-muted)] text-muted-foreground">
+                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-[var(--surface-muted)] text-muted-foreground">
                   <FileCode2 className="h-4 w-4" aria-hidden="true" />
                 </span>
                 <span className="min-w-0 flex-1">

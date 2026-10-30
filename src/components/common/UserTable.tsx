@@ -76,7 +76,7 @@ export const UserTable = ({
               Ranked developers
             </h2>
           </div>
-          <span className="rounded-full border-2 border-border bg-secondary/60 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
+          <span className="border-2 border-border bg-secondary/60 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em] text-muted-foreground">
             {users.length.toLocaleString()} shown
           </span>
         </div>
@@ -109,7 +109,7 @@ export const UserTable = ({
                 >
                   <TableCell className="px-3 py-3 text-center sm:px-5">
                     <span
-                      className={`inline-flex h-7 min-w-7 items-center justify-center rounded-md px-1.5 font-mono text-xs font-medium ${rankStyle(
+                      className={`inline-flex h-7 min-w-7 items-center justify-center px-1.5 font-mono text-xs font-medium ${rankStyle(
                         user.rank,
                       )}`}
                     >
@@ -122,13 +122,13 @@ export const UserTable = ({
                       to={`/developer/${encodeURIComponent(user.username)}${
                         countrySlug ? `?from=${countrySlug}` : ""
                       }`}
-                      className="flex min-h-11 min-w-0 items-center gap-3 rounded-lg py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className="flex min-h-11 min-w-0 items-center gap-3 py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       aria-label={`Open the developer page for ${user.username}`}
                     >
                       <img
                         src={user.avatar}
                         alt=""
-                        className="h-9 w-9 shrink-0 rounded-full border border-border bg-[var(--surface-muted)]"
+                        className="h-9 w-9 shrink-0 border border-border bg-[var(--surface-muted)]"
                         loading="lazy"
                       />
                       <span className="min-w-0">
@@ -159,7 +159,7 @@ export const UserTable = ({
                       <button
                         type="button"
                         onClick={() => openDialog(user)}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="inline-flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         aria-label={`Share ${user.username}'s ranking badge`}
                         title="Share badge"
                       >
@@ -169,7 +169,7 @@ export const UserTable = ({
                         href={user.profile}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        className="inline-flex h-10 w-10 items-center justify-center text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         aria-label={`Open ${user.username}'s GitHub profile`}
                         title="Open on GitHub"
                       >

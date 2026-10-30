@@ -61,7 +61,7 @@ const CountryFlag = ({
   className?: string;
 }) => {
   const [failed, setFailed] = useState(false);
-  const base = `shrink-0 rounded-lg border-2 border-foreground ${className}`;
+  const base = `shrink-0 border-2 border-foreground ${className}`;
 
   if (!src || failed) {
     return (
@@ -94,7 +94,7 @@ const CountryLoading = () => (
       {Array.from({ length: 8 }).map((_, index) => (
         <div key={index} className="flex items-center gap-4 px-5 py-4">
           <div className="skeleton h-7 w-7" />
-          <div className="skeleton h-9 w-9 rounded-full" />
+          <div className="skeleton h-9 w-9" />
           <div className="flex-1 space-y-2">
             <div className="skeleton h-3.5 w-32" />
             <div className="skeleton h-2.5 w-24" />
@@ -443,7 +443,7 @@ const Country = () => {
             <li>
               <Link
                 to="/"
-                className="inline-flex items-center gap-1.5 rounded-md font-medium underline-offset-4 hover:text-foreground hover:underline"
+                className="inline-flex items-center gap-1.5 font-medium underline-offset-4 hover:text-foreground hover:underline"
               >
                 <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
                 World index
@@ -563,14 +563,14 @@ const Country = () => {
                 onChange={(event) => setSearchInput(event.target.value)}
                 placeholder="Search by name or username"
                 autoComplete="off"
-                className="h-11 w-full rounded-xl border-2 border-foreground bg-card pl-10 pr-11 text-base text-foreground shadow-[2px_2px_0_var(--ink)] outline-none placeholder:text-foreground/60 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus)] [&::-webkit-search-cancel-button]:appearance-none"
+                className="h-11 w-full border-2 border-foreground bg-card pl-10 pr-11 text-base text-foreground shadow-[2px_2px_0_var(--ink)] outline-none placeholder:text-foreground/60 focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus)] [&::-webkit-search-cancel-button]:appearance-none"
               />
               {searchInput && (
                 <button
                   type="button"
                   onClick={clearSearch}
                   aria-label="Clear developer search"
-                  className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-foreground/70 transition-colors hover:bg-secondary hover:text-foreground"
+                  className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center text-foreground/70 transition-colors hover:bg-secondary hover:text-foreground"
                 >
                   <X className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -625,7 +625,7 @@ const Country = () => {
         ) : filteredUsers.length === 0 ? (
           <div className="surface flex flex-col items-center px-6 py-20 text-center">
             {searchQuery ? (
-              <div className="flex h-12 w-12 -rotate-3 items-center justify-center rounded-lg border-2 border-foreground bg-brand shadow-[2px_2px_0_var(--ink)]">
+              <div className="flex h-12 w-12 -rotate-3 items-center justify-center border-2 border-foreground bg-brand shadow-[2px_2px_0_var(--ink)]">
                 <SearchX className="h-5 w-5 text-foreground" aria-hidden="true" />
               </div>
             ) : (
@@ -656,7 +656,7 @@ const Country = () => {
         ) : (
           <>
             {hasLoadError && (
-              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-dashed border-foreground/40 bg-card px-4 py-3 text-sm text-foreground/80">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-2 border-dashed border-foreground/40 bg-card px-4 py-3 text-sm text-foreground/80">
                 <p>Couldn’t refresh. Showing the last data we loaded.</p>
                 <button
                   type="button"
@@ -722,11 +722,11 @@ const Country = () => {
                   <li key={item.slug}>
                     <Link
                       to={`/${item.slug}`}
-                      className="group flex min-h-16 items-center gap-3 rounded-xl border-2 border-foreground bg-card px-4 py-3 shadow-[3px_3px_0_var(--ink)] transition-[transform,box-shadow] hover:shadow-[5px_5px_0_var(--ink)] motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px motion-reduce:transition-none focus-visible:outline-none focus-visible:outline-[3px] focus-visible:outline-offset-3 focus-visible:outline-[color:var(--focus)]"
+                      className="group flex min-h-16 items-center gap-3 border-2 border-foreground bg-card px-4 py-3 shadow-[3px_3px_0_var(--ink)] transition-[transform,box-shadow] hover:shadow-[5px_5px_0_var(--ink)] motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px motion-reduce:transition-none focus-visible:outline-none focus-visible:outline-[3px] focus-visible:outline-offset-3 focus-visible:outline-[color:var(--focus)]"
                     >
                       <span
                         aria-hidden="true"
-                        className="h-3 w-3 shrink-0 rounded-full border-2 border-[var(--ink)]"
+                        className="h-3 w-3 shrink-0 border-2 border-[var(--ink)]"
                         style={{ background: regionTheme(region).fill }}
                       />
                       <span className="min-w-0 flex-1 truncate font-display text-sm font-bold uppercase tracking-tight text-foreground">

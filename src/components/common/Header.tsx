@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { GITHUB_URL, SOURCE_NAME } from "@/lib/seo";
 
 const navItemBase =
-  "relative inline-flex h-9 items-center gap-2 rounded-lg px-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "relative inline-flex h-9 items-center gap-2 px-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 const navItem = (active: boolean) =>
   active
@@ -32,7 +32,7 @@ const navItem = (active: boolean) =>
     : "text-muted-foreground hover:bg-secondary hover:text-foreground";
 
 const utilityButton =
-  "inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "inline-flex h-9 w-9 items-center justify-center text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 type NavItem = {
   to: string;
@@ -92,7 +92,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-xl [transform:translateZ(0)]">
       <div className="shell">
         <div className="flex h-16 min-w-0 items-center gap-3">
           {/* Brand + primary navigation */}
@@ -157,7 +157,7 @@ export const Header = () => {
                 </button>
               </TooltipTrigger>
 
-              <TooltipContent className="max-w-xs rounded-xl border border-border bg-card p-3 text-foreground shadow-pop">
+              <TooltipContent className="max-w-xs border border-border bg-card p-3 text-foreground shadow-pop">
                 <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                   About the index
                 </p>
@@ -228,7 +228,7 @@ export const Header = () => {
                     aria-current={active ? "page" : undefined}
                     onClick={() => setMenuOpen(false)}
                     className={cn(
-                      "flex min-h-11 items-center gap-2.5 rounded-lg px-3 text-sm font-medium transition-colors",
+                      "flex min-h-11 items-center gap-2.5 px-3 text-sm font-medium transition-colors",
                       active
                         ? "bg-secondary text-foreground"
                         : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
@@ -243,7 +243,7 @@ export const Header = () => {
                 to="/developers"
                 onClick={() => setMenuOpen(false)}
                 className={cn(
-                  "flex min-h-11 items-center gap-2.5 rounded-lg px-3 text-sm font-medium transition-colors",
+                  "flex min-h-11 items-center gap-2.5 px-3 text-sm font-medium transition-colors",
                   onDeveloper
                     ? "bg-secondary text-foreground"
                     : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
@@ -262,7 +262,7 @@ export const Header = () => {
                 href={GITHUB_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground"
+                className="inline-flex h-9 shrink-0 items-center gap-2 border border-border bg-card px-3 text-sm font-medium text-foreground"
               >
                 <Github className="h-4 w-4" aria-hidden="true" />
                 GitHub

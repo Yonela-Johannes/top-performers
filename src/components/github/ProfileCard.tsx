@@ -65,7 +65,7 @@ export const ProfileCard = ({
     return (
       <Card aria-busy="true">
         <div className="flex items-start gap-4">
-          <SkeletonBlock className="h-20 w-20 rounded-2xl" />
+          <SkeletonBlock className="h-20 w-20" />
           <div className="flex-1 space-y-2">
             <SkeletonBlock className="h-5 w-40" />
             <SkeletonBlock className="h-3 w-24" />
@@ -74,7 +74,7 @@ export const ProfileCard = ({
         </div>
         <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[0, 1, 2, 3].map((item) => (
-            <SkeletonBlock key={item} className="h-[76px] rounded-lg" />
+            <SkeletonBlock key={item} className="h-[76px]" />
           ))}
         </div>
         <p className="sr-only">Loading GitHub profile</p>
@@ -93,7 +93,7 @@ export const ProfileCard = ({
           width={80}
           height={80}
           loading="eager"
-          className="h-20 w-20 shrink-0 rounded-2xl border border-border bg-secondary object-cover"
+          className="h-20 w-20 shrink-0 border border-border bg-secondary object-cover"
         />
 
         <div className="min-w-0 flex-1">
@@ -109,7 +109,7 @@ export const ProfileCard = ({
               <span className="inline-flex items-center gap-1.5 text-xs text-ink-secondary">
                 <span
                   aria-hidden="true"
-                  className="h-2 w-2 rounded-full"
+                  className="h-2 w-2"
                   style={{ backgroundColor: languageColor(primary.name) }}
                 />
                 mostly {primary.name}
@@ -199,7 +199,7 @@ export const ProfileCard = ({
           href={`https://github.com/${handle}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary sm:w-auto"
+          className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 self-start border border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary sm:w-auto"
         >
           <Github className="h-4 w-4" aria-hidden="true" />
           View on GitHub
@@ -235,14 +235,14 @@ export const ProfileCard = ({
       </dl>
 
       {ranking ? (
-        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-brand/30 bg-brand-soft px-4 py-3">
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border border-brand/30 bg-brand-soft px-4 py-3">
           {ranking.flagUrl ? (
             <img
               src={ranking.flagUrl}
               alt=""
               width={28}
               height={20}
-              className="h-5 w-7 rounded-sm border border-border object-cover"
+              className="h-5 w-7 border border-border object-cover"
             />
           ) : null}
           <p className="min-w-0 flex-1 text-sm text-ink-secondary">

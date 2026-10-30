@@ -25,7 +25,7 @@ export const Stamp = ({
     >
       <span
         aria-hidden="true"
-        className="h-2.5 w-2.5 shrink-0 rounded-full border-2"
+        className="h-2.5 w-2.5 shrink-0 border-2"
         style={{ borderColor: "var(--ink)", background: theme.fill }}
       />
       <span className="whitespace-nowrap">{country}</span>

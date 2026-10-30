@@ -10,7 +10,7 @@ const NotFound = () => (
       <title>{toTitle("Page not found")}</title>
       <meta name="robots" content="noindex" />
     </Helmet>
-    <div className="surface lamplight relative max-w-md rounded-xl px-6 py-10 text-center">
+    <div className="surface lamplight relative max-w-md px-6 py-10 text-center">
       <span
         aria-hidden="true"
         className="pointer-events-none absolute -top-3 left-1/2 h-7 w-24 -translate-x-1/2 -rotate-3"

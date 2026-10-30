@@ -95,7 +95,7 @@ export const ActivityCard = ({
           <SkeletonBlock className="h-12 w-full" />
           {[0, 1, 2, 3].map((row) => (
             <div key={row} className="flex items-center gap-3">
-              <SkeletonBlock className="h-8 w-8 rounded-lg" />
+              <SkeletonBlock className="h-8 w-8" />
               <div className="flex-1 space-y-1.5">
                 <SkeletonBlock className="h-3 w-3/4" />
                 <SkeletonBlock className="h-2.5 w-1/3" />
@@ -132,7 +132,7 @@ export const ActivityCard = ({
                 <span
                   key={day.date}
                   title={`${day.date}: ${day.count} commit${day.count === 1 ? "" : "s"}`}
-                  className={`min-h-[2px] flex-1 rounded-sm transition-colors ${
+                  className={`min-h-[2px] flex-1 transition-colors ${
                     day.count > 0 ? "bg-brand/80" : "bg-secondary"
                   }`}
                   style={{
@@ -159,7 +159,7 @@ export const ActivityCard = ({
                     rel="noopener noreferrer"
                     className="group flex items-start gap-3 py-3 transition-colors hover:bg-secondary/40"
                   >
-                    <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-secondary text-muted-foreground transition-colors group-hover:text-foreground">
+                    <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-secondary text-muted-foreground transition-colors group-hover:text-foreground">
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">

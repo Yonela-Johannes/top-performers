@@ -65,7 +65,7 @@ export const Footer = () => {
 
             <div className="mt-7 inline-flex items-center gap-2 border-2 border-[var(--band-line)] px-3 py-2">
               <span
-                className="h-2 w-2 rounded-full"
+                className="h-2 w-2"
                 style={{ background: "var(--band-accent)" }}
                 aria-hidden="true"
               />

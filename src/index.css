@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
 @layer base {
   :root {
     /* Surfaces (warm paper) */
@@ -39,9 +45,10 @@
     --content-width: 78rem;
     --content-wide: 86rem;
     --page-padding: clamp(1.25rem, 4vw, 2.5rem);
-    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-    --transition-fast: 150ms;
-    --transition-normal: 250ms;
+    /* Decelerating curve: fast out of the gate, settles without a bounce. */
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-fast: 160ms;
+    --transition-normal: 240ms;
     --border-width: 2px;
     --border-strong: 3px;
     --shadow-small: 2px 2px 0 var(--ink);
@@ -82,7 +89,7 @@
     --chart-4: 330 100% 85%;
     --chart-5: 260 100% 86%;
     --shadow-color: 270 15% 8%;
-    --radius: 0.75rem;
+    --radius: 0px;
 
     /* Semantic pairs used by the GitHub/card components */
     --success: 148 78% 27%;
@@ -204,7 +211,7 @@
   }
 
   .surface-flat {
-    @apply rounded-xl border border-border bg-card;
+    @apply border border-border bg-card;
   }
 
   .eyebrow {
@@ -240,19 +247,47 @@
   }
 
   .icon-button {
-    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-card transition-colors hover:border-foreground/25 hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-card text-muted-foreground shadow-card transition-colors hover:border-foreground/25 hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
+    transition-duration: var(--transition-fast);
+    transition-timing-function: var(--ease);
   }
   .icon-button:hover:not(:disabled) {
     background: var(--secondary);
   }
 
+  /*
+   * Loading placeholder. A travelling sheen reads as "working" far more
+   * calmly than an opacity pulse, which strobes the whole page when a dozen
+   * cards load at once. Rendered as a background so it costs no extra nodes.
+   */
   .skeleton {
-    @apply animate-pulse rounded-md bg-muted;
+    background-color: var(--surface-muted);
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--ink) 6%, transparent) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton {
+      animation: skeletonSheen 1.5s var(--ease) infinite;
+    }
+  }
+  @keyframes skeletonSheen {
+    0% {
+      background-position: 150% 0;
+    }
+    100% {
+      background-position: -50% 0;
+    }
   }
 
   /* Chips — one shape for filters, topics and labels. */
   .chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors;
+    @apply inline-flex items-center gap-1.5 border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors;
   }
   .chip:hover {
     @apply border-foreground/25 text-foreground;
@@ -268,15 +303,24 @@
 
   /* One shared card language: resting surface, lifts slightly on hover. */
   .panel {
-    @apply rounded-xl border bg-card text-card-foreground;
+    @apply border bg-card text-card-foreground;
     border-color: var(--rule);
     box-shadow:
       0 1px 2px color-mix(in srgb, var(--ink) 5%, transparent),
       0 10px 24px -20px color-mix(in srgb, var(--ink) 45%, transparent);
   }
 
+  /*
+   * One hover motion for every interactive surface. Transform and shadow are
+   * the only properties animated (both compositor-friendly); the curve matches
+   * the primary button so a card and a button respond with the same feel.
+   */
   .panel-hover {
-    @apply transition-[transform,box-shadow,border-color] duration-200 ease-out;
+    transition:
+      transform var(--transition-normal) var(--ease),
+      box-shadow var(--transition-normal) var(--ease),
+      border-color var(--transition-fast) var(--ease);
+    will-change: transform;
   }
   .panel-hover:hover {
     border-color: color-mix(in srgb, var(--ink) 30%, var(--rule));
@@ -284,9 +328,12 @@
       0 2px 4px color-mix(in srgb, var(--ink) 6%, transparent),
       0 18px 34px -22px color-mix(in srgb, var(--ink) 55%, transparent);
   }
+  .panel-hover:active {
+    transition-duration: var(--transition-fast);
+  }
   @media (prefers-reduced-motion: no-preference) {
     .panel-hover:hover {
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
   }
 
@@ -297,7 +344,7 @@
   }
 
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
   }
 
   /* Notebook page surface for editorial (level A) sections */

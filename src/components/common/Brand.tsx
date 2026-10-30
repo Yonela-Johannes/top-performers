@@ -2,17 +2,6 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { SITE_NAME } from "@/lib/seo";
 
-/**
- * Brand mark.
- *
- * The reference project's logo is a rounded dark chip with a single warm
- * accent. This adapts that treatment to TopPerformers' own glyph — the
- * ascending bars of a leaderboard — instead of importing the illustrated
- * portrait avatar, which is personal artwork and does not survive being
- * reduced to a 36px icon. The chip is ink and the accent is the brand token,
- * the same pairing the primary buttons use, so the mark reads consistently
- * wherever it appears: header, footer, and the tab icon.
- */
 export const BrandMark = ({
   className,
   animated = false,
@@ -22,7 +11,7 @@ export const BrandMark = ({
 }) => (
   <span
     className={cn(
-      "relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-[11px]",
+      "relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden",
       "bg-[var(--ink)] text-[var(--paper)]",
       "ring-1 ring-inset ring-black/10",
       className,
@@ -93,7 +82,7 @@ export const Brand = ({
     to="/"
     aria-label={`${SITE_NAME} home`}
     className={cn(
-      "group inline-flex min-w-0 items-center gap-2.5 rounded-lg",
+      "group inline-flex min-w-0 items-center gap-2.5",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
       inverted && "focus-visible:ring-offset-[var(--band-bg)]",
       className,

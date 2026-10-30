@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useGetCountryUsersQuery } from "@/api";
@@ -20,7 +20,7 @@ function Flag({ src }: { src?: string }) {
     return (
       <span
         aria-hidden="true"
-        className="flex h-8 w-11 shrink-0 items-center justify-center rounded-md border border-border bg-[var(--surface-muted)] text-muted-foreground"
+        className="flex h-8 w-11 shrink-0 items-center justify-center border border-border bg-[var(--surface-muted)] text-muted-foreground"
       >
         <Globe className="h-4 w-4" />
       </span>
@@ -34,7 +34,7 @@ function Flag({ src }: { src?: string }) {
       height={32}
       loading="lazy"
       onError={() => setFailed(true)}
-      className="h-8 w-11 shrink-0 rounded-md border border-border object-cover"
+      className="h-8 w-11 shrink-0 border border-border object-cover"
     />
   );
 }
@@ -45,7 +45,7 @@ function Avatar({ src, name }: { src?: string; name: string }) {
     return (
       <span
         aria-hidden="true"
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border bg-[var(--surface-muted)] font-mono text-xs font-medium uppercase text-muted-foreground"
+        className="flex h-7 w-7 shrink-0 items-center justify-center border border-border bg-[var(--surface-muted)] font-mono text-xs font-medium uppercase text-muted-foreground"
       >
         {name.slice(0, 1)}
       </span>
@@ -59,7 +59,7 @@ function Avatar({ src, name }: { src?: string; name: string }) {
       height={28}
       loading="lazy"
       onError={() => setFailed(true)}
-      className="h-7 w-7 shrink-0 rounded-full border border-border object-cover"
+      className="h-7 w-7 shrink-0 border border-border object-cover"
     />
   );
 }
@@ -92,6 +92,17 @@ export const CountryCard = ({
   const ref = useRef<HTMLElement | null>(null);
   const [inView, setInView] = useState(false);
 
+  // Content that is already on screen when the page settles must not wait for
+  // a scroll: on phones, and on any page whose cards sit below the fold,
+  // "in view" often never fires until the person scrolls away and back. A
+  // short deadline promotes the card to eager loading, so a skeleton is never
+  // permanent. It is a no-op for cards the observer catches first.
+  useEffect(() => {
+    if (inView) return undefined;
+    const timer = window.setTimeout(() => setInView(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, [inView]);
+
   useEffect(() => {
     if (inView) return undefined;
     const element = ref.current;
@@ -107,23 +118,23 @@ export const CountryCard = ({
           observer.disconnect();
         }
       },
-      { rootMargin: "400px 0px" },
+      // Load roughly one screen ahead of the viewport.
+      { rootMargin: "600px 0px" },
     );
     observer.observe(element);
     const rect = element.getBoundingClientRect();
     const viewport = window.innerHeight || 0;
-    if (rect.top < viewport + 400 && rect.bottom > -400) setInView(true);
+    if (rect.top < viewport + 600 && rect.bottom > -600) setInView(true);
 
     return () => observer.disconnect();
   }, [inView]);
 
-  const { currentData, isFetching, isUninitialized, isError, refetch } =
-    useGetCountryUsersQuery(
-      inView ? { country: country.slug, mode: "all" } : skipToken,
-    );
-  const isLoading = !isError && (isUninitialized || isFetching);
+  const { currentData, isFetching, isError, refetch } = useGetCountryUsersQuery(
+    inView ? { country: country.slug, mode: "all" } : skipToken,
+  );
+  const isLoading = !isError && (isFetching || !currentData);
 
-  const { topUsers, totalUsers, totalCommits, avgCommits } = (() => {
+  const { topUsers, totalUsers, totalCommits, avgCommits } = useMemo(() => {
     const ranked = [...(currentData?.users ?? [])].sort(
       (a, b) => b.commits - a.commits,
     );
@@ -134,7 +145,7 @@ export const CountryCard = ({
       totalCommits: commits,
       avgCommits: ranked.length ? Math.round(commits / ranked.length) : 0,
     };
-  })();
+  }, [currentData]);
 
   const isEmpty = !isLoading && !isError && topUsers.length === 0;
 
@@ -159,7 +170,7 @@ export const CountryCard = ({
               {/* Stretched link: the ::after covers the whole card */}
               <Link
                 to={`/${country.slug}`}
-                className="text-foreground after:absolute after:inset-0 after:rounded-xl focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-[3px] focus-visible:after:outline-[color:var(--focus)]"
+                className="text-foreground after:absolute after:inset-0 after:focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-[3px] focus-visible:after:outline-[color:var(--focus)]"
               >
                 {country.name}
                 <span className="sr-only"> leaderboard</span>
@@ -171,7 +182,7 @@ export const CountryCard = ({
 
         <span
           aria-hidden="true"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground motion-reduce:transition-none"
+          className="flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-card text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground motion-reduce:transition-none"
         >
           <ArrowUpRight className="h-4 w-4" />
         </span>
@@ -179,7 +190,7 @@ export const CountryCard = ({
 
       {/* Metrics */}
       <dl className="mt-5 grid grid-cols-2 gap-2">
-        <div className="rounded-lg border border-border bg-[var(--surface-muted)] px-3 py-2.5">
+        <div className="border border-border bg-[var(--surface-muted)] px-3 py-2.5">
           <dt className="card-label">Developers</dt>
           <dd className="stat-value mt-1 text-2xl font-semibold leading-none text-foreground">
             <StatValue loading={isLoading} error={isError}>
@@ -187,7 +198,7 @@ export const CountryCard = ({
             </StatValue>
           </dd>
         </div>
-        <div className="rounded-lg border border-border bg-[var(--surface-muted)] px-3 py-2.5">
+        <div className="border border-border bg-[var(--surface-muted)] px-3 py-2.5">
           <dt className="card-label">Public commits</dt>
           <dd className="stat-value mt-1 text-2xl font-semibold leading-none text-foreground">
             <StatValue loading={isLoading} error={isError}>
@@ -216,7 +227,7 @@ export const CountryCard = ({
             ? [0, 1, 2].map((i) => (
                 <li key={i} className="flex items-center gap-3 py-1.5">
                   <SkeletonBlock className="h-6 w-7" />
-                  <SkeletonBlock className="h-7 w-7 rounded-full" />
+                  <SkeletonBlock className="h-7 w-7" />
                   <SkeletonBlock className="h-3.5 flex-1" />
                   <SkeletonBlock className="h-3.5 w-10" />
                 </li>
@@ -227,11 +238,11 @@ export const CountryCard = ({
                   <Link
                     to={`/developer/${encodeURIComponent(user.username)}?from=${country.slug}`}
                     onClick={() => onUserClick(user)}
-                    className="relative z-10 flex min-h-10 w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left transition-colors hover:bg-[var(--surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
+                    className="relative z-10 flex min-h-10 w-full items-center gap-3 px-1 py-1.5 text-left transition-colors hover:bg-[var(--surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                     aria-label={`Open the developer page for ${user.username}`}
                   >
                     <span
-                      className={`flex h-6 w-7 shrink-0 items-center justify-center rounded-full font-mono text-xs font-medium ${
+                      className={`flex h-6 w-7 shrink-0 items-center justify-center font-mono text-xs font-medium ${
                         index === 0
                           ? "border border-brand/40 bg-brand-soft text-brand-soft-ink"
                           : "text-muted-foreground"
@@ -253,12 +264,12 @@ export const CountryCard = ({
         </ul>
 
         {isError && (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-dashed border-foreground/30 px-3 py-2.5 text-sm text-muted-foreground">
+          <div className="flex items-center justify-between gap-3 border border-dashed border-foreground/30 px-3 py-2.5 text-sm text-muted-foreground">
             <span>Couldn’t load rankings.</span>
             <button
               type="button"
               onClick={() => refetch()}
-              className="relative z-10 inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-md border border-border bg-card px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+              className="relative z-10 inline-flex min-h-9 shrink-0 items-center gap-1.5 border border-border bg-card px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
             >
               <RotateCw className="h-3.5 w-3.5" aria-hidden="true" />
               Retry
@@ -267,7 +278,7 @@ export const CountryCard = ({
         )}
 
         {isEmpty && (
-          <div className="flex items-center gap-2 rounded-lg border border-dashed border-foreground/30 px-3 py-2.5 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 border border-dashed border-foreground/30 px-3 py-2.5 text-sm text-muted-foreground">
             <GitCommit className="h-4 w-4 shrink-0" aria-hidden="true" />
             No public commit data yet.
           </div>

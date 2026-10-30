@@ -59,10 +59,10 @@ export const LanguageBreakdown = ({
 
       {isLoading && !stats.length ? (
         <div className="mt-5 space-y-3" aria-busy="true">
-          <SkeletonBlock className="h-2.5 w-full rounded-full" />
+          <SkeletonBlock className="h-2.5 w-full" />
           {[0, 1, 2].map((row) => (
             <div key={row} className="flex items-center gap-3">
-              <SkeletonBlock className="h-2.5 w-2.5 rounded-full" />
+              <SkeletonBlock className="h-2.5 w-2.5" />
               <SkeletonBlock className="h-3 w-24" />
               <SkeletonBlock className="ml-auto h-3 w-10" />
             </div>
@@ -78,7 +78,7 @@ export const LanguageBreakdown = ({
         />
       ) : (
         <>
-          <div className="mt-5 flex h-2.5 w-full overflow-hidden rounded-full bg-secondary">
+          <div className="mt-5 flex h-2.5 w-full overflow-hidden bg-secondary">
             {stats.map((language) => (
               <span
                 key={language.name}
@@ -99,7 +99,7 @@ export const LanguageBreakdown = ({
               >
                 <span
                   aria-hidden="true"
-                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+                  className="h-2.5 w-2.5 shrink-0"
                   style={{ backgroundColor: languageColor(language.name) }}
                 />
                 <span className="min-w-0 flex-1 truncate text-foreground">

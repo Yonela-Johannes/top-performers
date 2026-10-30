@@ -45,7 +45,7 @@ export const Card = forwardRef<HTMLElement, CardProps>(
     <Tag
       ref={ref}
       className={cn(
-        "panel relative flex flex-col rounded-xl",
+        "panel relative flex flex-col",
         CARD_TONES[tone],
         padding !== "none" ? CARD_PADDING[padding] : undefined,
         interactive && "panel-hover",
@@ -83,7 +83,7 @@ export const CardHeader = ({
       {icon ? (
         <span
           aria-hidden="true"
-          className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-[var(--surface-muted)] text-muted-foreground [&>svg]:h-4 [&>svg]:w-4"
+          className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-[var(--surface-muted)] text-muted-foreground [&>svg]:h-4 [&>svg]:w-4"
         >
           {icon}
         </span>
@@ -144,7 +144,7 @@ export const Badge = ({
 }: BadgeProps) => (
   <span
     className={cn(
-      "inline-flex min-w-0 items-center gap-1 rounded-full border font-mono font-medium leading-4",
+      "inline-flex min-w-0 items-center gap-1 border font-mono font-medium leading-4",
       BADGE_TONES[tone],
       BADGE_SIZES[size],
       className,
@@ -182,7 +182,7 @@ export const StatTile = ({
   className?: string;
 }) => (
   <div
-    className={cn("min-w-0 rounded-lg border p-3", STAT_TONES[tone], className)}
+    className={cn("min-w-0 border p-3", STAT_TONES[tone], className)}
   >
     <div className="flex items-center gap-1.5 text-muted-foreground">
       {icon ? (
@@ -250,7 +250,7 @@ export const CardMessage = ({
 }) => (
   <div
     className={cn(
-      "rounded-lg border border-dashed px-4 py-8 text-center",
+      "border border-dashed px-4 py-8 text-center",
       tone === "danger"
         ? "border-[hsl(var(--danger-ink)/0.35)]"
         : "border-border",
@@ -261,7 +261,7 @@ export const CardMessage = ({
       <span
         aria-hidden="true"
         className={cn(
-          "mx-auto mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full [&>svg]:h-4 [&>svg]:w-4",
+          "mx-auto mb-3 inline-flex h-9 w-9 items-center justify-center [&>svg]:h-4 [&>svg]:w-4",
           tone === "danger"
             ? "bg-[hsl(var(--danger-soft))] text-[hsl(var(--danger-ink))]"
             : "bg-[var(--surface-muted)] text-muted-foreground",

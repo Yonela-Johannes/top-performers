@@ -33,7 +33,7 @@ export const FollowersStrip = ({
       {isLoading && followers.length === 0 ? (
         <div className="flex flex-wrap gap-1.5" aria-busy="true">
           {Array.from({ length: 8 }).map((_, index) => (
-            <SkeletonBlock key={index} className="h-8 w-8 rounded-lg" />
+            <SkeletonBlock key={index} className="h-8 w-8" />
           ))}
         </div>
       ) : (
@@ -45,7 +45,7 @@ export const FollowersStrip = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 title={`@${follower.login}`}
-                className="group relative block rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                className="group relative block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
               >
                 <img
                   src={follower.avatar_url}
@@ -53,7 +53,7 @@ export const FollowersStrip = ({
                   width={32}
                   height={32}
                   loading="lazy"
-                  className="h-8 w-8 rounded-lg border border-border bg-secondary object-cover transition-transform duration-150 group-hover:-translate-y-0.5"
+                  className="h-8 w-8 border border-border bg-secondary object-cover transition-transform duration-150 group-hover:-translate-y-0.5"
                 />
               </a>
             </li>

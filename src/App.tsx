@@ -94,6 +94,23 @@ const toastTheming = {
   custom: { style: toastBase, className: "" },
 };
 
+/**
+ * Route transition.
+ *
+ * A short fade-and-rise on the route container, keyed by path. It runs on the
+ * compositor (opacity + transform only) and is skipped entirely for people
+ * who ask for reduced motion, so navigation gains a sense of arrival without
+ * costing frames or motion-sensitivity.
+ */
+const PageTransition = ({ children }: { children: React.ReactNode }) => {
+  const { pathname } = useLocation();
+  return (
+    <div key={pathname} className="motion-safe:animate-fade-in">
+      {children}
+    </div>
+  );
+};
+
 const App = () => {
   return (
     <TooltipProvider delayDuration={200}>
@@ -104,8 +121,10 @@ const App = () => {
         <ScrollToTop />
         <div className="flex min-h-screen flex-col">
           <Header />
-          <main id="main-content" className="flex-1 animate-fade-in">
-            <AppRoutes />
+          <main id="main-content" className="flex-1">
+            <PageTransition>
+              <AppRoutes />
+            </PageTransition>
           </main>
           <Footer />
           <GoToTop />

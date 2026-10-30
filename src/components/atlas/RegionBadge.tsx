@@ -20,7 +20,7 @@ export const RegionBadge = ({
     >
       <span
         aria-hidden="true"
-        className="h-3 w-3 shrink-0 rounded-[3px] border-2 border-[var(--ink)]"
+        className="h-3 w-3 shrink-0 border-2 border-[var(--ink)]"
         style={{ background: theme.fill }}
       />
       {region}

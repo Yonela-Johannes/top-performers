@@ -89,7 +89,7 @@ export const UserDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[min(94vw,640px)] max-w-none gap-0 overflow-hidden rounded-xl border-border bg-card p-0 shadow-pop">
+      <DialogContent className="w-[min(94vw,640px)] max-w-none gap-0 overflow-hidden border-border bg-card p-0 shadow-pop">
         <DialogHeader className="border-b-2 border-foreground px-6 py-5 text-left">
           <p className="eyebrow">Contributor profile</p>
           <DialogTitle className="mt-1 font-display text-2xl font-extrabold uppercase leading-none tracking-[-0.02em] text-foreground">
@@ -105,7 +105,7 @@ export const UserDialog = ({
           {isLoading && (
             <div className="space-y-5" aria-busy="true" aria-live="polite">
               <div className="flex items-center gap-4">
-                <div className="skeleton h-16 w-16 rounded-full" />
+                <div className="skeleton h-16 w-16" />
                 <div className="flex-1 space-y-2">
                   <div className="skeleton h-5 w-40" />
                   <div className="skeleton h-3.5 w-28" />
@@ -134,7 +134,7 @@ export const UserDialog = ({
                 <img
                   src={userInfo.avatar_url}
                   alt=""
-                  className="h-16 w-16 rounded-full border-2 border-foreground bg-muted"
+                  className="h-16 w-16 border-2 border-foreground bg-muted"
                 />
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate text-lg font-semibold text-foreground">
@@ -176,7 +176,7 @@ export const UserDialog = ({
                 </p>
               )}
 
-              <dl className="grid grid-cols-3 divide-x divide-border rounded-xl border-2 border-border">
+              <dl className="grid grid-cols-3 divide-x divide-border border-2 border-border">
                 {[
                   { label: "Followers", value: userInfo.followers },
                   { label: "Following", value: userInfo.following },
@@ -194,7 +194,7 @@ export const UserDialog = ({
               </dl>
 
               {countrySlug && (
-                <section className="mt-4 overflow-hidden rounded-xl border-2 border-border bg-secondary/40 p-4">
+                <section className="mt-4 overflow-hidden border-2 border-border bg-secondary/40 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="flex items-start gap-2.5">
                       <Share2
@@ -212,7 +212,7 @@ export const UserDialog = ({
                     </div>
 
                   <div
-                      className="grid grid-cols-2 rounded-lg border-2 border-border bg-card p-0.5"
+                      className="grid grid-cols-2 border-2 border-border bg-card p-0.5"
                       role="group"
                       aria-label="Badge type"
                     >
@@ -222,7 +222,7 @@ export const UserDialog = ({
                           type="button"
                           onClick={() => setBadgeType(type)}
                           aria-pressed={badgeType === type}
-                          className={`rounded-md px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] transition-colors ${
+                          className={`px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] transition-colors ${
                             badgeType === type
                               ? "bg-foreground text-background"
                               : "text-muted-foreground hover:text-foreground"
@@ -234,7 +234,7 @@ export const UserDialog = ({
                     </div>
                   </div>
 
-                  <div className="mt-4 overflow-x-auto rounded-lg border border-border bg-[#0e1014] p-3">
+                  <div className="mt-4 overflow-x-auto border border-border bg-[#0e1014] p-3">
                     <img
                       src={badgeUrl}
                       alt={`TopPerformers badge for ${user.username}`}
@@ -263,13 +263,13 @@ export const UserDialog = ({
                   </div>
 
                   <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
-                    <code className="block max-h-24 min-w-0 overflow-auto whitespace-pre-wrap break-all rounded-lg border-2 border-border bg-card px-3 py-2 font-mono text-xs leading-5 text-muted-foreground">
+                    <code className="block max-h-24 min-w-0 overflow-auto whitespace-pre-wrap break-all border-2 border-border bg-card px-3 py-2 font-mono text-xs leading-5 text-muted-foreground">
                       {badgeMarkdown}
                     </code>
                     <button
                       type="button"
                       onClick={copyBadge}
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-foreground text-background transition-opacity hover:opacity-90"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center bg-foreground text-background transition-opacity hover:opacity-90"
                       aria-label="Copy badge markdown"
                     >
                       {copied ? (
@@ -289,7 +289,7 @@ export const UserDialog = ({
           <button
             type="button"
             onClick={() => onOpenChange(false)}
-            className="inline-flex h-10 w-full items-center justify-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="inline-flex h-10 w-full items-center justify-center bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
           >
             Done
           </button>
