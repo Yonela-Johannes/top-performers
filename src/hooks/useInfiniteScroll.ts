@@ -7,14 +7,6 @@ interface UseInfiniteScrollProps {
   threshold?: number;
 }
 
-/**
- * Load more when the page nears its end.
- *
- * Two things keep this cheap during a scroll: the position is read inside a
- * `requestAnimationFrame` (never in the scroll handler itself, which forces a
- * layout on every event), and `onLoadMore` is held in a ref so a parent
- * re-render does not tear down and re-attach the listener mid-scroll.
- */
 export const useInfiniteScroll = ({
   isLoading,
   hasMore,

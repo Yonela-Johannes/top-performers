@@ -7,7 +7,7 @@ import {
   Globe,
   Info,
   Menu,
-  Search,
+  UserRound,
   X,
 } from "lucide-react";
 
@@ -55,6 +55,12 @@ const NAV: NavItem[] = [
     matches: (path) => path === "/explore" || path.startsWith("/developers"),
   },
   {
+    to: "/developers",
+    label: "Find a developer",
+    icon: UserRound,
+    matches: (path) => path === "/developers" || path.startsWith("/developer/"),
+  },
+  {
     to: "/#how-it-works",
     label: "How it works",
     icon: Info,
@@ -67,7 +73,6 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   // Country leaderboards live on `/:slug`; they belong under "Countries".
-  const onDeveloper = pathname.startsWith("/developer/");
   const onCountry =
     /^\/[^/]+$/.test(pathname) &&
     !["/explore", "/developers"].includes(pathname);
@@ -115,7 +120,12 @@ export const Header = () => {
                   key={item.to}
                   to={item.to}
                   aria-current={active ? "page" : undefined}
-                  className={cn(navItemBase, navItem(active))}
+                  className={cn(
+                    navItemBase,
+                    navItem(active),
+                    // The longest label gives way first when the row tightens.
+                    item.to === "/developers" && "hidden xl:inline-flex",
+                  )}
                 >
                   <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>{item.label}</span>
@@ -129,22 +139,11 @@ export const Header = () => {
 
           {/* Utilities */}
           <div className="flex shrink-0 items-center gap-1">
-            <Link
-              to="/developers"
-              aria-label="Find a developer"
-              className={cn(
-                utilityButton,
-                "hidden md:inline-flex",
-                onDeveloper && "bg-secondary text-foreground",
-              )}
-            >
-              <Search className="h-[17px] w-[17px]" aria-hidden="true" />
-            </Link>
-
-            <div
-              aria-hidden="true"
-              className="hidden h-7 w-px bg-border md:block lg:hidden"
-            />
+            {/*
+              A magnifier beside a search field reads as a second search.
+              “Find a developer” lives in the nav (desktop) and in the mobile
+              panel, so it is not repeated as an icon here.
+            */}
 
             <Tooltip>
               <TooltipTrigger asChild>
@@ -239,19 +238,6 @@ export const Header = () => {
                   </Link>
                 );
               })}
-              <Link
-                to="/developers"
-                onClick={() => setMenuOpen(false)}
-                className={cn(
-                  "flex min-h-11 items-center gap-2.5 px-3 text-sm font-medium transition-colors",
-                  onDeveloper
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
-                )}
-              >
-                <Search className="h-4 w-4" aria-hidden="true" />
-                Find a developer
-              </Link>
             </nav>
 
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-3">

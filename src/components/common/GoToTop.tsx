@@ -5,14 +5,6 @@ interface GoToTopProps {
   children?: React.ReactNode;
 }
 
-/**
- * Back-to-top button.
- *
- * The visibility check only flips state when the threshold is actually
- * crossed. The previous version called `setState` on every scroll event,
- * which forced a React render per frame on long pages — the single biggest
- * cause of scroll jank here.
- */
 const GoToTop = ({ children }: GoToTopProps) => {
   const [visible, setVisible] = useState(false);
 
