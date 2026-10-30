@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  darkMode: "class",
   theme: {
     screens: {
       sm: "640px",
@@ -64,6 +63,22 @@ export default {
           DEFAULT: "hsl(var(--brand))",
           foreground: "hsl(var(--brand-foreground))",
           ink: "hsl(var(--brand-ink))",
+          soft: "hsl(var(--brand-soft))",
+          "soft-ink": "hsl(var(--brand-soft-ink))",
+        },
+        ink: {
+          DEFAULT: "var(--ink)",
+          secondary: "var(--ink-secondary)",
+          muted: "var(--muted-ink)",
+        },
+        indigo: {
+          DEFAULT: "var(--band-bg)",
+          alt: "var(--band-bg-alt)",
+          fg: "var(--band-fg)",
+          fgMuted: "var(--band-fg-muted)",
+          fgFaint: "var(--band-fg-faint)",
+          line: "var(--band-line)",
+          accent: "var(--band-accent)",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

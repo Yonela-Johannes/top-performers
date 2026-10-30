@@ -2,8 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
 @layer base {
   :root {
+    /* Surfaces (warm paper) */
     --paper: #fbf9f4;
     --surface: #ffffff;
     --surface-muted: #f5f1e8;
@@ -12,6 +19,8 @@
     --muted-ink: #706a75;
     --rule: #e2e8f1;
     --margin-line: #f3b4b4;
+
+    /* Accents */
     --sun: #ffc21a;
     --tangerine: #ff6f3c;
     --green: #0f7a4a;
@@ -19,18 +28,36 @@
     --sky: #8fc8ff;
     --mint: #9be3bf;
     --lilac: #c9b6ff;
+    --violet: #7f57f1;
     --focus: #0d79c7;
+
+    /* Inverted indigo band tokens (footer + one feature band per page) */
+    --band-bg: #252335;
+    --band-bg-alt: #343541;
+    --band-fg: #fffcf9;
+    --band-fg-muted: #d8d1dd;
+    --band-fg-faint: #a89eae;
+    --band-line: #48434f;
+    --band-accent: #da9d3c;
+
+    /* Layout + motion */
+    --nav-height: 4rem; /* keep sticky offsets in one place */
     --content-width: 78rem;
     --content-wide: 86rem;
     --page-padding: clamp(1.25rem, 4vw, 2.5rem);
-    --ease: cubic-bezier(.2, .8, .2, 1);
-    --transition-fast: 150ms;
-    --transition-normal: 250ms;
+    /* Decelerating curve: fast out of the gate, settles without a bounce. */
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-fast: 160ms;
+    --transition-normal: 240ms;
     --border-width: 2px;
     --border-strong: 3px;
     --shadow-small: 2px 2px 0 var(--ink);
     --shadow-medium: 4px 4px 0 var(--ink);
     --shadow-large: 6px 6px 0 var(--ink);
+    --shadow-xs: var(--shadow-small);
+    --shadow-xl: 8px 8px 0 var(--ink);
+
+    /* shadcn-style semantic tokens (single light set) */
     --background: 42 33% 97.5%;
     --foreground: 270 15% 8%;
     --card: 0 0% 100%;
@@ -53,61 +80,34 @@
     --brand: 44 100% 55%;
     --brand-foreground: 270 15% 8%;
     --brand-ink: 270 15% 8%;
+    /* Tinted brand pair for chips, badges and highlights */
+    --brand-soft: 44 100% 94%;
+    --brand-soft-ink: 30 80% 24%;
     --chart-1: 44 100% 55%;
     --chart-2: 148 78% 27%;
     --chart-3: 207 100% 78%;
     --chart-4: 330 100% 85%;
     --chart-5: 260 100% 86%;
     --shadow-color: 270 15% 8%;
-    --radius: 0.75rem;
+    --radius: 0px;
+
+    /* Semantic pairs used by the GitHub/card components */
+    --success: 148 78% 27%;
+    --success-soft: 148 46% 93%;
+    --warning: 32 88% 38%;
+    --warning-soft: 40 92% 94%;
+    --info: 207 90% 38%;
+    --info-soft: 207 90% 95%;
+    --danger-ink: 0 68% 42%;
+    --danger-soft: 0 78% 96%;
+
+    color-scheme: light;
   }
 
-  .dark {
-    --paper: #17151a;
-    --surface: #201e24;
-    --surface-muted: #2a272e;
-    --ink: #f6f1e7;
-    --ink-secondary: #d8d1dd;
-    --muted-ink: #b2aab7;
-    --rule: #34323c;
-    --margin-line: #714c56;
-    --sun: #ffc21a;
-    --tangerine: #ff8053;
-    --green: #59ce91;
-    --pink: #7e465b;
-    --sky: #385b78;
-    --mint: #3d7158;
-    --lilac: #635587;
-    --focus: #72c8ff;
-    --background: 270 7% 9%;
-    --foreground: 42 25% 95%;
-    --card: 270 7% 13%;
-    --card-foreground: 42 25% 95%;
-    --popover: 270 7% 13%;
-    --popover-foreground: 42 25% 95%;
-    --primary: 42 25% 96%;
-    --primary-foreground: 270 15% 8%;
-    --secondary: 270 6% 19%;
-    --secondary-foreground: 42 25% 95%;
-    --muted: 270 6% 19%;
-    --muted-foreground: 270 7% 72%;
-    --accent: 44 100% 55%;
-    --accent-foreground: 270 15% 8%;
-    --destructive: 0 62% 58%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 270 6% 28%;
-    --input: 270 6% 32%;
-    --ring: 204 100% 72%;
-    --brand: 44 100% 55%;
-    --brand-foreground: 270 15% 8%;
-    --brand-ink: 44 100% 55%;
-    --chart-1: 44 100% 55%;
-    --chart-2: 148 58% 48%;
-    --chart-3: 207 90% 70%;
-    --chart-4: 330 75% 70%;
-    --chart-5: 260 75% 73%;
-    --shadow-color: 270 30% 3%;
-  }
+  /*
+   * Light mode only. The palette above is complete and self-contained, so no
+   * `.dark` overrides exist and `color-scheme: light` is pinned on <html>.
+   */
 
   * {
     @apply border-border;
@@ -117,6 +117,7 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     scrollbar-gutter: stable;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) var(--paper);
   }
 
   body {
@@ -130,21 +131,45 @@
       color-mix(in srgb, var(--rule) 36%, transparent) 31px,
       color-mix(in srgb, var(--rule) 36%, transparent) 32px
     );
+    transition:
+      background-color var(--transition-normal) var(--ease),
+      color var(--transition-normal) var(--ease);
     background-repeat: repeat;
     font-feature-settings: "cv11", "ss01";
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     text-wrap: pretty;
   }
 
-  img, svg {
+  img,
+  svg {
     display: block;
   }
 
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     font: inherit;
+  }
+
+  /* Form controls follow the active theme, not the OS. */
+  input,
+  select,
+  textarea {
+    color-scheme: inherit;
+  }
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+    -webkit-text-fill-color: var(--ink);
   }
 
   :focus-visible {
@@ -153,14 +178,11 @@
   }
 
   ::selection {
-    background: hsl(var(--brand) / 0.45);
-    color: hsl(var(--foreground));
+    background: var(--sun);
+    color: #141218;
   }
 
-  :focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
-  }
+
 
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -183,15 +205,18 @@
   }
 
   .surface {
-    @apply rounded-xl border border-border bg-card shadow-card;
+    border-width: var(--border-width);
+    border-color: var(--ink);
+    box-shadow: var(--shadow-small);
   }
 
   .surface-flat {
-    @apply rounded-xl border border-border bg-card;
+    @apply border border-border bg-card;
   }
 
   .eyebrow {
-    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground;
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em];
+    color: var(--ink-secondary);
   }
 
   .stat-value {
@@ -208,20 +233,315 @@
     );
   }
 
+  .marker-highlight {
+    background-image: linear-gradient(
+      transparent 55%,
+      var(--sun) 55%,
+      var(--sun) 90%,
+      transparent 90%
+    );
+  }
+
   .link-quiet {
     @apply text-muted-foreground transition-colors hover:text-foreground;
   }
 
   .icon-button {
-    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:border-foreground/25 hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-card text-muted-foreground shadow-card transition-colors hover:border-foreground/25 hover:bg-secondary hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
+    transition-duration: var(--transition-fast);
+    transition-timing-function: var(--ease);
+  }
+  .icon-button:hover:not(:disabled) {
+    background: var(--secondary);
   }
 
+  /*
+   * Loading placeholder. A travelling sheen reads as "working" far more
+   * calmly than an opacity pulse, which strobes the whole page when a dozen
+   * cards load at once. Rendered as a background so it costs no extra nodes.
+   */
   .skeleton {
-    @apply animate-pulse rounded-md bg-muted;
+    background-color: var(--surface-muted);
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--ink) 6%, transparent) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    background-repeat: no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skeleton {
+      animation: skeletonSheen 1.5s var(--ease) infinite;
+    }
+  }
+  @keyframes skeletonSheen {
+    0% {
+      background-position: 150% 0;
+    }
+    100% {
+      background-position: -50% 0;
+    }
+  }
+
+  /* Chips — one shape for filters, topics and labels. */
+  .chip {
+    @apply inline-flex items-center gap-1.5 border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground transition-colors;
+  }
+  .chip:hover {
+    @apply border-foreground/25 text-foreground;
+  }
+  .chip[aria-pressed="true"],
+  .chip[data-active="true"] {
+    @apply border-transparent bg-foreground text-primary-foreground;
+  }
+  .chip[aria-pressed="true"]:hover,
+  .chip[data-active="true"]:hover {
+    @apply text-primary-foreground;
+  }
+
+  /* One shared card language: resting surface, lifts slightly on hover. */
+  .panel {
+    @apply border bg-card text-card-foreground;
+    border-color: var(--rule);
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--ink) 5%, transparent),
+      0 10px 24px -20px color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+
+  /*
+   * One hover motion for every interactive surface. Transform and shadow are
+   * the only properties animated (both compositor-friendly); the curve matches
+   * the primary button so a card and a button respond with the same feel.
+   */
+  .panel-hover {
+    transition:
+      transform var(--transition-normal) var(--ease),
+      box-shadow var(--transition-normal) var(--ease),
+      border-color var(--transition-fast) var(--ease);
+    will-change: transform;
+  }
+  .panel-hover:hover {
+    border-color: color-mix(in srgb, var(--ink) 30%, var(--rule));
+    box-shadow:
+      0 2px 4px color-mix(in srgb, var(--ink) 6%, transparent),
+      0 18px 34px -22px color-mix(in srgb, var(--ink) 55%, transparent);
+  }
+  .panel-hover:active {
+    transition-duration: var(--transition-fast);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .panel-hover:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Small label above a value — the card hierarchy, everywhere. */
+  .card-label {
+    @apply font-mono text-[10px] font-medium uppercase tracking-[0.14em];
+    color: var(--muted-ink);
   }
 
   .skip-link {
-    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
+  }
+
+  /* Notebook page surface for editorial (level A) sections */
+  .notebook-surface {
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      color-mix(in srgb, var(--rule) 56%, transparent) 31px,
+      color-mix(in srgb, var(--rule) 56%, transparent) 32px
+    );
+  }
+
+  /* Buttons */
+  .button-primary,
+  .button-secondary {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+    border-radius: 0.625rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      transform var(--transition-fast) var(--ease),
+      box-shadow var(--transition-fast) var(--ease),
+      background-color var(--transition-fast) var(--ease);
+  }
+  .button-primary {
+    background: var(--tangerine);
+    color: #141218;
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent),
+      0 8px 18px -14px color-mix(in srgb, var(--ink) 60%, transparent);
+  }
+  .button-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .button-primary:hover,
+  .button-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 2px 4px color-mix(in srgb, var(--ink) 10%, transparent),
+      0 14px 24px -16px color-mix(in srgb, var(--ink) 65%, transparent);
+  }
+  .button-secondary:hover {
+    background: var(--surface-muted);
+  }
+  .button-primary:active,
+  .button-secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+
+  /* Stamp-style technical label used for factual metadata only */
+  .stamp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 2px dashed var(--ink);
+    border-radius: 6px;
+    padding: 0.2rem 0.55rem;
+    font-family: "DM Mono", ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--surface);
+    transform: rotate(-1.5deg);
+  }
+
+  /* Warm radial glow behind editorial headings and the hero (light mode) */
+  .lamplight {
+    position: relative;
+  }
+  .lamplight::before {
+    content: "";
+    position: absolute;
+    inset: -12% -6% auto -6%;
+    height: 130%;
+    pointer-events: none;
+    background: radial-gradient(
+      46% 62% at 68% 18%,
+      color-mix(in srgb, #da9d3c 16%, transparent) 0%,
+      color-mix(in srgb, #da9d3c 7%, transparent) 42%,
+      transparent 72%
+    );
+  }
+
+  /* Inverted indigo band */
+  .indigo-band {
+    background-color: var(--band-bg);
+    color: var(--band-fg);
+  }
+  .indigo-band .surface,
+  .indigo-band .icon-button {
+    color: var(--band-fg);
+  }
+
+
+
+  /* Geometric lattice band: generic star-and-grid geometry, low contrast */
+  .pattern-lattice {
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent 0,
+        transparent 17px,
+        color-mix(in srgb, currentColor 10%, transparent) 17px,
+        color-mix(in srgb, currentColor 10%, transparent) 18px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0,
+        transparent 17px,
+        color-mix(in srgb, currentColor 7%, transparent) 17px,
+        color-mix(in srgb, currentColor 7%, transparent) 18px
+      );
+  }
+
+  /* Door reveal: entering a country wipes the panel open (progressive) */
+  @supports (view-transition-name: x) {
+    .door-destination::view-transition-old(root),
+    .door-destination::view-transition-new(root) {
+      animation-duration: 220ms;
+    }
+  }
+  .door-panel {
+    animation: doorWipe 300ms var(--ease) both;
+    transform-origin: left center;
+  }
+  @keyframes doorWipe {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* Brand mark: the leading bar rises once on first paint */
+  @keyframes brandBar {
+    from {
+      transform: scaleY(0.35);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  /* Gentle bob for the single decorative sticker per page */
+  .bob {
+    animation: bobbing 5.5s ease-in-out infinite;
+  }
+  @keyframes bobbing {
+    0%,
+    100% {
+      transform: translateY(0) rotate(var(--bob-tilt, -2deg));
+    }
+    50% {
+      transform: translateY(-6px) rotate(var(--bob-tilt, -2deg));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bob {
+      animation: none;
+    }
+    .door-panel {
+      animation: none;
+    }
+    .stamp-badge {
+      transform: none;
+    }
+  }
+
+  /* Route line: dashed ink path that draws in once on scroll */
+  .route-line-path {
+    stroke-dasharray: var(--route-dash, 10 8);
+    transition: none;
+  }
+  .route-line.is-drawn .route-line-path {
+    stroke-dashoffset: 0 !important;
+  }
+
+  /* Paper vignette at section edges */
+  .paper-vignette {
+    box-shadow:
+      inset 0 14px 22px -18px color-mix(in srgb, var(--ink) 22%, transparent),
+      inset 0 -14px 22px -18px color-mix(in srgb, var(--ink) 22%, transparent);
   }
 }
 
@@ -237,6 +557,31 @@
 
   .nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  .bg-surface-muted {
+    background-color: var(--surface-muted);
+  }
+  .bg-paper {
+    background-color: var(--paper);
+  }
+  .text-ink {
+    color: var(--ink);
+  }
+  .border-ink {
+    border-color: var(--ink);
+  }
+  .bg-pastel-pink {
+    background-color: var(--pink);
+  }
+  .bg-pastel-sky {
+    background-color: var(--sky);
+  }
+  .bg-pastel-mint {
+    background-color: var(--mint);
+  }
+  .bg-pastel-lilac {
+    background-color: var(--lilac);
   }
 }
 
@@ -260,140 +605,12 @@
   background-color: hsl(var(--muted-foreground) / 0.5);
 }
 
-
-/* TopPerformers notebook design system additions */
-:root {
-  --paper: #fbf9f4;
-  --surface: #ffffff;
-  --surface-muted: #f5f1e8;
-  --ink: #141218;
-  --ink-secondary: #48434f;
-  --muted-ink: #706a75;
-  --rule: #e2e8f1;
-  --margin-line: #f3b4b4;
-  --sun: #ffc21a;
-  --tangerine: #ff6f3c;
-  --green: #0f7a4a;
-  --pink: #ffb4c8;
-  --sky: #8fc8ff;
-  --mint: #9be3bf;
-  --lilac: #c9b6ff;
-  --focus: #0d79c7;
-  --content-width: 78rem;
-  --content-wide: 86rem;
-  --page-padding: clamp(1.25rem, 4vw, 2.5rem);
-  --ease: cubic-bezier(.2, .8, .2, 1);
-  --transition-fast: 150ms;
-  --transition-normal: 250ms;
-  --border-width: 2px;
-  --border-strong: 3px;
-  --shadow-small: 2px 2px 0 var(--ink);
-  --shadow-medium: 4px 4px 0 var(--ink);
-  --shadow-large: 6px 6px 0 var(--ink);
-}
-
-.dark {
-  --paper: #17151a;
-  --surface: #201e24;
-  --surface-muted: #2a272e;
-  --ink: #f6f1e7;
-  --ink-secondary: #d8d1dd;
-  --muted-ink: #b2aab7;
-  --rule: #34323c;
-  --margin-line: #714c56;
-  --green: #59ce91;
-  --pink: #7e465b;
-  --sky: #385b78;
-  --mint: #3d7158;
-  --lilac: #635587;
-  --focus: #72c8ff;
-}
-
-body {
-  background-color: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in srgb, var(--rule) 35%, transparent) 31px, color-mix(in srgb, var(--rule) 35%, transparent) 32px);
-}
-
-html { scrollbar-gutter: stable; }
-h1, h2, h3, h4 { text-wrap: pretty; }
-button, input, select, textarea { font: inherit; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-
-.notebook-surface {
-  background-color: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in srgb, var(--rule) 56%, transparent) 31px, color-mix(in srgb, var(--rule) 56%, transparent) 32px);
-}
-
-.surface { border-width: var(--border-width); box-shadow: var(--shadow-small); }
-.button-primary, .button-secondary {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  border: 2px solid var(--ink);
-  border-radius: .625rem;
-  padding: 0 1rem;
-  font-size: .875rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform var(--transition-fast) var(--ease), box-shadow var(--transition-fast) var(--ease), background-color var(--transition-fast) var(--ease);
-}
-.button-primary { background: var(--sun); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
-.button-secondary { background: var(--surface); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-.button-primary:hover, .button-secondary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
-.button-primary:active, .button-secondary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-}
-
-/* Ensure the shared card and icon primitives pick up the tactile ink treatment. */
-.icon-button {
-  border: 2px solid var(--ink);
-  color: var(--ink);
-  box-shadow: var(--shadow-small);
-}
-.icon-button:hover:not(:disabled) { background: var(--sun); }
-.surface-flat { border-radius: 12px; }
-
-@layer utilities {
-  .border-y-2 {
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+@media print {
+  [role="banner"],
+  header,
+  footer,
+  nav[aria-label="Breadcrumb"],
+  .sticky {
+    position: static !important;
   }
-}
-
-/* Stamp-style technical label used for factual metadata only. */
-.stamp-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  border: 2px dashed var(--ink);
-  border-radius: 6px;
-  padding: .2rem .55rem;
-  font-family: "DM Mono", ui-monospace, monospace;
-  font-size: .6875rem;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: var(--surface);
-  transform: rotate(-1.5deg);
-}
-
-/* Map the notebook accents onto the Tailwind color tokens already in use. */
-@layer utilities {
-  .bg-surface-muted { background-color: var(--surface-muted); }
-  .bg-paper { background-color: var(--paper); }
-  .text-ink { color: var(--ink); }
-  .border-ink { border-color: var(--ink); }
-  .bg-pastel-pink { background-color: var(--pink); }
-  .bg-pastel-sky { background-color: var(--sky); }
-  .bg-pastel-mint { background-color: var(--mint); }
-  .bg-pastel-lilac { background-color: var(--lilac); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stamp-badge { transform: none; }
 }

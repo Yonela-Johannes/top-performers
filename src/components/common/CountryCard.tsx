@@ -1,8 +1,12 @@
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useGetCountryUsersQuery } from "@/api";
 import type { Committer } from "@/types";
-import { ArrowUpRight, GitCommit } from "lucide-react";
+import { ArrowUpRight, GitCommit, Globe, RotateCw } from "lucide-react";
 import { formatCompactNumber } from "@/lib/format";
+import { RegionBadge } from "@/components/atlas";
+import { Card, SkeletonBlock } from "./Card";
 
 interface CountryCardProps {
   country: { slug: string; name: string; flagUrl?: string };
@@ -10,155 +14,276 @@ interface CountryCardProps {
   onUserClick: (user: Committer) => void;
 }
 
-export const CountryCard = ({ country, region, onUserClick }: CountryCardProps) => {
-  const { data, isLoading } = useGetCountryUsersQuery({
-    country: country.slug,
-    mode: "all",
-  });
+function Flag({ src }: { src?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return (
+      <span
+        aria-hidden="true"
+        className="flex h-8 w-11 shrink-0 items-center justify-center border border-border bg-[var(--surface-muted)] text-muted-foreground"
+      >
+        <Globe className="h-4 w-4" />
+      </span>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt=""
+      width={44}
+      height={32}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-8 w-11 shrink-0 border border-border object-cover"
+    />
+  );
+}
 
-  const topUsers = data?.users?.slice(0, 3) || [];
-  const totalUsers = data?.users?.length || 0;
-  const totalCommits =
-    data?.users?.reduce((sum, user) => sum + user.commits, 0) || 0;
-  const avgCommits = totalUsers ? Math.round(totalCommits / totalUsers) : 0;
+function Avatar({ src, name }: { src?: string; name: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return (
+      <span
+        aria-hidden="true"
+        className="flex h-7 w-7 shrink-0 items-center justify-center border border-border bg-[var(--surface-muted)] font-mono text-xs font-medium uppercase text-muted-foreground"
+      >
+        {name.slice(0, 1)}
+      </span>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt=""
+      width={28}
+      height={28}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className="h-7 w-7 shrink-0 border border-border object-cover"
+    />
+  );
+}
+
+function StatValue({
+  loading,
+  error,
+  children,
+}: {
+  loading: boolean;
+  error: boolean;
+  children: React.ReactNode;
+}) {
+  if (loading) return <SkeletonBlock className="h-6 w-14" />;
+  if (error) {
+    return (
+      <>
+        —<span className="sr-only">unavailable</span>
+      </>
+    );
+  }
+  return <>{children}</>;
+}
+
+export const CountryCard = ({
+  country,
+  region,
+  onUserClick,
+}: CountryCardProps) => {
+  const ref = useRef<HTMLElement | null>(null);
+  const [inView, setInView] = useState(false);
+
+  // Content that is already on screen when the page settles must not wait for
+  // a scroll: on phones, and on any page whose cards sit below the fold,
+  // "in view" often never fires until the person scrolls away and back. A
+  // short deadline promotes the card to eager loading, so a skeleton is never
+  // permanent. It is a no-op for cards the observer catches first.
+  useEffect(() => {
+    if (inView) return undefined;
+    const timer = window.setTimeout(() => setInView(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, [inView]);
+
+  useEffect(() => {
+    if (inView) return undefined;
+    const element = ref.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      // Load roughly one screen ahead of the viewport.
+      { rootMargin: "600px 0px" },
+    );
+    observer.observe(element);
+    const rect = element.getBoundingClientRect();
+    const viewport = window.innerHeight || 0;
+    if (rect.top < viewport + 600 && rect.bottom > -600) setInView(true);
+
+    return () => observer.disconnect();
+  }, [inView]);
+
+  const { currentData, isFetching, isError, refetch } = useGetCountryUsersQuery(
+    inView ? { country: country.slug, mode: "all" } : skipToken,
+  );
+  const isLoading = !isError && (isFetching || !currentData);
+
+  const { topUsers, totalUsers, totalCommits, avgCommits } = useMemo(() => {
+    const ranked = [...(currentData?.users ?? [])].sort(
+      (a, b) => b.commits - a.commits,
+    );
+    const commits = ranked.reduce((sum, user) => sum + user.commits, 0);
+    return {
+      topUsers: ranked.slice(0, 3),
+      totalUsers: ranked.length,
+      totalCommits: commits,
+      avgCommits: ranked.length ? Math.round(commits / ranked.length) : 0,
+    };
+  }, [currentData]);
+
+  const isEmpty = !isLoading && !isError && topUsers.length === 0;
 
   return (
-    <article className="group surface flex h-full flex-col p-5 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--ink)] motion-reduce:transform-none">
+    <Card
+      as="article"
+      ref={ref}
+      interactive
+      aria-busy={isLoading ? "true" : undefined}
+      className="h-full flex-1"
+    >
+      {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           {isLoading ? (
-            <div className="skeleton h-8 w-11 shrink-0" />
-          ) : country.flagUrl ? (
-            <img
-              src={country.flagUrl}
-              alt=""
-              className="h-8 w-11 shrink-0 rounded-md border-2 border-foreground object-cover"
-              loading="lazy"
-            />
+            <SkeletonBlock className="h-8 w-11" />
           ) : (
-            <div className="flex h-8 w-11 shrink-0 items-center justify-center rounded-md border-2 border-foreground bg-surface-muted font-mono text-[10px] text-foreground">
-              {country.slug.slice(0, 2).toUpperCase()}
-            </div>
+            <Flag src={country.flagUrl} />
           )}
           <div className="min-w-0">
-            <h3 className="truncate text-[17px] font-semibold leading-tight">
+            <h3 className="line-clamp-2 font-display text-xl font-extrabold uppercase leading-[0.95] tracking-[-0.01em]">
+              {/* Stretched link: the ::after covers the whole card */}
               <Link
                 to={`/${country.slug}`}
-                className="rounded-sm text-foreground transition-colors hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                className="text-foreground after:absolute after:inset-0 after:focus-visible:outline-none focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-offset-[3px] focus-visible:after:outline-[color:var(--focus)]"
               >
                 {country.name}
+                <span className="sr-only"> leaderboard</span>
               </Link>
             </h3>
-            <p className="mt-0.5 truncate font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-              {region || "Global"}
-            </p>
+            <RegionBadge region={region} className="mt-1 truncate" />
           </div>
         </div>
-        <Link
-          to={`/${country.slug}`}
-          tabIndex={-1}
+
+        <span
           aria-hidden="true"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-foreground group-hover:bg-foreground group-hover:text-background"
+          className="flex h-8 w-8 shrink-0 items-center justify-center border border-border bg-card text-muted-foreground transition-colors group-hover:border-foreground/25 group-hover:text-foreground motion-reduce:transition-none"
         >
           <ArrowUpRight className="h-4 w-4" />
-        </Link>
+        </span>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 divide-x divide-border border-y border-border py-3">
-        <div className="pr-3">
-          <p className="stat-value text-lg font-medium text-foreground">
-            {isLoading ? "—" : totalUsers.toLocaleString()}
-          </p>
-          <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
-            Developers
-          </p>
+      {/* Metrics */}
+      <dl className="mt-5 grid grid-cols-2 gap-2">
+        <div className="border border-border bg-[var(--surface-muted)] px-3 py-2.5">
+          <dt className="card-label">Developers</dt>
+          <dd className="stat-value mt-1 text-2xl font-semibold leading-none text-foreground">
+            <StatValue loading={isLoading} error={isError}>
+              {totalUsers.toLocaleString()}
+            </StatValue>
+          </dd>
         </div>
-        <div className="pl-4">
-          <p className="stat-value text-lg font-medium text-foreground">
-            {isLoading ? "—" : formatCompactNumber(totalCommits)}
-          </p>
-          <p className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
-            Public commits
-          </p>
+        <div className="border border-border bg-[var(--surface-muted)] px-3 py-2.5">
+          <dt className="card-label">Public commits</dt>
+          <dd className="stat-value mt-1 text-2xl font-semibold leading-none text-foreground">
+            <StatValue loading={isLoading} error={isError}>
+              {formatCompactNumber(totalCommits)}
+            </StatValue>
+          </dd>
         </div>
-      </div>
+      </dl>
 
+      {/* Top performers */}
       <div className="mt-4 flex-1">
-        <div className="mb-2 flex items-center justify-between">
-          <p className="eyebrow text-[10px]">Top performers</p>
-          {!isLoading && totalUsers > 0 && (
-            <span
-              className="font-mono text-[10px] text-muted-foreground"
-              title="Average public commits per developer"
-            >
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <p className="card-label">Top performers</p>
+          {!isLoading && !isError && totalUsers > 0 && (
+            <span className="font-mono text-[11px] text-muted-foreground">
               {formatCompactNumber(avgCommits)} avg
             </span>
           )}
         </div>
 
-        <ul className="space-y-0.5">
+        <ul
+          className="space-y-0.5"
+          aria-label={`Top performers in ${country.name}`}
+        >
           {isLoading
             ? [0, 1, 2].map((i) => (
                 <li key={i} className="flex items-center gap-3 py-1.5">
-                  <div className="skeleton h-7 w-7 rounded-full" />
-                  <div className="skeleton h-3.5 flex-1" />
-                  <div className="skeleton h-3 w-10" />
+                  <SkeletonBlock className="h-6 w-7" />
+                  <SkeletonBlock className="h-7 w-7" />
+                  <SkeletonBlock className="h-3.5 flex-1" />
+                  <SkeletonBlock className="h-3.5 w-10" />
                 </li>
               ))
             : topUsers.map((user, index) => (
                 <li key={user.username}>
-                  <button
-                    type="button"
+                  {/* relative z-10 lifts the link above the stretched title */}
+                  <Link
+                    to={`/developer/${encodeURIComponent(user.username)}?from=${country.slug}`}
                     onClick={() => onUserClick(user)}
-                    className="flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-left transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    aria-label={`View ${user.username}'s contributor profile`}
+                    className="relative z-10 flex min-h-10 w-full items-center gap-3 px-1 py-1.5 text-left transition-colors hover:bg-[var(--surface-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
+                    aria-label={`Open the developer page for ${user.username}`}
                   >
                     <span
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-medium ${
+                      className={`flex h-6 w-7 shrink-0 items-center justify-center font-mono text-xs font-medium ${
                         index === 0
-                          ? "border-2 border-foreground bg-brand text-brand-foreground"
-                          : "border border-border bg-secondary text-foreground"
+                          ? "border border-brand/40 bg-brand-soft text-brand-soft-ink"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {index + 1}
                     </span>
-                    <img
-                      src={user.avatar}
-                      alt=""
-                      className="h-7 w-7 shrink-0 rounded-full border border-border"
-                      loading="lazy"
-                    />
-                    <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground">
+                    <Avatar src={user.avatar} name={user.username} />
+                    <span className="min-w-0 flex-1 truncate text-sm font-medium text-foreground">
                       {user.username}
                     </span>
-                    <span className="stat-value shrink-0 text-xs text-muted-foreground">
+                    <span className="stat-value shrink-0 text-xs font-medium text-foreground">
                       {formatCompactNumber(user.commits)}
+                      <span className="sr-only"> commits</span>
                     </span>
-                  </button>
+                  </Link>
                 </li>
               ))}
         </ul>
 
-        {!isLoading && topUsers.length === 0 && (
-          <div className="flex items-center gap-2 rounded-lg border border-dashed border-border px-3 py-3 text-xs text-muted-foreground">
-            <GitCommit className="h-3.5 w-3.5" aria-hidden="true" />
-            No ranking data yet
+        {isError && (
+          <div className="flex items-center justify-between gap-3 border border-dashed border-foreground/30 px-3 py-2.5 text-sm text-muted-foreground">
+            <span>Couldn’t load rankings.</span>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="relative z-10 inline-flex min-h-9 shrink-0 items-center gap-1.5 border border-border bg-card px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+            >
+              <RotateCw className="h-3.5 w-3.5" aria-hidden="true" />
+              Retry
+            </button>
+          </div>
+        )}
+
+        {isEmpty && (
+          <div className="flex items-center gap-2 border border-dashed border-foreground/30 px-3 py-2.5 text-sm text-muted-foreground">
+            <GitCommit className="h-4 w-4 shrink-0" aria-hidden="true" />
+            No public commit data yet.
           </div>
         )}
       </div>
-
-      <div className="mt-4 border-t border-border pt-3">
-        <Link
-          to={`/${country.slug}`}
-          className="inline-flex items-center gap-1.5 rounded-sm font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
-        >
-          View leaderboard
-          <ArrowUpRight
-            className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
-            aria-hidden="true"
-          />
-        </Link>
-      </div>
-    </article>
+    </Card>
   );
 };

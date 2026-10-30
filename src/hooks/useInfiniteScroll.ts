@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface UseInfiniteScrollProps {
   isLoading: boolean;
@@ -13,22 +13,36 @@ export const useInfiniteScroll = ({
   onLoadMore,
   threshold = 200,
 }: UseInfiniteScrollProps) => {
-  useEffect(() => {
-    if (isLoading || !hasMore) return;
+  const callback = useRef(onLoadMore);
+  callback.current = onLoadMore;
 
-    const handleScroll = () => {
+  useEffect(() => {
+    if (isLoading || !hasMore) return undefined;
+
+    let ticking = false;
+    let armed = true;
+
+    const check = () => {
+      ticking = false;
+      if (!armed) return;
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
       const clientHeight = document.documentElement.clientHeight;
-
       if (scrollTop + clientHeight >= scrollHeight - threshold) {
-        onLoadMore();
+        // One load per arrival at the bottom; re-armed when `hasMore` or the
+        // loading state changes.
+        armed = false;
+        callback.current();
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, hasMore, onLoadMore, threshold]);
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(check);
+    };
 
-  return null;
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isLoading, hasMore, threshold]);
 };

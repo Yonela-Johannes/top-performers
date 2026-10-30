@@ -27,3 +27,6 @@ dist-ssr
 
 .vercel
 .env*.local
+
+# local reference probe (do not commit)
+.ref-probe

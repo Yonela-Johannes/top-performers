@@ -1,25 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useSearchParams } from "react-router-dom";
+
 import {
   ArrowDownAZ,
   ArrowRight,
   ArrowUpAZ,
-  ArrowUpRight,
   Loader2,
   Search,
   ServerCrash,
-  Sparkles,
   X,
 } from "lucide-react";
-import {
-  useGetCountriesQuery,
-  useGetMetadataQuery,
-} from "@/api/countriesApi";
-import { useGetFlagsQuery } from "@/api/flagsApi";
+import { useGetMetadataQuery } from "@/api/countriesApi";
 import type { Committer } from "@/types";
 import { CountryCard } from "@/components/common/CountryCard";
 import { UserDialog } from "@/components/common/UserDialog";
+import { RouteLine } from "@/components/atlas";
+import { regionTheme } from "@/lib/regionTheme";
+import { useCountrySearch } from "@/hooks/useCountrySearch";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { formatDate } from "@/lib/format";
 import {
@@ -35,15 +32,17 @@ import {
   SOURCE_URL,
   toTitle,
 } from "@/lib/seo";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
+import { ALL_REGIONS } from "@/lib/countries";
 
 const COUNTRIES_PER_PAGE = 18;
-const REGION_ORDER = ["Africa", "Americas", "Asia", "Europe", "Oceania", "Other"];
 type SortDirection = "asc" | "desc";
 
 const HomeLoading = () => (
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
     {Array.from({ length: 6 }).map((_, index) => (
-      <div key={index} className="surface flex h-[318px] flex-col p-5">
+      <div key={index} className="panel flex h-[318px] flex-col p-5">
         <div className="flex items-center gap-3">
           <div className="skeleton h-8 w-11" />
           <div className="flex-1 space-y-2">
@@ -51,14 +50,14 @@ const HomeLoading = () => (
             <div className="skeleton h-2.5 w-20" />
           </div>
         </div>
-        <div className="mt-5 grid grid-cols-2 gap-3 border-y border-border py-4">
-          <div className="skeleton h-10" />
-          <div className="skeleton h-10" />
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <div className="skeleton h-16" />
+          <div className="skeleton h-16" />
         </div>
         <div className="mt-4 space-y-3">
           {[0, 1, 2].map((row) => (
             <div key={row} className="flex items-center gap-3">
-              <div className="skeleton h-7 w-7 rounded-full" />
+              <div className="skeleton h-7 w-7" />
               <div className="skeleton h-3.5 flex-1" />
               <div className="skeleton h-3 w-10" />
             </div>
@@ -70,90 +69,51 @@ const HomeLoading = () => (
 );
 
 const Home = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const {
-    data: allCountries = [],
-    isLoading: isLoadingCountries,
-    error: countriesError,
-    refetch: refetchCountries,
-  } = useGetCountriesQuery();
-  const { data: flagsData = [] } = useGetFlagsQuery();
+    allCountries,
+    filteredCountries: matchedCountries,
+    isLoadingCountries,
+    countriesError,
+    refetchCountries,
+    countryToRegion,
+    regionOptions,
+    search,
+    activeRegion,
+    selectRegion,
+    resetFilters,
+  } = useCountrySearch();
   const { data: metadata } = useGetMetadataQuery();
 
   const [selectedUser, setSelectedUser] = useState<Committer | null>(null);
   const [visibleCount, setVisibleCount] = useState(COUNTRIES_PER_PAGE);
-  const [search, setSearch] = useState(() => searchParams.get("search") || "");
   const [sortOrder, setSortOrder] = useState<SortDirection>("asc");
-  const [activeRegion, setActiveRegion] = useState(
-    () => searchParams.get("region") || "All",
-  );
-
-  useEffect(() => {
-    setSearch(searchParams.get("search") || "");
-    setActiveRegion(searchParams.get("region") || "All");
-  }, [searchParams]);
-
-  const countryToRegion = useMemo(() => {
-    const map: Record<string, string> = {};
-    if (Array.isArray(flagsData)) {
-      flagsData.forEach((item) => {
-        if (item.name && item.continent) {
-          map[item.name.toLowerCase()] = item.continent;
-        }
-      });
-    }
-    return map;
-  }, [flagsData]);
-
-  const regionOptions = useMemo(() => {
-    const counts = new Map<string, number>();
-    allCountries.forEach((country) => {
-      const region = countryToRegion[country.name.toLowerCase()] || "Other";
-      counts.set(region, (counts.get(region) || 0) + 1);
-    });
-
-    return REGION_ORDER.filter((region) => counts.has(region)).map((region) => ({
-      name: region,
-      count: counts.get(region) || 0,
-    }));
-  }, [allCountries, countryToRegion]);
 
   const filteredCountries = useMemo(() => {
-    let filtered = [...allCountries];
-
-    if (search.trim()) {
-      const query = search.toLowerCase().trim();
-      filtered = filtered.filter(
-        (country) =>
-          country.name.toLowerCase().includes(query) ||
-          country.slug.toLowerCase().includes(query),
-      );
-    }
-
-    if (activeRegion !== "All") {
-      filtered = filtered.filter(
-        (country) =>
-          (countryToRegion[country.name.toLowerCase()] || "Other") ===
-          activeRegion,
-      );
-    }
-
-    filtered.sort((a, b) => {
+    const sorted = [...matchedCountries];
+    sorted.sort((a, b) => {
       const nameA = a.name.toLowerCase();
       const nameB = b.name.toLowerCase();
       return sortOrder === "asc"
         ? nameA.localeCompare(nameB)
         : nameB.localeCompare(nameA);
     });
+    return sorted;
+  }, [matchedCountries, sortOrder]);
 
-    return filtered;
-  }, [allCountries, search, activeRegion, countryToRegion, sortOrder]);
-
-  const visibleCountries = useMemo(
-    () => filteredCountries.slice(0, visibleCount),
-    [filteredCountries, visibleCount],
+  const visibleCountForResults = Math.min(
+    visibleCount,
+    filteredCountries.length,
   );
-  const hasMoreCountries = visibleCount < filteredCountries.length;
+  const visibleCountries = useMemo(
+    () => filteredCountries.slice(0, visibleCountForResults),
+    [filteredCountries, visibleCountForResults],
+  );
+  const hasMoreCountries = visibleCountForResults < filteredCountries.length;
+
+  // A new query or region restarts the list; sorting keeps the current depth.
+  useEffect(() => {
+    setVisibleCount(COUNTRIES_PER_PAGE);
+  }, [search, activeRegion]);
 
   useInfiniteScroll({
     isLoading: isLoadingCountries,
@@ -162,42 +122,17 @@ const Home = () => {
     threshold: 320,
   });
 
-  const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setVisibleCount(COUNTRIES_PER_PAGE);
-
-    const nextParams = new URLSearchParams(searchParams);
-    if (value.trim()) nextParams.set("search", value.trim());
-    else nextParams.delete("search");
-    setSearchParams(nextParams, { replace: true });
-  };
-
-  const clearSearch = () => handleSearchChange("");
-
-  const selectRegion = (region: string) => {
-    setActiveRegion(region);
-    setVisibleCount(COUNTRIES_PER_PAGE);
-
-    const nextParams = new URLSearchParams(searchParams);
-    if (region === "All") nextParams.delete("region");
-    else nextParams.set("region", region);
-    setSearchParams(nextParams, { replace: true });
-  };
+  const showMore = () =>
+    setVisibleCount(visibleCountForResults + COUNTRIES_PER_PAGE);
 
   const toggleSort = () => {
     setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
     setVisibleCount(COUNTRIES_PER_PAGE);
   };
 
-  const resetFilters = () => {
-    setActiveRegion("All");
-    setSearch("");
+  const resetExploration = () => {
+    resetFilters();
     setVisibleCount(COUNTRIES_PER_PAGE);
-
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete("search");
-    nextParams.delete("region");
-    setSearchParams(nextParams, { replace: true });
   };
 
   const homeTitle = toTitle("Global developer rankings by country");
@@ -236,6 +171,41 @@ const Home = () => {
     },
   ];
 
+  const GRID_LEVELS = [
+    0, 1, 0, 2, 1, 0, 3, 1, 2, 0, 1, 0, 1, 2, 3, 2, 1, 0, 2, 3, 1, 0, 1, 2, 0,
+    1, 3, 2, 1, 0, 1, 2, 0, 1, 2, 1,
+  ];
+  const GRID_FILL = [
+    "bg-foreground/10",
+    "bg-[var(--mint)]",
+    "bg-[var(--sky)]",
+    "bg-[var(--sun)]",
+  ] as const;
+  function SkeletonValue({ className = "" }: { className?: string }) {
+    return (
+      <span
+        aria-hidden="true"
+        className={`inline-block animate-pulse bg-foreground/10 ${className}`}
+      />
+    );
+  }
+
+  // …inside the component:
+  const generatedAt = metadata?.generatedAt;
+
+  const facts = [
+    { label: "Ranking metric", value: "Public commits" },
+    { label: "Data source", value: "GitHub" },
+    {
+      label: "Last updated",
+      value: generatedAt ? (
+        <time dateTime={generatedAt}>{formatDate(generatedAt)}</time>
+      ) : (
+        "Unavailable"
+      ),
+    },
+  ];
+
   return (
     <div className="pb-20">
       <Helmet>
@@ -252,314 +222,508 @@ const Home = () => {
         <meta property="og:url" content={homeUrl} />
         <meta property="og:image" content={defaultOgImage} />
         <meta property="og:image:alt" content={`${SITE_NAME} preview`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={homeTitle} />
         <meta name="twitter:description" content={SITE_DESCRIPTION} />
         <meta name="twitter:image" content={defaultOgImage} />
+        <meta name="twitter:image:alt" content={`${SITE_NAME} preview`} />
         <script type="application/ld+json">
           {JSON.stringify(homeStructuredData)}
         </script>
       </Helmet>
 
       <div className="shell">
-        <section className="notebook-surface relative -mx-5 overflow-hidden border-b-2 border-foreground px-5 pb-10 pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-14 lg:pt-20">
-          <div className="pointer-events-none absolute inset-y-0 left-5 hidden w-px bg-[var(--margin-line)]/70 lg:left-8 lg:block" aria-hidden="true" />
-          <div className="flex items-center gap-2.5">
-            <span className="h-2 w-2 rounded-sm border-foreground bg-brand" aria-hidden="true" />
-            <p className="eyebrow text-foreground/70">
-              The open-source performance index
-            </p>
-            <span className="hidden h-px w-8 bg-border sm:block" aria-hidden="true" />
-            <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground sm:inline">
-              Updated daily
-            </span>
-          </div>
-
-          <div className="mt-5 grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
+        <section
+          aria-labelledby="hero-heading"
+          className="lamplight notebook-surface relative -mx-5 overflow-hidden border-b-2 border-foreground px-5 pb-14 pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-16 lg:pt-20"
+        >
+          <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
             <div className="max-w-3xl">
-              <h1 className="font-display text-[clamp(2.6rem,5.4vw,4.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] text-foreground">
-                Find the builders{" "}
-                <br className="hidden sm:block" />
-                shaping open source.{" "}
-                <span className="mt-2 block text-brand-ink">Ranked by country.</span>
+              <h1
+                id="hero-heading"
+                className="font-display text-[clamp(2.6rem,5.4vw,4.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-foreground"
+              >
+                <span className="block">
+                  People building{" "}
+                  <span className="marker-highlight">open source.</span>
+                </span>
+                <span className="relative mt-2 inline-block text-brand-ink">
+                  Ranked by country.
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 200 20"
+                    preserveAspectRatio="none"
+                    className="absolute -bottom-2 left-[-2%] h-3 w-[104%] overflow-visible"
+                  >
+                    <path
+                      d="M3 12 C40 4 70 16 100 9 S160 5 197 11"
+                      fill="none"
+                      stroke="var(--tangerine)"
+                      strokeWidth="5"
+                      strokeLinecap="round"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </svg>
+                </span>
               </h1>
-              <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-                Explore public GitHub commit activity in country-based leaderboards. A useful snapshot of open-source contributions—not a measure of skill or impact.
+
+              <p className="mt-8 max-w-xl text-base leading-7 text-foreground/80 sm:text-lg sm:leading-8">
+                A chart of the world's open-source contributors. Pick a
+                destination and see who's building there.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a href="#explore-heading" className="button-primary">Explore countries <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
-                <a href="#how-it-works" className="button-secondary">How rankings work</a>
+
+              <div className="mt-7 flex flex-wrap gap-3">
+                <a href="#explore-heading" className="button-primary">
+                  Pick a destination{" "}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </a>
+                <a href="#how-it-works" className="button-secondary">
+                  How it works
+                </a>
               </div>
             </div>
 
-            <div className="hidden w-56 border-l border-border pl-6 lg:block">
+            <aside
+              aria-label="Index summary"
+              aria-busy={isLoadingCountries}
+              className="hard-card relative w-full max-w-sm bg-card p-5 lg:mt-4 lg:w-64 lg:rotate-[1.5deg]"
+            >
+              <span
+                aria-hidden="true"
+                className="tape tape-sky pointer-events-none hidden lg:block"
+              />
+
               <p className="eyebrow">The index</p>
-              <p className="mt-3 font-display text-4xl leading-none text-foreground">
-                {isLoadingCountries ? "—" : allCountries.length}
-                <span className="ml-2 font-sans text-sm font-medium text-muted-foreground">
+
+              <p className="mt-3 flex items-baseline gap-2 font-display text-5xl leading-none text-foreground">
+                {isLoadingCountries ? (
+                  <>
+                    <SkeletonValue className="h-10 w-16" />
+                    <span className="sr-only">Loading countries</span>
+                  </>
+                ) : (
+                  allCountries.length
+                )}
+                <span className="font-sans text-sm font-semibold text-foreground/80">
                   countries
                 </span>
               </p>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Ranked by public commits, updated daily.
+
+              <p className="mt-2 text-sm leading-6 text-foreground/80">
+                {isLoadingCountries ? (
+                  <SkeletonValue className="h-4 w-28" />
+                ) : (
+                  <>across {regionOptions.length} regions</>
+                )}
               </p>
-              <a
-                href="#how-it-works"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground"
-              >
-                How it works
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
-            </div>
+
+              {/* Decorative only: fixed pattern, not data */}
+              <div aria-hidden="true" className="mt-5 grid grid-cols-12 gap-1">
+                {GRID_LEVELS.map((level, i) => (
+                  <span
+                    key={i}
+                    className={`h-3 ${GRID_FILL[level]}`}
+                  />
+                ))}
+              </div>
+            </aside>
           </div>
 
-          <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
-            {[
-              {
-                label: "Countries tracked",
-                value: isLoadingCountries ? "—" : allCountries.length,
-              },
-              {
-                label: "Regions covered",
-                value: isLoadingCountries ? "—" : regionOptions.length,
-              },
-              {
-                label: "Ranking metric",
-                value: "Commits",
-              },
-              {
-                label: "Last updated",
-                value: formatDate(metadata?.generatedAt),
-              },
-            ].map((stat) => (
-              <div key={stat.label} className="bg-card px-4 py-3.5 sm:px-5">
-                <dt className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                  {stat.label}
-                </dt>
-                <dd className="stat-value mt-1 text-lg font-medium text-foreground">
-                  {stat.value}
+          <dl className="mt-12 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
+            {facts.map((fact, index) => (
+              <div
+                key={fact.label}
+                className={`group relative overflow-hidden border-2 border-foreground p-5 transition-transform duration-200 hover:-translate-y-1  ${
+                  index === 0
+                    ? "bg-[var(--tangerine)] text-foreground shadow-[5px_5px_0_var(--foreground)]"
+                    : index === 1
+                      ? "bg-[#D8E8C8] text-foreground shadow-[5px_5px_0_var(--foreground)]"
+                      : index === 2
+                        ? "bg-[#DCD5F7] text-foreground shadow-[5px_5px_0_var(--foreground)]"
+                        : "bg-card text-foreground shadow-[5px_5px_0_var(--foreground)]"
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]">
+                    {fact.label}
+                  </dt>
+
+                  <span
+                    aria-hidden="true"
+                    className="font-mono text-xs opacity-60"
+                  >
+                    {String(index + 1)}
+                  </span>
+                </div>
+
+                <dd className="mt-8 break-words font-display text-xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-2xl">
+                  {fact.value}
                 </dd>
+
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-5 -right-3 rotate-[-12deg] font-display text-7xl font-black leading-none opacity-[0.07] transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-3 right-4 h-2 w-2 border-2 border-current"
+                />
               </div>
             ))}
           </dl>
+
+          {/* Decorative dashed route that draws itself in once, on scroll */}
+          <RouteLine className="mt-10 max-w-3xl" />
         </section>
+        <div
+          className="sticky z-30 -mx-5 border-y border-border bg-background/95 px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          style={{ top: "var(--nav-height)" }}
+        >
+          {/* Region navigation and sort. Country search lives in the navbar. */}
+          <div>
+            {/* Region filter row: label, sort and the active query */}
+            <div className="mb-2.5 flex items-center justify-between gap-3">
+              <p className="min-w-0 truncate font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                Pick a region — a leg of the route
 
-        <section aria-labelledby="explore-heading">
-          <div className="sticky top-16 z-30 -mx-5 border-y border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="relative min-w-0 flex-1">
-                <label htmlFor="country-search" className="sr-only">
-                  Search countries
-                </label>
-                <Search
-                  className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <input
-                  id="country-search"
-                  type="search"
-                  value={search}
-                  onChange={(event) => handleSearchChange(event.target.value)}
-                  placeholder="Search a country..."
-                  autoComplete="off"
-                  className="h-11 w-full rounded-lg border border-input bg-card pl-10 pr-10 text-sm text-foreground shadow-sm outline-none transition placeholder:text-muted-foreground focus:border-foreground/30 focus:ring-2 focus:ring-ring/20"
-                />
-                {search && (
-                  <button
-                    type="button"
-                    onClick={clearSearch}
-                    className="absolute right-2 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                    aria-label="Clear search"
-                  >
-                    <X className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={toggleSort}
-                className="inline-flex h-11 shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-foreground/25 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
-              >
-                {sortOrder === "asc" ? (
-                  <ArrowDownAZ className="h-4 w-4" aria-hidden="true" />
-                ) : (
-                  <ArrowUpAZ className="h-4 w-4" aria-hidden="true" />
-                )}
-                <span className="hidden font-mono text-[11px] uppercase tracking-[0.1em] sm:inline">
-                  {sortOrder === "asc" ? "A–Z" : "Z–A"}
+                <span className="text-foreground">
+                  {" · "}
+                  {activeRegion === ALL_REGIONS ? "Worldwide" : activeRegion}
                 </span>
-              </button>
+
+                {search.trim() && (
+                  <span className="text-foreground">
+                    {" · “"}
+                    <span className="normal-case">{search.trim()}</span>
+                    {"”"}
+                  </span>
+                )}
+              </p>
+
+              <div className="flex shrink-0 items-center gap-2">
+                <button
+                  type="button"
+                  onClick={toggleSort}
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border border-border bg-card px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
+                  title={`Sort ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
+                >
+                  {sortOrder === "asc" ? (
+                    <ArrowDownAZ className="h-4 w-4" aria-hidden="true" />
+                  ) : (
+                    <ArrowUpAZ className="h-4 w-4" aria-hidden="true" />
+                  )}
+                  <span>{sortOrder === "asc" ? "A–Z" : "Z–A"}</span>
+                </button>
+              </div>
             </div>
 
             <div
-              className="no-scrollbar -mb-0.5 mt-3 flex snap-x items-center gap-1.5 overflow-x-auto pb-0.5"
+              className="no-scrollbar -mx-1 flex snap-x items-center gap-2 overflow-x-auto px-1 pb-1 pt-1"
               role="group"
-              aria-label="Filter by region"
+              aria-label="Filter countries by region"
             >
               <button
                 type="button"
-                onClick={() => selectRegion("All")}
-                aria-pressed={activeRegion === "All"}
-                className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                  activeRegion === "All"
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-card text-muted-foreground hover:border-foreground/25 hover:text-foreground"
-                }`}
+                onClick={() => selectRegion(ALL_REGIONS)}
+                aria-pressed={activeRegion === ALL_REGIONS}
+                className="chip min-h-9 shrink-0 snap-start gap-2 px-3.5 text-[11px] font-semibold uppercase tracking-[0.06em]"
               >
-                All regions
-                <span className="ml-1.5 font-mono text-[10px] opacity-60">
-                  {allCountries.length || ""}
+                <span>All regions</span>
+                <span className="bg-[var(--surface-muted)] px-1.5 py-0.5 text-[10px] leading-none text-muted-foreground">
+                  {allCountries.length}
                 </span>
               </button>
-              {regionOptions.map((region) => (
-                <button
-                  key={region.name}
-                  type="button"
-                  onClick={() => selectRegion(region.name)}
-                  aria-pressed={activeRegion === region.name}
-                  className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                    activeRegion === region.name
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border bg-card text-muted-foreground hover:border-foreground/25 hover:text-foreground"
-                  }`}
+
+              {regionOptions.map((region) => {
+                const isActive = activeRegion === region.name;
+
+                return (
+                  <button
+                    key={region.name}
+                    type="button"
+                    onClick={() => selectRegion(region.name)}
+                    aria-pressed={isActive}
+                    className="chip min-h-9 shrink-0 snap-start gap-2 px-3.5 text-[11px] font-semibold uppercase tracking-[0.06em]"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="h-2.5 w-2.5 shrink-0 border border-black/20"
+                      style={{ background: regionTheme(region.name).fill }}
+                    />
+                    <span>{region.name}</span>
+                    <span
+                      className={`px-1.5 py-0.5 text-[10px] leading-none ${
+                        isActive
+                          ? "bg-primary-foreground/15 text-primary-foreground"
+                          : "bg-[var(--surface-muted)] text-muted-foreground"
+                      }`}
+                    >
+                      {region.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <section aria-labelledby="explore-heading" className="scroll-mt-[calc(var(--nav-height)+5.5rem)]">
+          {/* Section heading */}
+          <div className="relative mb-6 border-b border-border pb-5 pt-8">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <h2
+                  id="explore-heading"
+                  className="font-display text-3xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground sm:text-5xl"
                 >
-                  {region.name}
-                  <span className="ml-1.5 font-mono text-[10px] opacity-60">
-                    {region.count}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+                  {activeRegion === ALL_REGIONS ? (
+                    <>
+                      Explore the
+                      <br className="sm:hidden" />{" "}
+                      <span className="marker-highlight">country.</span>
+                    </>
+                  ) : (
+                    <>
+                      Explore
+                      <br className="sm:hidden" />{" "}
+                      <span className="marker-highlight">{activeRegion}.</span>
+                    </>
+                  )}
+                </h2>
 
-          <div className="flex flex-wrap items-end justify-between gap-3 pb-5 pt-8">
-            <div>
-              <p className="eyebrow">Countries</p>
-              <h2
-                id="explore-heading"
-                className="mt-1 font-display text-3xl leading-none text-foreground sm:text-4xl"
-              >
-                {activeRegion === "All" ? "Explore the index" : activeRegion}
-              </h2>
-            </div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-              {isLoadingCountries
-                ? "Loading…"
-                : `${filteredCountries.length} ${
-                    filteredCountries.length === 1 ? "country" : "countries"
-                  }`}
-            </p>
-          </div>
-
-          {countriesError ? (
-            <div className="surface flex flex-col items-center px-6 py-20 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-destructive bg-card">
-                <ServerCrash
-                  className="h-5 w-5 text-destructive"
-                  aria-hidden="true"
-                />
+                <p className="mt-3 max-w-lg text-sm leading-6 text-muted-foreground sm:text-base">
+                  Find the developers contributing to open source, one country
+                  at a time.
+                </p>
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground">
-                The index couldn't load
-              </h3>
-              <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-                The country data is temporarily unavailable. Check your
-                connection and try again.
-              </p>
-              <button
-                type="button"
-                onClick={() => refetchCountries()}
-                className="button-primary mt-5"
+
+              {/* Results indicator */}
+              <div
+                className="flex shrink-0 items-center gap-3 border border-border bg-card px-3.5 py-2.5"
+                aria-live="polite"
+                aria-atomic="true"
               >
-                <Loader2 className="h-4 w-4" aria-hidden="true" />
-                Try again
-              </button>
+                <span
+                  aria-hidden="true"
+                  className={`h-2 w-2 ${
+                    isLoadingCountries
+                      ? "animate-pulse bg-[var(--tangerine)]"
+                      : countriesError
+                        ? "bg-destructive"
+                        : "bg-foreground"
+                  }`}
+                />
+
+                <div>
+                  <p className="font-display text-xl font-extrabold leading-none text-foreground tabular-nums">
+                    {isLoadingCountries ? "..." : filteredCountries.length}
+                  </p>
+                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {isLoadingCountries
+                      ? "Indexing"
+                      : filteredCountries.length === 1
+                        ? "Country"
+                        : "Countries"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Error state */}
+          {countriesError ? (
+            <div
+              role="alert"
+              className="relative overflow-hidden border-2 border-foreground bg-card p-6 shadow-[5px_5px_0_var(--foreground)] sm:p-10"
+            >
+              <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center border-2 border-foreground bg-destructive/10">
+                  <ServerCrash
+                    className="h-6 w-6 text-destructive"
+                    aria-hidden="true"
+                  />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-destructive">
+                    Connection interrupted / 503
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl font-extrabold uppercase text-foreground sm:text-3xl">
+                    The index is out of reach.
+                  </h3>
+                  <p className="mt-2 max-w-lg text-sm leading-6 text-muted-foreground">
+                    We couldn't retrieve the country data. Check your connection
+                    and try again.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => refetchCountries()}
+                  className="button-primary shrink-0"
+                >
+                  <Loader2 className="h-4 w-4" aria-hidden="true" />
+                  Retry connection
+                </button>
+              </div>
             </div>
           ) : isLoadingCountries ? (
             <HomeLoading />
           ) : filteredCountries.length === 0 ? (
-            <div className="surface flex flex-col items-center px-6 py-20 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-foreground bg-brand/40">
-                <Search className="h-5 w-5 text-foreground" aria-hidden="true" />
+            /* Empty state */
+            <div className="relative overflow-hidden border-2 border-foreground bg-card px-6 py-14 text-center shadow-[5px_5px_0_var(--foreground)] sm:py-20">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-3 -top-8 rotate-12 font-display text-[9rem] font-black leading-none text-foreground/[0.04] sm:text-[12rem]"
+              >
+                ?
+              </span>
+
+              <div className="relative mx-auto flex h-14 w-14 items-center justify-center border-2 border-foreground bg-[var(--tangerine)] shadow-[3px_3px_0_var(--foreground)]">
+                <Search
+                  className="h-6 w-6 text-foreground"
+                  aria-hidden="true"
+                />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground">
-                No countries found
-              </h3>
-              <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-                {search
-                  ? `Nothing matches “${search}”${
-                      activeRegion !== "All" ? ` in ${activeRegion}` : ""
-                    }. Try a different spelling or clear the filters.`
-                  : "No countries are available in this region yet."}
+
+              <p className="relative mt-6 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+                Nothing in this edition
               </p>
+
+              <h3 className="relative mt-2 font-display text-2xl font-extrabold uppercase text-foreground sm:text-3xl">
+                No countries found.
+              </h3>
+
+              <p className="relative mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">
+                {search
+                  ? `We couldn't find a country matching "${search}"${
+                      activeRegion !== ALL_REGIONS ? ` in ${activeRegion}` : ""
+                    }. Try another search or reset your filters.`
+                  : "There are no countries to display for this region right now. Try exploring another region."}
+              </p>
+
               <button
                 type="button"
-                onClick={resetFilters}
-                className="button-secondary mt-5"
+                onClick={resetExploration}
+                className="button-secondary relative mt-6"
               >
-                Clear filters
+                <X className="h-4 w-4" aria-hidden="true" />
+                Reset exploration
               </button>
             </div>
           ) : (
             <>
+              {/* Country directory */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {visibleCountries.map((country) => (
-                  <CountryCard
+                  <div
                     key={country.slug}
-                    country={country}
-                    region={countryToRegion[country.name.toLowerCase()]}
-                    onUserClick={setSelectedUser}
-                  />
+                    className="min-w-0 motion-safe:animate-fade-in-up"
+                  >
+                    <CountryCard
+                      country={country}
+                      region={countryToRegion[country.name.toLowerCase()]}
+                      onUserClick={setSelectedUser}
+                    />
+                  </div>
                 ))}
               </div>
 
-              {hasMoreCountries && (
-                <div className="mt-8 flex flex-col items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setVisibleCount((prev) => prev + COUNTRIES_PER_PAGE)
-                    }
-                    className="button-secondary"
-                  >
-                    Load more countries
-                    <ArrowDownAZ className="h-4 w-4" aria-hidden="true" />
-                  </button>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                    Showing {visibleCountries.length} of{" "}
-                    {filteredCountries.length}
-                  </p>
+              {/* Pagination */}
+              <div className="mt-10 border-t-2 border-foreground pt-5">
+                <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+                  <div>
+                    <p className="font-display text-lg font-bold uppercase text-foreground">
+                      {hasMoreCountries
+                        ? "Keep exploring."
+                        : "You've reached the end."}
+                    </p>
+                    <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                      Showing {visibleCountries.length} of{" "}
+                      {filteredCountries.length} countries
+                    </p>
+                  </div>
+
+                  {hasMoreCountries && (
+                    <button
+                      type="button"
+                      onClick={showMore}
+                      className="button-secondary w-full sm:w-auto"
+                    >
+                      Load more countries
+                      <ArrowDownAZ className="h-4 w-4" aria-hidden="true" />
+                    </button>
+                  )}
                 </div>
-              )}
+
+                {/* Visual progress indicator */}
+                <div
+                  className="mt-5 h-2 border border-foreground bg-secondary"
+                  role="progressbar"
+                  aria-label="Countries displayed"
+                  aria-valuemin={0}
+                  aria-valuemax={filteredCountries.length}
+                  aria-valuenow={visibleCountries.length}
+                >
+                  <div
+                    className="h-full bg-[var(--tangerine)] transition-[width] duration-300"
+                    style={{
+                      width: `${
+                        filteredCountries.length > 0
+                          ? Math.min(
+                              100,
+                              (visibleCountries.length /
+                                filteredCountries.length) *
+                                100,
+                            )
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
             </>
           )}
         </section>
 
+
+        {/* Indigo feature band: how the rankings are built (one per page) */}
         <section
           id="how-it-works"
-          className="mt-20 scroll-mt-24 border-t border-border pt-12 lg:mt-24 lg:pt-16"
+          className="indigo-band relative mt-16 scroll-mt-[calc(var(--nav-height)+2rem)] overflow-hidden border-y-2 border-foreground lg:mt-20"
+          aria-labelledby="how-heading"
         >
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+          <div aria-hidden="true" className="pattern-lattice pointer-events-none absolute inset-x-0 top-0 h-16 text-[var(--band-fg)] opacity-[0.14]" />
+          <div className="relative grid gap-8 px-5 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-8 lg:py-16">
             <div>
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-3.5 w-3.5 text-brand-ink" aria-hidden="true" />
-                <p className="eyebrow">How it works</p>
-              </div>
-              <h2 className="mt-4 font-display text-4xl leading-[0.98] text-foreground sm:text-5xl">
+              <p
+                className="font-mono text-[11px] font-medium uppercase tracking-[0.18em]"
+                style={{ color: "var(--band-accent)" }}
+              >
+                How it works
+              </p>
+              <h2
+                id="how-heading"
+                className="mt-4 font-display text-4xl font-extrabold uppercase leading-[0.98] tracking-tight text-[var(--band-fg)] sm:text-5xl"
+              >
                 A simple measure,
                 <br />
                 honestly presented.
               </h2>
-              <p className="mt-5 max-w-sm text-sm leading-6 text-muted-foreground">
+              <p className="mt-5 max-w-sm text-sm leading-6 text-[var(--band-fg-muted)]">
                 TopPerformers is not a measure of skill or seniority. It is a
                 transparent snapshot of public open-source activity, grouped by
                 the country listed on each GitHub profile.
               </p>
             </div>
 
-            <div className="divide-y divide-border border-y border-border">
+            <div className="divide-y-2 divide-dashed divide-[var(--band-line)]">
               {[
                 {
                   index: "01",
@@ -573,35 +737,39 @@ const Home = () => {
                 },
                 {
                   index: "03",
-                  title: "Updated daily",
-                  body: `Country indexes are refreshed every day from ${SOURCE_NAME} and enriched with public GitHub profile data.`,
+                  title: "Refreshed by the data pipeline",
+                  body: `Country indexes are regenerated from ${SOURCE_NAME} whenever the data pipeline runs — the stamp on each country page shows the exact date of the current data.`,
                 },
               ].map((item) => (
                 <div
                   key={item.index}
                   className="grid grid-cols-[auto_1fr] gap-5 py-6 sm:gap-8"
                 >
-                  <span className="font-mono text-[11px] text-muted-foreground">
+                  <span
+                    className="font-mono text-xs"
+                    style={{ color: "var(--band-accent)" }}
+                  >
                     {item.index}
                   </span>
                   <div>
-                    <h3 className="text-base font-semibold text-foreground">
+                    <h3 className="text-base font-semibold text-[var(--band-fg)]">
                       {item.title}
                     </h3>
-                    <p className="mt-1.5 max-w-md text-sm leading-6 text-muted-foreground">
+                    <p className="mt-1.5 max-w-md text-sm leading-6 text-[var(--band-fg-muted)]">
                       {item.body}
                     </p>
                   </div>
                 </div>
               ))}
               <div className="flex flex-col gap-3 py-6 sm:flex-row sm:items-center sm:justify-between">
-                <p className="max-w-md text-xs leading-5 text-muted-foreground">
+                <p className="max-w-md text-xs leading-5 text-[var(--band-fg-muted)]">
                   Rankings are read from{" "}
                   <a
                     href={SOURCE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
+                    className="font-medium text-[var(--band-fg)] underline underline-offset-4"
+                    style={{ textDecorationColor: "var(--band-accent)" }}
                   >
                     {SOURCE_NAME}
                   </a>
@@ -610,9 +778,9 @@ const Home = () => {
                 </p>
                 <Link
                   to="/"
-                  className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground"
+                  className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-[var(--band-fg)]"
                 >
-                  Browse countries
+                  Browse destinations
                   <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
