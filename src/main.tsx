@@ -8,7 +8,6 @@ import { HelmetProvider } from "react-helmet-async";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { applyLightTheme } from "./hooks/useTheme.ts";
 
-// Single light theme: pin the document scheme before the first render.
 applyLightTheme();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

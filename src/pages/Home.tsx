@@ -237,20 +237,20 @@ const Home = () => {
       <div className="shell">
         <section
           aria-labelledby="hero-heading"
-          className="lamplight notebook-surface relative -mx-5 overflow-hidden border-b-2 border-foreground px-5 pb-14 pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-16 lg:pt-20"
+          className="flex flex-col items-center justify-center lamplight notebook-surface relative -mx-5 overflow-hidden px-5 pb-14 min-h-[75vh] pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-16 lg:pt-20"
         >
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
             <div className="max-w-3xl">
               <h1
                 id="hero-heading"
-                className="font-display text-[clamp(2.6rem,5.4vw,4.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-foreground"
+                className="font-display text-[clamp(2.6rem,5.4vw,3.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.02em] text-foreground"
               >
                 <span className="block">
-                  People building{" "}
-                  <span className="marker-highlight">open source.</span>
+                  Open source{" "}
+                  <span className="marker-highlight">builders.</span>
                 </span>
                 <span className="relative mt-2 inline-block text-brand-ink">
-                  Ranked by country.
+                  ranked by country.
                   <svg
                     aria-hidden="true"
                     viewBox="0 0 200 20"
@@ -290,13 +290,6 @@ const Home = () => {
               aria-busy={isLoadingCountries}
               className="hard-card relative w-full max-w-sm bg-card p-5 lg:mt-4 lg:w-64 lg:rotate-[1.5deg]"
             >
-              <span
-                aria-hidden="true"
-                className="tape tape-sky pointer-events-none hidden lg:block"
-              />
-
-              <p className="eyebrow">The index</p>
-
               <p className="mt-3 flex items-baseline gap-2 font-display text-5xl leading-none text-foreground">
                 {isLoadingCountries ? (
                   <>
@@ -322,80 +315,26 @@ const Home = () => {
               {/* Decorative only: fixed pattern, not data */}
               <div aria-hidden="true" className="mt-5 grid grid-cols-12 gap-1">
                 {GRID_LEVELS.map((level, i) => (
-                  <span
-                    key={i}
-                    className={`h-3 ${GRID_FILL[level]}`}
-                  />
+                  <span key={i} className={`h-3 ${GRID_FILL[level]}`} />
                 ))}
               </div>
             </aside>
           </div>
 
-          <dl className="mt-12 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-3">
-            {facts.map((fact, index) => (
-              <div
-                key={fact.label}
-                className={`group relative overflow-hidden border-2 border-foreground p-5 transition-transform duration-200 hover:-translate-y-1  ${
-                  index === 0
-                    ? "bg-[var(--tangerine)] text-foreground shadow-[5px_5px_0_var(--foreground)]"
-                    : index === 1
-                      ? "bg-[#D8E8C8] text-foreground shadow-[5px_5px_0_var(--foreground)]"
-                      : index === 2
-                        ? "bg-[#DCD5F7] text-foreground shadow-[5px_5px_0_var(--foreground)]"
-                        : "bg-card text-foreground shadow-[5px_5px_0_var(--foreground)]"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]">
-                    {fact.label}
-                  </dt>
-
-                  <span
-                    aria-hidden="true"
-                    className="font-mono text-xs opacity-60"
-                  >
-                    {String(index + 1)}
-                  </span>
-                </div>
-
-                <dd className="mt-8 break-words font-display text-xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-2xl">
-                  {fact.value}
-                </dd>
-
-                <span
-                  aria-hidden="true"
-                  className="absolute -bottom-5 -right-3 rotate-[-12deg] font-display text-7xl font-black leading-none opacity-[0.07] transition-transform duration-300 group-hover:rotate-0 group-hover:scale-110"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-
-                <span
-                  aria-hidden="true"
-                  className="absolute bottom-3 right-4 h-2 w-2 border-2 border-current"
-                />
-              </div>
-            ))}
-          </dl>
-
-          {/* Decorative dashed route that draws itself in once, on scroll */}
           <RouteLine className="mt-10 max-w-3xl" />
         </section>
         <div
-          className="sticky z-30 -mx-5 border-y border-border bg-background/95 px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="sticky z-30 -mx-5  bg-background/95 px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
           style={{ top: "var(--nav-height)" }}
         >
-          {/* Region navigation and sort. Country search lives in the navbar. */}
           <div>
-            {/* Region filter row: label, sort and the active query */}
             <div className="mb-2.5 flex items-center justify-between gap-3">
               <p className="min-w-0 truncate font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Pick a region — a leg of the route
-
+                Pick a region
                 <span className="text-foreground">
                   {" · "}
                   {activeRegion === ALL_REGIONS ? "Worldwide" : activeRegion}
                 </span>
-
                 {search.trim() && (
                   <span className="text-foreground">
                     {" · “"}
@@ -473,7 +412,10 @@ const Home = () => {
           </div>
         </div>
 
-        <section aria-labelledby="explore-heading" className="scroll-mt-[calc(var(--nav-height)+5.5rem)]">
+        <section
+          aria-labelledby="explore-heading"
+          className="scroll-mt-[calc(var(--nav-height)+5.5rem)]"
+        >
           {/* Section heading */}
           <div className="relative mb-6 border-b border-border pb-5 pt-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -692,14 +634,16 @@ const Home = () => {
           )}
         </section>
 
-
         {/* Indigo feature band: how the rankings are built (one per page) */}
         <section
           id="how-it-works"
           className="indigo-band relative mt-16 scroll-mt-[calc(var(--nav-height)+2rem)] overflow-hidden border-y-2 border-foreground lg:mt-20"
           aria-labelledby="how-heading"
         >
-          <div aria-hidden="true" className="pattern-lattice pointer-events-none absolute inset-x-0 top-0 h-16 text-[var(--band-fg)] opacity-[0.14]" />
+          <div
+            aria-hidden="true"
+            className="pattern-lattice pointer-events-none absolute inset-x-0 top-0 h-16 text-[var(--band-fg)] opacity-[0.14]"
+          />
           <div className="relative grid gap-8 px-5 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-8 lg:py-16">
             <div>
               <p

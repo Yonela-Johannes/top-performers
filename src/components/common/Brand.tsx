@@ -12,8 +12,6 @@ export const BrandMark = ({
   <span
     className={cn(
       "relative inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md",
-      "bg-[var(--ink)] text-[var(--paper)]",
-      "ring-1 ring-inset ring-black/10",
       className,
     )}
     aria-hidden="true"
@@ -31,7 +29,6 @@ export const BrandMark = ({
 
 interface BrandProps {
   className?: string;
-  /** Hide the wordmark on the narrowest screens while keeping it readable. */
   responsive?: boolean;
   inverted?: boolean;
 }
@@ -39,7 +36,6 @@ interface BrandProps {
 export const Brand = ({
   className,
   responsive = false,
-  inverted = false,
 }: BrandProps) => (
   <Link
     to="/"
@@ -47,15 +43,13 @@ export const Brand = ({
     className={cn(
       "group inline-flex min-w-0 items-center gap-2.5",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-      inverted && "focus-visible:ring-offset-[var(--band-bg)]",
       className,
     )}
   >
     <BrandMark />
     <span
       className={cn(
-        "font-display text-[17px] font-extrabold uppercase leading-none tracking-[-0.01em]",
-        inverted ? "text-[var(--band-fg)]" : "text-foreground",
+        "font-display text-[17px] font-extrabold leading-none tracking-[-0.01em]",
         responsive && "hidden min-[420px]:block",
       )}
     >
@@ -64,15 +58,14 @@ export const Brand = ({
   </Link>
 );
 
-/** Full brand lockup used on standalone pages (404, developer profile). */
 export const BrandKey = ({ className }: { className?: string }) => (
   <div className={cn("flex items-center gap-3", className)}>
     <BrandMark animated />
     <div className="min-w-0">
-      <p className="font-display text-sm font-extrabold uppercase leading-none tracking-[0.02em] text-foreground">
+      <p className="font-display text-sm font-extrabold leading-none tracking-[0.02em] text-foreground">
         TopPerformers
       </p>
-      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+      <p className="mt-1 font-mono text-[10px] tracking-[0.16em] text-muted-foreground">
         Open-source index
       </p>
     </div>

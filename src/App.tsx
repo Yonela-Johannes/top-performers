@@ -29,9 +29,6 @@ const ScrollToTop = () => {
     let attempts = 0;
     let timer = 0;
 
-    // Content above an anchor can load in after the first paint (for example
-    // infinite-scroll country cards). Re-anchor briefly until the layout
-    // settles, but stop immediately if the person starts scrolling.
     const settle = () => {
       if (cancelled) return;
 
@@ -41,8 +38,6 @@ const ScrollToTop = () => {
           Number.parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
         const delta = Math.abs(target.getBoundingClientRect().top - margin);
         if (delta > 4) {
-          // "instant" overrides the global smooth-scroll CSS so layout shifts
-          // above the target cannot restart a long animation on every retry.
           target.scrollIntoView({ behavior: "instant", block: "start" });
         }
       }
@@ -94,14 +89,6 @@ const toastTheming = {
   custom: { style: toastBase, className: "" },
 };
 
-/**
- * Route transition.
- *
- * A short fade-and-rise on the route container, keyed by path. It runs on the
- * compositor (opacity + transform only) and is skipped entirely for people
- * who ask for reduced motion, so navigation gains a sense of arrival without
- * costing frames or motion-sensitivity.
- */
 const PageTransition = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useLocation();
   return (
