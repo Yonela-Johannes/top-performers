@@ -10,7 +10,6 @@ import {
   ServerCrash,
   X,
 } from "lucide-react";
-import { useGetMetadataQuery } from "@/api/countriesApi";
 import type { Committer } from "@/types";
 import { CountryCard } from "@/components/common/CountryCard";
 import { UserDialog } from "@/components/common/UserDialog";
@@ -18,7 +17,7 @@ import { RouteLine } from "@/components/atlas";
 import { regionTheme } from "@/lib/regionTheme";
 import { useCountrySearch } from "@/hooks/useCountrySearch";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
-import { formatDate } from "@/lib/format";
+
 import {
   absoluteUrl,
   defaultOgImage,
@@ -82,7 +81,6 @@ const Home = () => {
     selectRegion,
     resetFilters,
   } = useCountrySearch();
-  const { data: metadata } = useGetMetadataQuery();
 
   const [selectedUser, setSelectedUser] = useState<Committer | null>(null);
   const [visibleCount, setVisibleCount] = useState(COUNTRIES_PER_PAGE);
@@ -189,22 +187,6 @@ const Home = () => {
       />
     );
   }
-
-  // …inside the component:
-  const generatedAt = metadata?.generatedAt;
-
-  const facts = [
-    { label: "Ranking metric", value: "Public commits" },
-    { label: "Data source", value: "GitHub" },
-    {
-      label: "Last updated",
-      value: generatedAt ? (
-        <time dateTime={generatedAt}>{formatDate(generatedAt)}</time>
-      ) : (
-        "Unavailable"
-      ),
-    },
-  ];
 
   return (
     <div className="pb-20">
