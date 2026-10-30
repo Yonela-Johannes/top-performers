@@ -61,15 +61,15 @@ export const UserTable = ({
   }, [deepLinkedUser, users]);
 
   const rankStyle = (rank: number) => {
-    if (rank === 1) return "bg-brand text-brand-foreground";
-    if (rank === 2 || rank === 3) return "bg-secondary text-foreground";
-    return "text-muted-foreground";
+    if (rank === 1) return "border-2 border-foreground bg-brand text-brand-foreground";
+    if (rank === 2 || rank === 3) return "border border-foreground bg-secondary text-foreground";
+    return "border border-transparent text-muted-foreground";
   };
 
   return (
     <>
       <div className="surface overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-foreground px-5 py-4">
           <div>
             <p className="eyebrow">Leaderboard</p>
             <h2 className="mt-1 text-lg font-semibold text-foreground">

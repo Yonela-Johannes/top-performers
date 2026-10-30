@@ -14,7 +14,7 @@ export const Header = () => {
   const isHome = pathname === "/";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-50 border-b-2 border-foreground bg-background/95 supports-[backdrop-filter]:bg-background/90">
       <div className="shell">
         <div className="flex h-16 items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-6 lg:gap-8">
@@ -28,8 +28,8 @@ export const Header = () => {
                 aria-current={isHome ? "page" : undefined}
                 className={`inline-flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors ${
                   isHome
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"
+                    ? "bg-brand text-foreground shadow-[2px_2px_0_var(--ink)]"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
               >
                 <Globe className="h-4 w-4" aria-hidden="true" />
@@ -37,7 +37,7 @@ export const Header = () => {
               </Link>
               <Link
                 to="/#how-it-works"
-                className="hidden h-9 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/70 hover:text-foreground md:inline-flex"
+                className="hidden h-9 items-center rounded-lg px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground md:inline-flex"
               >
                 How it works
               </Link>

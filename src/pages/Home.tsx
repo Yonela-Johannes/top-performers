@@ -262,9 +262,10 @@ const Home = () => {
       </Helmet>
 
       <div className="shell">
-        <section className="pb-10 pt-12 sm:pt-14 lg:pb-14 lg:pt-20">
+        <section className="notebook-surface relative -mx-5 overflow-hidden border-b-2 border-foreground px-5 pb-10 pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-14 lg:pt-20">
+          <div className="pointer-events-none absolute inset-y-0 left-5 hidden w-px bg-[var(--margin-line)]/70 lg:left-8 lg:block" aria-hidden="true" />
           <div className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-ink" />
+            <span className="h-2 w-2 rounded-sm border-foreground bg-brand" aria-hidden="true" />
             <p className="eyebrow text-foreground/70">
               The open-source performance index
             </p>
@@ -276,16 +277,18 @@ const Home = () => {
 
           <div className="mt-5 grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
             <div className="max-w-3xl">
-              <h1 className="font-display text-[clamp(2.75rem,7vw,5.25rem)] leading-[0.94] tracking-[-0.015em] text-foreground">
-                The world's most active{" "}
-                <span className="italic text-brand-ink">builders</span>,
-                <br className="hidden sm:block" /> ranked by country.
+              <h1 className="max-w-4xl font-display text-[clamp(3rem,8vw,6.75rem)] font-extrabold uppercase leading-[0.88] tracking-[-0.035em] text-foreground">
+                Find the builders
+                <br className="hidden sm:block" /> shaping open source.
+                <span className="mt-2 block text-brand-ink">Ranked by country.</span>
               </h1>
               <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-                A clear view of the developers shipping the most public code —
-                country by country, refreshed every day from public GitHub
-                activity.
+                Explore public GitHub commit activity in country-based leaderboards. A useful snapshot of open-source contributions—not a measure of skill or impact.
               </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a href="#explore-heading" className="button-primary">Explore countries <ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                <a href="#how-it-works" className="button-secondary">How rankings work</a>
+              </div>
             </div>
 
             <div className="hidden w-56 border-l border-border pl-6 lg:block">
@@ -341,7 +344,7 @@ const Home = () => {
         </section>
 
         <section aria-labelledby="explore-heading">
-          <div className="sticky top-16 z-30 -mx-5 border-y border-border bg-background/90 px-5 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="sticky top-16 z-30 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative min-w-0 flex-1">
                 <label htmlFor="country-search" className="sr-only">

@@ -23,7 +23,7 @@ export const CountryCard = ({ country, region, onUserClick }: CountryCardProps) 
   const avgCommits = totalUsers ? Math.round(totalCommits / totalUsers) : 0;
 
   return (
-    <article className="group surface flex h-full flex-col p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-lift">
+    <article className="group surface flex h-full flex-col p-5 transition-[transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_var(--ink)] motion-reduce:transform-none">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           {isLoading ? (
@@ -116,8 +116,8 @@ export const CountryCard = ({ country, region, onUserClick }: CountryCardProps) 
                     <span
                       className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-mono text-[11px] font-medium ${
                         index === 0
-                          ? "bg-brand text-brand-foreground"
-                          : "bg-secondary text-muted-foreground"
+                          ? "border-2 border-foreground bg-brand text-brand-foreground"
+                          : "border border-border bg-secondary text-foreground"
                       }`}
                     >
                       {index + 1}

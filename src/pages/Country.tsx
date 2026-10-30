@@ -328,13 +328,13 @@ const Country = () => {
           </span>
         </div>
 
-        <section className="pb-9">
+        <section className="notebook-surface relative -mx-5 border-b-2 border-foreground px-5 pb-8 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="flex items-start gap-4 sm:items-center sm:gap-5">
             {country?.flagUrl ? (
               <img
                 src={country.flagUrl}
                 alt={`${formattedCountryName} flag`}
-                className="h-11 w-16 shrink-0 rounded-lg border border-border object-cover shadow-sm sm:h-14 sm:w-20"
+                className="h-11 w-16 shrink-0 rounded-lg border-2 border-foreground object-cover shadow-[2px_2px_0_var(--ink)] sm:h-14 sm:w-20"
               />
             ) : (
               <div className="flex h-11 w-16 shrink-0 items-center justify-center rounded-lg border border-border bg-muted font-mono text-xs text-muted-foreground sm:h-14 sm:w-20">
@@ -358,7 +358,7 @@ const Country = () => {
                   </>
                 )}
               </div>
-              <h1 className="mt-1 break-words font-display text-[2.75rem] leading-[0.95] tracking-[-0.01em] text-foreground sm:text-6xl lg:text-7xl">
+              <h1 className="mt-1 break-words font-display text-[clamp(2.75rem,8vw,5.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.035em] text-foreground">
                 {formattedCountryName}
               </h1>
             </div>
@@ -379,7 +379,7 @@ const Country = () => {
             </a>
           </div>
 
-          <dl className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">
+          <dl className="mt-8 grid grid-cols-1 gap-px overflow-hidden rounded-xl border-2 border-foreground bg-foreground shadow-[4px_4px_0_var(--ink)] sm:grid-cols-3">
             {[
               {
                 label: "Ranked developers",
@@ -425,7 +425,7 @@ const Country = () => {
           </dl>
         </section>
 
-        <div className="sticky top-16 z-20 -mx-5 border-y border-border bg-background/90 px-5 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div className="sticky top-16 z-20 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="relative min-w-0 flex-1">
               <label htmlFor="developer-search" className="sr-only">

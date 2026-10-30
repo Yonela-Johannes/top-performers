@@ -12,17 +12,15 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Figtree", "ui-sans-serif", "system-ui", "sans-serif"],
         display: [
-          "Instrument Serif",
-          "ui-serif",
-          "Georgia",
-          "Cambria",
-          "Times New Roman",
-          "serif",
+          "Bricolage Grotesque",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
         ],
         mono: [
-          "JetBrains Mono",
+          "DM Mono",
           "ui-monospace",
           "SFMono-Regular",
           "Menlo",
