@@ -195,15 +195,14 @@ export const ProfileCard = ({
             ) : null}
           </ul>
         </div>
-
         <a
           href={`https://github.com/${handle}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex h-9 shrink-0 items-center gap-1.5 self-start rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary"
+          className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary sm:w-auto"
         >
           <Github className="h-4 w-4" aria-hidden="true" />
-          GitHub
+          View on GitHub
           <ArrowUpRight
             className="h-3 w-3 text-muted-foreground"
             aria-hidden="true"

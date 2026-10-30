@@ -19,6 +19,8 @@ import {
 
 const exploreLinks = [
   { label: "All countries", to: "/" },
+  { label: "Explore the directory", to: "/explore" },
+  { label: "Find a developer", to: "/developers" },
   { label: "How rankings work", to: "/#how-it-works" },
 ];
 
@@ -53,7 +55,7 @@ export const Footer = () => {
         <div className="grid gap-12 py-14 md:grid-cols-[1.5fr_1fr_1fr] md:gap-10 lg:py-20">
           {/* Brand introduction */}
           <div className="max-w-md">
-            <Brand />
+            <Brand inverted />
 
             <p className="mt-6 max-w-sm text-sm leading-7 text-[var(--band-fg-muted)]">
               A worldwide look at who's building in open source. Discover

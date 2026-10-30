@@ -203,7 +203,7 @@ export const RepoCard = ({
 
           {repo.license?.spdx_id && repo.license.spdx_id !== "NOASSERTION" ? (
             <span
-              className="inline-flex items-center gap-1"
+              className="hidden items-center gap-1 sm:inline-flex"
               title={repo.license.name}
             >
               <Scale className="h-3.5 w-3.5" aria-hidden="true" />
@@ -212,7 +212,7 @@ export const RepoCard = ({
           ) : null}
 
           <span
-            className="ml-auto whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.06em]"
+            className="ml-auto whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.06em] max-sm:basis-full max-sm:text-left"
             title={`Last push: ${formatDate(repo.pushed_at)}`}
           >
             {repo.pushed_at

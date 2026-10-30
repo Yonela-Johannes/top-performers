@@ -123,7 +123,7 @@ const Developers = () => {
           description="Type a username to open its developer page: ranking from the commit index, live profile, repositories, languages and activity."
         />
 
-        <div className="mx-auto mt-10 max-w-2xl">
+        <div className="mx-auto mt-10 max-w-2xl pb-[40vh]">
           <form onSubmit={submit} role="search" className="relative">
             <label htmlFor="handle-search" className="sr-only">
               GitHub username
@@ -246,11 +246,11 @@ const Developers = () => {
                 <StatTile
                   label="Joined"
                   value={age ? age.joined.getFullYear() : "—"}
+                  hint={age ? relativeTime(user.created_at) : undefined}
                 />
                 <StatTile
-                  label="Last seen"
-                  value={relativeTime(user.created_at)}
-                  hint="GitHub account created"
+                  label="Gists"
+                  value={(user.public_gists ?? 0).toLocaleString()}
                 />
               </dl>
             </Card>

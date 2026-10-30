@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import type { Committer } from "@/types";
 import { UserDialog } from "./UserDialog";
-import { ArrowUpRight, ExternalLink } from "lucide-react";
+import { ArrowUpRight, ExternalLink, UserRound } from "lucide-react";
 
 interface UserTableProps {
   users: Committer[];
@@ -61,9 +61,9 @@ export const UserTable = ({
   }, [deepLinkedUser, users]);
 
   const rankStyle = (rank: number) => {
-    if (rank === 1) return "border-2 border-foreground bg-brand text-brand-foreground";
-    if (rank === 2 || rank === 3) return "border-2 border-foreground bg-secondary text-foreground";
-    return "border-2 border-transparent text-muted-foreground";
+    if (rank === 1) return "bg-brand text-brand-foreground";
+    if (rank === 2 || rank === 3) return "bg-secondary text-foreground";
+    return "text-muted-foreground";
   };
 
   return (
@@ -118,16 +118,17 @@ export const UserTable = ({
                   </TableCell>
 
                   <TableCell className="min-w-0 py-3 pl-1 pr-2">
-                    <button
-                      type="button"
-                      onClick={() => openDialog(user)}
-                      className="flex min-h-11 min-w-0 cursor-pointer items-center gap-3 rounded-lg py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      aria-label={`Open the profile of ${user.username}`}
+                    <Link
+                      to={`/developer/${encodeURIComponent(user.username)}${
+                        countrySlug ? `?from=${countrySlug}` : ""
+                      }`}
+                      className="flex min-h-11 min-w-0 items-center gap-3 rounded-lg py-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label={`Open the developer page for ${user.username}`}
                     >
                       <img
                         src={user.avatar}
                         alt=""
-                        className="h-9 w-9 shrink-0 rounded-full border-2 border-foreground bg-muted"
+                        className="h-9 w-9 shrink-0 rounded-full border border-border bg-[var(--surface-muted)]"
                         loading="lazy"
                       />
                       <span className="min-w-0">
@@ -144,7 +145,7 @@ export const UserTable = ({
                           {user.realname || "GitHub contributor"}
                         </span>
                       </span>
-                    </button>
+                    </Link>
                   </TableCell>
 
                   <TableCell className="py-3 pr-3 text-right sm:px-5">
@@ -154,15 +155,27 @@ export const UserTable = ({
                   </TableCell>
 
                   <TableCell className="hidden py-3 text-center sm:table-cell">
-                    <a
-                      href={user.profile}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
-                      aria-label={`Open ${user.username}'s GitHub profile`}
-                    >
-                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                    </a>
+                    <span className="inline-flex items-center">
+                      <button
+                        type="button"
+                        onClick={() => openDialog(user)}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        aria-label={`Share ${user.username}'s ranking badge`}
+                        title="Share badge"
+                      >
+                        <UserRound className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                      <a
+                        href={user.profile}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        aria-label={`Open ${user.username}'s GitHub profile`}
+                        title="Open on GitHub"
+                      >
+                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    </span>
                   </TableCell>
                 </TableRow>
               ))}

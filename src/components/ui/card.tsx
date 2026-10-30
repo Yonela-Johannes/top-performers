@@ -1,14 +1,17 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
-import { Card as SurfaceCard } from "@/components/common/Card";
 
-
-const Card = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, ...props }, ref) => (
-    <SurfaceCard ref={ref} padding="none" className={className} {...props} />
-  ),
-);
+const Card = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("panel rounded-xl text-card-foreground", className)}
+    {...props}
+  />
+));
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef<

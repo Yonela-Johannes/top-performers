@@ -115,9 +115,11 @@ export const useRankingLookupState = ({
   const batchLoading = results
     .slice(0, slice.length)
     .some((result) => result.isLoading);
-  const batchSettled =
-    !batchLoading &&
-    results.slice(0, slice.length).every((result) => !result.isFetching);
+
+  const blocked = results
+    .slice(0, slice.length)
+    .some((result) => result.isFetching && !result.data);
+  const batchSettled = !batchLoading && !blocked;
 
   useEffect(() => {
     if (!active || slice.length === 0 || !batchSettled) return;
@@ -125,7 +127,7 @@ export const useRankingLookupState = ({
     for (let index = 0; index < slice.length; index += 1) {
       const country = slice[index];
       const data = results[index]?.data;
-      const match = data?.users.find(
+      const match = data?.users?.find(
         (user) => user.username.toLowerCase() === key,
       );
       if (match) {
@@ -152,10 +154,12 @@ export const useRankingLookupState = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, batchSettled, key, start, slice.length, ordered.length]);
 
+  const isLookingUp =
+    active && !isLoadingCountries && (batchLoading || blocked);
+
   return {
     ranking: hit,
-    isLookingUp:
-      active && (isLoadingCountries || slice.length === 0 || batchLoading),
+    isLookingUp,
     notRanked: exhausted,
   };
 };

@@ -51,3 +51,12 @@ export const buildRegionOptions = (
     count: counts.get(region) || 0,
   }));
 };
+
+export const RESERVED_SLUGS = new Set([
+  "explore",
+  "developers",
+  "developer",
+  "assets",
+  "data",
+  "api",
+]);

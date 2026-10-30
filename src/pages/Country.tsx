@@ -20,7 +20,11 @@ import {
   X,
 } from "lucide-react";
 import { getDynamicDescription, SEO_KEYWORDS } from "./constants";
-import { buildCountryToRegion, getCountryRegion as getCountryRegionFromFlags } from "@/lib/countries";
+import {
+  buildCountryToRegion,
+  getCountryRegion as getCountryRegionFromFlags,
+  RESERVED_SLUGS,
+} from "@/lib/countries";
 import {
   absoluteUrl,
   defaultOgImage,
@@ -132,7 +136,10 @@ const Country = () => {
   }, [country, flagsData]);
 
   const countryMissing =
-    !isLoadingCountries && countries.length > 0 && slug && !country;
+    !isLoadingCountries &&
+    countries.length > 0 &&
+    slug &&
+    (!country || RESERVED_SLUGS.has(slug.toLowerCase()));
   const canFetch = Boolean(slug) && !countryMissing;
 
   // currentData (not data): `data` keeps the previous country's result
@@ -466,7 +473,7 @@ const Country = () => {
         {/* Header */}
         <section
           aria-labelledby="country-heading"
-          className="notebook-surface relative -mx-5 border-b-2 border-foreground px-5 pb-10 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="notebook-surface relative -mx-5 border-b border-border px-5 pb-10 pt-2 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
             {/* key resets the failed-image state when navigating between countries */}
@@ -488,7 +495,7 @@ const Country = () => {
               </div>
               <h1
                 id="country-heading"
-                className="mt-1 break-words font-display text-[clamp(2.25rem,8vw,5.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] text-foreground [text-shadow:0.04em_0.04em_0_var(--tangerine)]"
+                className="mt-1 break-words font-display text-[clamp(2.25rem,8vw,5.25rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] text-foreground"
               >
                 {formattedCountryName}
               </h1>
@@ -537,7 +544,7 @@ const Country = () => {
 
         {/* Toolbar */}
         <div
-          className="sticky z-20 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="sticky z-20 -mx-5 border-y border-border bg-background/95 px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
           style={{ top: "var(--nav-height)" }}
         >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">

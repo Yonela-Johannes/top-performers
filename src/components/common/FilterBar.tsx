@@ -76,7 +76,7 @@ export const FilterBar = ({ refetch, sortBy, isFetching }: FilterBarProps) => {
         >
           <SelectTrigger
             id="leaderboard-sort"
-            className="h-11 w-[150px] rounded-lg border-2 border-foreground bg-card text-sm font-medium text-foreground shadow-[2px_2px_0_var(--ink)] focus:outline-none focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[color:var(--focus)] sm:w-[170px]"
+            className="h-11 w-[150px] rounded-lg border border-border bg-card text-sm font-medium text-foreground shadow-[0_1px_2px_rgba(20,18,24,0.05)] transition-colors hover:border-foreground/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-[170px]"
           >
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>

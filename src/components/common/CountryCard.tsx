@@ -84,42 +84,44 @@ function StatValue({
   return <>{children}</>;
 }
 
-/**
- * Country card.
- *
- * Same card language as repository, activity and profile cards: hairline
- * border, one tinted metric band, a quiet list. The title carries a stretched
- * link to the leaderboard, while each developer row is its own link to the
- * developer page — no nested interactive regions.
- */
 export const CountryCard = ({
   country,
   region,
   onUserClick,
 }: CountryCardProps) => {
-  // Visibility-gated query: the full user list is only fetched once the card
-  // scrolls into view (IntersectionObserver flips inView), not 30× on load.
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement | null>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    if (inView || typeof IntersectionObserver === "undefined") return;
+    if (inView) return undefined;
+    const element = ref.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return undefined;
+    }
+
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
           setInView(true);
           observer.disconnect();
         }
       },
-      { rootMargin: "300px" },
+      { rootMargin: "400px 0px" },
     );
-    if (ref.current) observer.observe(ref.current);
+    observer.observe(element);
+    const rect = element.getBoundingClientRect();
+    const viewport = window.innerHeight || 0;
+    if (rect.top < viewport + 400 && rect.bottom > -400) setInView(true);
+
     return () => observer.disconnect();
   }, [inView]);
 
-  const { currentData, isLoading, isError, refetch } = useGetCountryUsersQuery(
-    inView ? { country: country.slug, mode: "all" } : skipToken,
-  );
+  const { currentData, isFetching, isUninitialized, isError, refetch } =
+    useGetCountryUsersQuery(
+      inView ? { country: country.slug, mode: "all" } : skipToken,
+    );
+  const isLoading = !isError && (isUninitialized || isFetching);
 
   const { topUsers, totalUsers, totalCommits, avgCommits } = (() => {
     const ranked = [...(currentData?.users ?? [])].sort(
@@ -134,15 +136,15 @@ export const CountryCard = ({
     };
   })();
 
-  const isEmpty = !isLoading && !isError && inView && topUsers.length === 0;
+  const isEmpty = !isLoading && !isError && topUsers.length === 0;
 
   return (
     <Card
       as="article"
       ref={ref}
       interactive
-      aria-busy={isLoading}
-      className="h-full"
+      aria-busy={isLoading ? "true" : undefined}
+      className="h-full flex-1"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">

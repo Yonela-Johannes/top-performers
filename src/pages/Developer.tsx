@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, CalendarDays, Trophy } from "lucide-react";
@@ -16,7 +16,12 @@ import {
 import { useGetCountriesQuery, useGetMetadataQuery } from "@/api/countriesApi";
 import { useRepoLanguages } from "@/hooks/useRepoLanguages";
 import { useRankingLookupState } from "@/hooks/useRankingLookup";
-import { accountAge, eventCoverageDays, relativeTime } from "@/lib/github";
+import {
+  accountAge,
+  countrySlugToTerm,
+  eventCoverageDays,
+  relativeTime,
+} from "@/lib/github";
 import { formatDate } from "@/lib/format";
 import { absoluteUrl, SITE_NAME, toTitle } from "@/lib/seo";
 import { ProfileCard } from "@/components/github/ProfileCard";
@@ -41,14 +46,6 @@ export const Developer = () => {
 
   const [reposPerPage, setReposPerPage] = useState(REPO_LIMIT);
   const [repoSort, setRepoSort] = useState<RepoSort>("pushed");
-
-  // The ranking lives in the country files, so it is located by scanning them
-  // rather than by an API call. `from` lets a visitor arriving from a
-  // leaderboard check that country first.
-  const { ranking, isLookingUp, notRanked } = useRankingLookupState({
-    username: decodedUsername,
-    preferredSlug: fromCountry,
-  });
 
   const {
     data: user,
@@ -109,6 +106,28 @@ export const Developer = () => {
 
   const { data: countries = [] } = useGetCountriesQuery();
   const { data: metadata } = useGetMetadataQuery();
+
+  // The GitHub profile is authoritative for where this developer actually is;
+  // the `from` slug is only a first guess. Reordering the scan queue by the
+  // profile's own location finds the hit before fetching most of the index.
+  const locationTerm = countrySlugToTerm(fromCountry);
+  const locationSlug = useMemo(() => {
+    const location = user?.location?.toLowerCase();
+    if (!location) return locationTerm ? fromCountry : undefined;
+    return (
+      countries.find((country) => location.includes(country.name.toLowerCase()))
+        ?.slug ?? (locationTerm ? fromCountry : undefined)
+    );
+  }, [countries, user?.location, fromCountry, locationTerm]);
+
+  // The ranking lives in the country files, so it is located by scanning them
+  // rather than by an API call. The profile's own location decides which
+  // country is checked first; `from` only seeds that when the profile has no
+  // usable location.
+  const { ranking, isLookingUp, notRanked } = useRankingLookupState({
+    username: decodedUsername,
+    preferredSlug: locationSlug,
+  });
 
   // Only asked for when the quota is the likely cause, so a normal visit
   // never spends a request on it.

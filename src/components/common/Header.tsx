@@ -23,25 +23,12 @@ import {
 import { cn } from "@/lib/utils";
 import { GITHUB_URL, SOURCE_NAME } from "@/lib/seo";
 
-/**
- * Header.
- *
- * Structure follows the reference project: brand on the left, product
- * navigation beside it, then a flexible search field, then utilities on the
- * right. Navigation and utilities are separated by a hairline so they never
- * read as one list of unrelated links, and utilities are icon-sized controls
- * rather than text buttons competing with navigation.
- *
- * Active state is a soft tinted pill (the same language the cards use), not a
- * hard border. Mobile gets a disclosure panel instead of a cramped inline row.
- */
-
 const navItemBase =
   "relative inline-flex h-9 items-center gap-2 rounded-lg px-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 
 const navItem = (active: boolean) =>
   active
-    ? "bg-foreground text-background"
+    ? "bg-foreground text-primary-foreground"
     : "text-muted-foreground hover:bg-secondary hover:text-foreground";
 
 const utilityButton =

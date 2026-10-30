@@ -163,11 +163,13 @@ export const ActivityCard = ({
                       <Icon className="h-4 w-4" aria-hidden="true" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium text-foreground">
+                      <span className="line-clamp-2 text-sm font-medium leading-snug text-foreground sm:truncate sm:leading-normal">
                         {item.title}
                       </span>
                       <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
-                        <span className="truncate font-mono">{item.repo}</span>
+                        <span className="max-w-full truncate font-mono">
+                          {item.repo.split("/").pop()}
+                        </span>
                         <span aria-hidden="true">·</span>
                         <span className="capitalize">
                           {KIND_META[item.kind].label}

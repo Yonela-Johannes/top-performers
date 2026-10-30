@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ArrowUpRight, Check, Copy, MapPin, Share2 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { ErrorMessage } from "./ErrorMessage";
 import type { Committer } from "@/types";
 import { useGetGitHubUserByUsernameQuery } from "@/api";
@@ -139,15 +140,27 @@ export const UserDialog = ({
                   <h3 className="truncate text-lg font-semibold text-foreground">
                     {userInfo.name || userInfo.login}
                   </h3>
-                  <a
-                    href={userInfo.html_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-brand-ink hover:underline"
-                  >
-                    View on GitHub
-                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </a>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <Link
+                      to={`/developer/${encodeURIComponent(user.username)}${
+                        countrySlug ? `?from=${countrySlug}` : ""
+                      }`}
+                      onClick={() => onOpenChange(false)}
+                      className="inline-flex items-center gap-1 text-sm font-medium text-brand-ink hover:underline"
+                    >
+                      Full developer page
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </Link>
+                    <a
+                      href={userInfo.html_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      GitHub
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                  </div>
                   {userInfo.location && (
                     <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                       <MapPin className="h-3.5 w-3.5" aria-hidden="true" />

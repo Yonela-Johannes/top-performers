@@ -119,10 +119,6 @@ export const dominantLanguage = (
   };
 };
 
-/**
- * Client-side ordering for a loaded repository page, matching the API's own
- * sort keys so the visible order never contradicts the selected control.
- */
 export const sortRepos = (
   repos: GitHubRepo[],
   sort: "pushed" | "updated" | "created" | "full_name",
@@ -149,6 +145,12 @@ export const sortRepos = (
           new Date(a.pushed_at ?? a.updated_at).getTime(),
       );
   }
+};
+
+export const countrySlugToTerm = (slug?: string | null) => {
+  if (!slug) return null;
+  const term = slug.replace(/-/g, " ").trim();
+  return term.length >= 3 ? term : null;
 };
 
 /** Total stars and forks across the loaded repositories. */
@@ -233,11 +235,6 @@ export interface ActivityItem {
   commitCount?: number;
 }
 
-/**
- * Turn raw public events into one readable row each. Raw PushEvents are noisy
- * (one event ↔ many commits), so a push becomes one item carrying its commit
- * count, and its first commit message is the title.
- */
 export const toActivityItems = (
   events: GitHubEvent[] | undefined,
 ): ActivityItem[] => {
@@ -365,11 +362,6 @@ export const toActivityItems = (
   return items;
 };
 
-/**
- * Push events only cover the last ~90 days and are capped at 300, so a `days`
- * window longer than the event history would render as mostly empty. Callers
- * can use this to label the sparkline honestly.
- */
 export const eventCoverageDays = (events: GitHubEvent[] | undefined) => {
   if (!events?.length) return 0;
   const oldest = events.reduce((min, event) => {
@@ -405,11 +397,6 @@ export const commitSeries = (events: GitHubEvent[] | undefined, days = 30) => {
   return [...buckets.entries()].map(([date, count]) => ({ date, count }));
 };
 
-/**
- * Consecutive days with at least one push, counted back from the most recent
- * day that has data. Today may simply be early, so a zero today does not end
- * the streak; any earlier zero does.
- */
 export const activeStreak = (series: { date: string; count: number }[]) => {
   let streak = 0;
   for (let i = series.length - 1; i >= 0; i -= 1) {

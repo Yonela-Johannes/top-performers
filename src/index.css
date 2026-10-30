@@ -259,7 +259,11 @@
   }
   .chip[aria-pressed="true"],
   .chip[data-active="true"] {
-    @apply border-transparent bg-foreground text-background;
+    @apply border-transparent bg-foreground text-primary-foreground;
+  }
+  .chip[aria-pressed="true"]:hover,
+  .chip[data-active="true"]:hover {
+    @apply text-primary-foreground;
   }
 
   /* One shared card language: resting surface, lifts slightly on hover. */
@@ -552,4 +556,14 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+@media print {
+  [role="banner"],
+  header,
+  footer,
+  nav[aria-label="Breadcrumb"],
+  .sticky {
+    position: static !important;
+  }
 }

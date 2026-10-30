@@ -21,7 +21,7 @@ const PAGE_SIZE = 12;
 const ExploreLoading = () => (
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
     {Array.from({ length: 6 }).map((_, index) => (
-      <Card key={index} className="h-[286px]" aria-busy="true">
+      <Card key={index} className="h-[308px]" aria-busy="true">
         <div className="flex items-center gap-3">
           <SkeletonBlock className="h-8 w-11" />
           <div className="flex-1 space-y-2">
@@ -200,7 +200,7 @@ const Explore = () => {
                 ? `${featuredCountry.name}, at a glance`
                 : "Spotlight a country"
             }
-            description="Open a country card to feature its leaderboard here."
+            description="Feature a country's leaderboard at the top of this page."
             action={
               featuredCountry ? (
                 <button
@@ -269,7 +269,7 @@ const Explore = () => {
               <CardMessage
                 icon={<Trophy />}
                 title="Pick a country to feature"
-                description="Hover a country card below and choose “Spotlight”, or stay on the full directory."
+                description="Choose “Spotlight this country” under any card in the directory below."
               />
             </Card>
           )}
@@ -406,9 +406,9 @@ const Explore = () => {
               </Card>
             ) : (
               <>
-                <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <ul className="grid grid-cols-1 items-stretch gap-x-4 gap-y-3 sm:grid-cols-2 xl:grid-cols-3">
                   {visible.map((country: Country) => (
-                    <li key={country.slug} className="min-w-0">
+                    <li key={country.slug} className="flex min-w-0 flex-col">
                       <CountryCard
                         country={country}
                         region={countryToRegion[country.name.toLowerCase()]}
@@ -425,7 +425,8 @@ const Explore = () => {
                               block: "start",
                             });
                         }}
-                        className="mt-2 inline-flex items-center gap-1 px-1 text-xs font-medium text-muted-foreground transition-colors hover:text-brand-ink"
+                        className="mt-2 inline-flex items-center gap-1 rounded px-1 py-1 text-xs font-medium text-ink-secondary transition-colors hover:text-brand-ink"
+                        aria-pressed={false}
                       >
                         <Trophy className="h-3 w-3" aria-hidden="true" />
                         Spotlight this country

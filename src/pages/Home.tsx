@@ -42,7 +42,7 @@ type SortDirection = "asc" | "desc";
 const HomeLoading = () => (
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
     {Array.from({ length: 6 }).map((_, index) => (
-      <div key={index} className="surface flex h-[318px] flex-col p-5">
+      <div key={index} className="panel flex h-[318px] flex-col p-5">
         <div className="flex items-center gap-3">
           <div className="skeleton h-8 w-11" />
           <div className="flex-1 space-y-2">
@@ -50,9 +50,9 @@ const HomeLoading = () => (
             <div className="skeleton h-2.5 w-20" />
           </div>
         </div>
-        <div className="mt-5 grid grid-cols-2 gap-3 border-y border-border py-4">
-          <div className="skeleton h-10" />
-          <div className="skeleton h-10" />
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <div className="skeleton h-16 rounded-lg" />
+          <div className="skeleton h-16 rounded-lg" />
         </div>
         <div className="mt-4 space-y-3">
           {[0, 1, 2].map((row) => (
@@ -381,7 +381,7 @@ const Home = () => {
           <RouteLine className="mt-10 max-w-3xl" />
         </section>
         <div
-          className="sticky z-30 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          className="sticky z-30 -mx-5 border-y border-border bg-background/95 px-5 py-3 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
           style={{ top: "var(--nav-height)" }}
         >
           {/* Region navigation and sort. Country search lives in the navbar. */}
@@ -409,7 +409,7 @@ const Home = () => {
                 <button
                   type="button"
                   onClick={toggleSort}
-                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border-2 border-foreground bg-card px-3 font-mono text-[11px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 text-[11px] font-semibold uppercase tracking-[0.06em] text-foreground transition-colors hover:border-foreground/25 hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                   title={`Sort ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                 >
@@ -432,20 +432,10 @@ const Home = () => {
                 type="button"
                 onClick={() => selectRegion(ALL_REGIONS)}
                 aria-pressed={activeRegion === ALL_REGIONS}
-                className={`inline-flex min-h-10 shrink-0 snap-start items-center gap-2 border-2 px-3.5 font-mono text-[11px] font-bold uppercase tracking-wide transition-[background-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                  activeRegion === ALL_REGIONS
-                    ? "border-foreground bg-foreground text-background shadow-[3px_3px_0_var(--tangerine)]"
-                    : "border-foreground/20 bg-card text-muted-foreground hover:border-foreground hover:text-foreground"
-                }`}
+                className="chip min-h-9 shrink-0 snap-start gap-2 px-3.5 text-[11px] font-semibold uppercase tracking-[0.06em]"
               >
                 <span>All regions</span>
-                <span
-                  className={`border px-1.5 py-0.5 text-[10px] ${
-                    activeRegion === ALL_REGIONS
-                      ? "border-background/30"
-                      : "border-current/20"
-                  }`}
-                >
+                <span className="rounded-full bg-[var(--surface-muted)] px-1.5 py-0.5 text-[10px] leading-none text-muted-foreground">
                   {allCountries.length}
                 </span>
               </button>
@@ -459,18 +449,23 @@ const Home = () => {
                     type="button"
                     onClick={() => selectRegion(region.name)}
                     aria-pressed={isActive}
-                    className={`inline-flex min-h-10 shrink-0 snap-start items-center gap-2 border-2 px-3.5 font-mono text-[11px] font-bold uppercase tracking-wide transition-[background-color,border-color,box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
-                      isActive
-                        ? "border-foreground bg-foreground text-background shadow-[3px_3px_0_var(--tangerine)]"
-                        : "border-foreground/20 bg-card text-muted-foreground hover:border-foreground hover:text-foreground"
-                    }`}
+                    className="chip min-h-9 shrink-0 snap-start gap-2 px-3.5 text-[11px] font-semibold uppercase tracking-[0.06em]"
                   >
                     <span
                       aria-hidden="true"
-                      className="h-2.5 w-2.5 shrink-0 rounded-full border-2 border-foreground"
+                      className="h-2.5 w-2.5 shrink-0 rounded-full border border-black/20"
                       style={{ background: regionTheme(region.name).fill }}
                     />
                     <span>{region.name}</span>
+                    <span
+                      className={`rounded-full px-1.5 py-0.5 text-[10px] leading-none ${
+                        isActive
+                          ? "bg-primary-foreground/15 text-primary-foreground"
+                          : "bg-[var(--surface-muted)] text-muted-foreground"
+                      }`}
+                    >
+                      {region.count}
+                    </span>
                   </button>
                 );
               })}
@@ -480,7 +475,7 @@ const Home = () => {
 
         <section aria-labelledby="explore-heading" className="scroll-mt-[calc(var(--nav-height)+5.5rem)]">
           {/* Section heading */}
-          <div className="relative mb-6 border-b-2 border-foreground pb-5 pt-8">
+          <div className="relative mb-6 border-b border-border pb-5 pt-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="min-w-0 flex-1">
                 <h2
@@ -510,7 +505,7 @@ const Home = () => {
 
               {/* Results indicator */}
               <div
-                className="flex shrink-0 items-center gap-3 border-2 border-foreground bg-card px-3.5 py-3 shadow-[3px_3px_0_var(--foreground)]"
+                className="flex shrink-0 items-center gap-3 rounded-lg border border-border bg-card px-3.5 py-2.5"
                 aria-live="polite"
                 aria-atomic="true"
               >
