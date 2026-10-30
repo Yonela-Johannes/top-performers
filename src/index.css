@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Surfaces (warm paper) */
     --paper: #fbf9f4;
     --surface: #ffffff;
     --surface-muted: #f5f1e8;
@@ -12,6 +13,8 @@
     --muted-ink: #706a75;
     --rule: #e2e8f1;
     --margin-line: #f3b4b4;
+
+    /* Accents */
     --sun: #ffc21a;
     --tangerine: #ff6f3c;
     --green: #0f7a4a;
@@ -19,7 +22,20 @@
     --sky: #8fc8ff;
     --mint: #9be3bf;
     --lilac: #c9b6ff;
+    --violet: #7f57f1;
     --focus: #0d79c7;
+
+    /* Inverted indigo band tokens (footer + one feature band per page) */
+    --band-bg: #252335;
+    --band-bg-alt: #343541;
+    --band-fg: #fffcf9;
+    --band-fg-muted: #d8d1dd;
+    --band-fg-faint: #a89eae;
+    --band-line: #48434f;
+    --band-accent: #da9d3c;
+
+    /* Layout + motion */
+    --nav-height: 4rem; /* keep sticky offsets in one place */
     --content-width: 78rem;
     --content-wide: 86rem;
     --page-padding: clamp(1.25rem, 4vw, 2.5rem);
@@ -31,6 +47,10 @@
     --shadow-small: 2px 2px 0 var(--ink);
     --shadow-medium: 4px 4px 0 var(--ink);
     --shadow-large: 6px 6px 0 var(--ink);
+    --shadow-xs: var(--shadow-small);
+    --shadow-xl: 8px 8px 0 var(--ink);
+
+    /* shadcn-style semantic tokens (single light set) */
     --background: 42 33% 97.5%;
     --foreground: 270 15% 8%;
     --card: 0 0% 100%;
@@ -60,53 +80,8 @@
     --chart-5: 260 100% 86%;
     --shadow-color: 270 15% 8%;
     --radius: 0.75rem;
-  }
 
-  .dark {
-    --paper: #17151a;
-    --surface: #201e24;
-    --surface-muted: #2a272e;
-    --ink: #f6f1e7;
-    --ink-secondary: #d8d1dd;
-    --muted-ink: #b2aab7;
-    --rule: #34323c;
-    --margin-line: #714c56;
-    --sun: #ffc21a;
-    --tangerine: #ff8053;
-    --green: #59ce91;
-    --pink: #7e465b;
-    --sky: #385b78;
-    --mint: #3d7158;
-    --lilac: #635587;
-    --focus: #72c8ff;
-    --background: 270 7% 9%;
-    --foreground: 42 25% 95%;
-    --card: 270 7% 13%;
-    --card-foreground: 42 25% 95%;
-    --popover: 270 7% 13%;
-    --popover-foreground: 42 25% 95%;
-    --primary: 42 25% 96%;
-    --primary-foreground: 270 15% 8%;
-    --secondary: 270 6% 19%;
-    --secondary-foreground: 42 25% 95%;
-    --muted: 270 6% 19%;
-    --muted-foreground: 270 7% 72%;
-    --accent: 44 100% 55%;
-    --accent-foreground: 270 15% 8%;
-    --destructive: 0 62% 58%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 270 6% 28%;
-    --input: 270 6% 32%;
-    --ring: 204 100% 72%;
-    --brand: 44 100% 55%;
-    --brand-foreground: 270 15% 8%;
-    --brand-ink: 44 100% 55%;
-    --chart-1: 44 100% 55%;
-    --chart-2: 148 58% 48%;
-    --chart-3: 207 90% 70%;
-    --chart-4: 330 75% 70%;
-    --chart-5: 260 75% 73%;
-    --shadow-color: 270 30% 3%;
+    color-scheme: light;
   }
 
   * {
@@ -117,6 +92,7 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     scrollbar-gutter: stable;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) var(--paper);
   }
 
   body {
@@ -133,6 +109,7 @@
     background-repeat: repeat;
     font-feature-settings: "cv11", "ss01";
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4 {
@@ -145,6 +122,17 @@
 
   button, input, select, textarea {
     font: inherit;
+  }
+
+  /* Light-only form controls, even when the OS is dark */
+  input, select, textarea {
+    color-scheme: light;
+  }
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px var(--surface) inset;
+    -webkit-text-fill-color: var(--ink);
   }
 
   :focus-visible {
@@ -221,6 +209,12 @@
 
   .icon-button {
     @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground shadow-sm transition-colors hover:border-foreground/25 hover:text-foreground disabled:pointer-events-none disabled:opacity-50;
+    border: 2px solid var(--ink);
+    color: var(--ink);
+    box-shadow: var(--shadow-small);
+  }
+  .icon-button:hover:not(:disabled) {
+    background: var(--sun);
   }
 
   .skeleton {
@@ -229,6 +223,127 @@
 
   .skip-link {
     @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-foreground focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-background;
+  }
+
+  /* Notebook page surface for editorial (level A) sections */
+  .notebook-surface {
+    background-color: var(--paper);
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in srgb, var(--rule) 56%, transparent) 31px, color-mix(in srgb, var(--rule) 56%, transparent) 32px);
+  }
+
+  /* Buttons */
+  .button-primary, .button-secondary {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    border: 2px solid var(--ink);
+    border-radius: .625rem;
+    padding: 0 1rem;
+    font-size: .875rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform var(--transition-fast) var(--ease), box-shadow var(--transition-fast) var(--ease), background-color var(--transition-fast) var(--ease);
+  }
+  .button-primary { background: var(--sun); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+  .button-secondary { background: var(--surface); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+  .button-primary:hover, .button-secondary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  .button-primary:active, .button-secondary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Stamp-style technical label used for factual metadata only */
+  .stamp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border: 2px dashed var(--ink);
+    border-radius: 6px;
+    padding: .2rem .55rem;
+    font-family: "DM Mono", ui-monospace, monospace;
+    font-size: .6875rem;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    background: var(--surface);
+    transform: rotate(-1.5deg);
+  }
+
+  /* Warm radial glow behind editorial headings and the hero (light mode) */
+  .lamplight {
+    position: relative;
+  }
+  .lamplight::before {
+    content: "";
+    position: absolute;
+    inset: -12% -6% auto -6%;
+    height: 130%;
+    pointer-events: none;
+    background: radial-gradient(
+      46% 62% at 68% 18%,
+      color-mix(in srgb, #da9d3c 16%, transparent) 0%,
+      color-mix(in srgb, #da9d3c 7%, transparent) 42%,
+      transparent 72%
+    );
+  }
+
+  /* Inverted indigo band */
+  .indigo-band {
+    background-color: var(--band-bg);
+    color: var(--band-fg);
+  }
+
+  /* Geometric lattice band: generic star-and-grid geometry, low contrast */
+  .pattern-lattice {
+    background-image:
+      repeating-linear-gradient(45deg, transparent 0, transparent 17px, color-mix(in srgb, currentColor 10%, transparent) 17px, color-mix(in srgb, currentColor 10%, transparent) 18px),
+      repeating-linear-gradient(-45deg, transparent 0, transparent 17px, color-mix(in srgb, currentColor 7%, transparent) 17px, color-mix(in srgb, currentColor 7%, transparent) 18px);
+  }
+
+  /* Door reveal: entering a country wipes the panel open (progressive) */
+  @supports (view-transition-name: x) {
+    .door-destination::view-transition-old(root),
+    .door-destination::view-transition-new(root) {
+      animation-duration: 220ms;
+    }
+  }
+  .door-panel {
+    animation: doorWipe 300ms var(--ease) both;
+    transform-origin: left center;
+  }
+  @keyframes doorWipe {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  /* Gentle bob for the single decorative sticker per page */
+  .bob {
+    animation: bobbing 5.5s ease-in-out infinite;
+  }
+  @keyframes bobbing {
+    0%, 100% { transform: translateY(0) rotate(var(--bob-tilt, -2deg)); }
+    50% { transform: translateY(-6px) rotate(var(--bob-tilt, -2deg)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bob { animation: none; }
+    .door-panel { animation: none; }
+    .stamp-badge { transform: none; }
+  }
+
+  /* Route line: dashed ink path that draws in once on scroll */
+  .route-line-path {
+    stroke-dasharray: var(--route-dash, 10 8);
+    transition: none;
+  }
+  .route-line.is-drawn .route-line-path {
+    stroke-dashoffset: 0 !important;
+  }
+
+  /* Paper vignette at section edges */
+  .paper-vignette {
+    box-shadow:
+      inset 0 14px 22px -18px color-mix(in srgb, var(--ink) 22%, transparent),
+      inset 0 -14px 22px -18px color-mix(in srgb, var(--ink) 22%, transparent);
   }
 }
 
@@ -245,6 +360,15 @@
   .nums {
     font-variant-numeric: tabular-nums;
   }
+
+  .bg-surface-muted { background-color: var(--surface-muted); }
+  .bg-paper { background-color: var(--paper); }
+  .text-ink { color: var(--ink); }
+  .border-ink { border-color: var(--ink); }
+  .bg-pastel-pink { background-color: var(--pink); }
+  .bg-pastel-sky { background-color: var(--sky); }
+  .bg-pastel-mint { background-color: var(--mint); }
+  .bg-pastel-lilac { background-color: var(--lilac); }
 }
 
 ::-webkit-scrollbar {
@@ -265,98 +389,4 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: hsl(var(--muted-foreground) / 0.5);
-}
-
-
-/* TopPerformers notebook design system additions (single source of truth) */
-
-html { scrollbar-gutter: stable; }
-h1, h2, h3, h4 { text-wrap: pretty; }
-body { overflow-x: clip; }
-button, input, select, textarea { font: inherit; }
-:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
-
-/* Add the missing shadow steps so every level of the scale is available. */
-:root {
-  --shadow-xs: var(--shadow-small);
-  --shadow-xl: 8px 8px 0 var(--ink);
-}
-
-.notebook-surface {
-  background-color: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in srgb, var(--rule) 56%, transparent) 31px, color-mix(in srgb, var(--rule) 56%, transparent) 32px);
-}
-
-.surface { border-width: var(--border-width); box-shadow: var(--shadow-small); }
-.button-primary, .button-secondary {
-  display: inline-flex;
-  min-height: 2.75rem;
-  align-items: center;
-  justify-content: center;
-  gap: .5rem;
-  border: 2px solid var(--ink);
-  border-radius: .625rem;
-  padding: 0 1rem;
-  font-size: .875rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: transform var(--transition-fast) var(--ease), box-shadow var(--transition-fast) var(--ease), background-color var(--transition-fast) var(--ease);
-}
-.button-primary { background: var(--sun); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
-.button-secondary { background: var(--surface); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-.button-primary:hover, .button-secondary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
-.button-primary:active, .button-secondary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-}
-
-/* Ensure the shared card and icon primitives pick up the tactile ink treatment. */
-.icon-button {
-  border: 2px solid var(--ink);
-  color: var(--ink);
-  box-shadow: var(--shadow-small);
-}
-.icon-button:hover:not(:disabled) { background: var(--sun); }
-.surface-flat { border-radius: 12px; }
-
-@layer utilities {
-  .border-y-2 {
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-  }
-}
-
-/* Stamp-style technical label used for factual metadata only. */
-.stamp-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  border: 2px dashed var(--ink);
-  border-radius: 6px;
-  padding: .2rem .55rem;
-  font-family: "DM Mono", ui-monospace, monospace;
-  font-size: .6875rem;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: var(--surface);
-  transform: rotate(-1.5deg);
-}
-
-/* Map the notebook accents onto the Tailwind color tokens already in use. */
-@layer utilities {
-  .bg-surface-muted { background-color: var(--surface-muted); }
-  .bg-paper { background-color: var(--paper); }
-  .text-ink { color: var(--ink); }
-  .border-ink { border-color: var(--ink); }
-  .bg-pastel-pink { background-color: var(--pink); }
-  .bg-pastel-sky { background-color: var(--sky); }
-  .bg-pastel-mint { background-color: var(--mint); }
-  .bg-pastel-lilac { background-color: var(--lilac); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stamp-badge { transform: none; }
 }

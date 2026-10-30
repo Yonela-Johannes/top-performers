@@ -32,15 +32,20 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative overflow-hidden border-t-2 border-foreground bg-[#201D23] text-[#FFFCF9]">
+    <footer className="indigo-band relative overflow-hidden border-t-2 border-foreground">
       {/* Decorative top edge */}
       <div
         aria-hidden="true"
         className="h-2 w-full"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(135deg, var(--sun) 0px, var(--sun) 7px, #201D23 7px, #201D23 14px)",
+            "repeating-linear-gradient(135deg, var(--sun) 0px, var(--sun) 7px, var(--band-bg) 7px, var(--band-bg) 14px)",
         }}
+      />
+      {/* Geometric lattice band — the one per-page craft pattern lives here */}
+      <div
+        aria-hidden="true"
+        className="pattern-lattice pointer-events-none absolute inset-x-0 top-2 h-20 text-[var(--band-fg)] opacity-[0.12]"
       />
 
       <div className="shell">
@@ -50,18 +55,19 @@ export const Footer = () => {
           <div className="max-w-md">
             <Brand />
 
-            <p className="mt-6 max-w-sm text-sm leading-7 text-[#D8D1DD]">
+            <p className="mt-6 max-w-sm text-sm leading-7 text-[var(--band-fg-muted)]">
               A worldwide look at who's building in open source. Discover
               developers, explore countries, and follow the work happening
               across the community.
             </p>
 
-            <div className="mt-7 inline-flex items-center gap-2 border border-[#625A68] px-3 py-2">
+            <div className="mt-7 inline-flex items-center gap-2 border-2 border-[var(--band-line)] px-3 py-2">
               <span
-                className="h-2 w-2 rounded-full bg-[#A6D99B]"
+                className="h-2 w-2 rounded-full"
+                style={{ background: "var(--band-accent)" }}
                 aria-hidden="true"
               />
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#D8D1DD]">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--band-fg-muted)]">
                 Independent project
               </span>
             </div>
@@ -73,10 +79,10 @@ export const Footer = () => {
               <span className="font-mono text-[10px] font-bold text-[var(--tangerine)]">
                 01
               </span>
-              <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#D8D1DD]">
+              <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--band-fg-muted)]">
                 Explore
               </h2>
-              <div className="h-px flex-1 bg-[#48434F]" />
+              <div className="h-px flex-1 bg-[var(--band-line)]" />
             </div>
 
             <ul className="space-y-4">
@@ -84,7 +90,7 @@ export const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="group inline-flex items-center gap-2 text-sm text-[#D8D1DD] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)]"
+                    className="group inline-flex items-center gap-2 text-sm text-[var(--band-fg-muted)] transition-colors hover:text-[var(--band-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)]"
                   >
                     <span>{link.label}</span>
                     <ArrowUpRight
@@ -100,11 +106,11 @@ export const Footer = () => {
                   href={SOURCE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-start gap-2 text-sm text-[#D8D1DD] transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)]"
+                  className="group inline-flex items-start gap-2 text-sm text-[var(--band-fg-muted)] transition-colors hover:text-[var(--band-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)]"
                 >
                   <span>
                     Data source
-                    <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-[#A89EAE]">
+                    <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-[var(--band-fg-faint)]">
                       {SOURCE_NAME}
                     </span>
                   </span>
@@ -123,10 +129,10 @@ export const Footer = () => {
               <span className="font-mono text-[10px] font-bold text-[var(--tangerine)]">
                 02
               </span>
-              <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#D8D1DD]">
+              <h2 className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--band-fg-muted)]">
                 The developer
               </h2>
-              <div className="h-px flex-1 bg-[#48434F]" />
+              <div className="h-px flex-1 bg-[var(--band-line)]" />
             </div>
 
             <ul className="space-y-2">
@@ -136,11 +142,11 @@ export const Footer = () => {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center justify-between border border-transparent px-3 py-2.5 text-sm text-[#D8D1DD] transition-colors hover:border-[#625A68] hover:bg-[#2D2932] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)]"
+                    className="group flex items-center justify-between border border-transparent px-3 py-2.5 text-sm text-[var(--band-fg-muted)] transition-colors hover:border-[var(--band-line)] hover:bg-[var(--band-bg-alt)] hover:text-[var(--band-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)]"
                   >
                     <span className="flex items-center gap-3">
                       <link.icon
-                        className="h-4 w-4 text-[#A89EAE] transition-colors group-hover:text-[var(--tangerine)]"
+                        className="h-4 w-4 text-[var(--band-fg-faint)] transition-colors group-hover:text-[var(--tangerine)]"
                         aria-hidden="true"
                       />
                       {link.label}
@@ -158,10 +164,10 @@ export const Footer = () => {
         </div>
 
         {/* Closing statement */}
-        <div className="relative overflow-hidden border-y-2 border-[#48434F] py-8 sm:py-10">
+        <div className="relative overflow-hidden border-y-2 border-[var(--band-line)] py-8 sm:py-10">
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute -right-2 -top-8 select-none font-display text-8xl font-black uppercase leading-none text-white/[0.035] sm:text-[10rem]"
+            className="pointer-events-none absolute -right-2 -top-8 select-none font-display text-8xl font-black uppercase leading-none text-[var(--band-fg)]/[0.035] sm:text-[10rem]"
           >
             BUILD
           </span>
@@ -171,10 +177,10 @@ export const Footer = () => {
               <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--tangerine)]">
                 The open-source community
               </p>
-              <h2 className="mt-2 max-w-xl font-display text-3xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-4xl">
+              <h2 className="mt-2 max-w-xl font-display text-3xl font-extrabold uppercase leading-[0.95] tracking-tight text-[var(--band-fg)] sm:text-4xl">
                 Built in the open.
                 <br />
-                <span className="text-[#D8D1DD]">Growing everywhere.</span>
+                <span className="text-[var(--band-fg-muted)]">Growing everywhere.</span>
               </h2>
             </div>
 
@@ -182,7 +188,7 @@ export const Footer = () => {
               href={SOURCE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-2 border-2 border-[#FFFCF9] px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-wider text-white transition-[background-color,color,transform] hover:bg-[#FFFCF9] hover:text-[#201D23] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#201D23]"
+              className="inline-flex w-fit items-center gap-2 border-2 border-[var(--band-fg)] px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--band-fg)] transition-[background-color,color,transform] hover:bg-[var(--band-fg)] hover:text-[var(--band-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--tangerine)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--band-bg)]"
             >
               Explore the source
               <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -193,27 +199,27 @@ export const Footer = () => {
         {/* Legal and attribution */}
         <div className="flex flex-col gap-5 py-7 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-2">
-            <p className="text-xs leading-5 text-[#D8D1DD]">
+            <p className="text-xs leading-5 text-[var(--band-fg-muted)]">
               © {year} TopPerformers. Built by{" "}
               <a
                 href={AUTHOR_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-white underline decoration-[#625A68] underline-offset-4 transition-colors hover:decoration-[var(--tangerine)]"
+                className="font-semibold text-[var(--band-fg)] underline decoration-[var(--band-line)] underline-offset-4 transition-colors hover:decoration-[var(--tangerine)]"
               >
                 Yonela Johannes
               </a>
               .
             </p>
 
-            <p className="max-w-xl text-[11px] leading-5 text-[#A89EAE]">
+            <p className="max-w-xl text-[11px] leading-5 text-[var(--band-fg-faint)]">
               Not affiliated with or endorsed by GitHub. Ranking data is
               sourced from{" "}
               <a
                 href={SOURCE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="underline underline-offset-2 transition-colors hover:text-white"
+                className="underline underline-offset-2 transition-colors hover:text-[var(--band-fg)]"
               >
                 {SOURCE_NAME}
               </a>
@@ -222,13 +228,13 @@ export const Footer = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="border border-[#625A68] px-2.5 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#D8D1DD]">
+            <span className="border-2 border-[var(--band-line)] px-2.5 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--band-fg-muted)]">
               Open source
             </span>
-            <span className="border border-[#625A68] px-2.5 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[#D8D1DD]">
+            <span className="border-2 border-[var(--band-line)] px-2.5 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--band-fg-muted)]">
               MIT licence
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-wider text-[#A89EAE]">
+            <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--band-fg-faint)]">
               {year}
             </span>
           </div>

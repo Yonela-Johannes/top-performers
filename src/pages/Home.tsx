@@ -14,6 +14,8 @@ import { useGetMetadataQuery } from "@/api/countriesApi";
 import type { Committer } from "@/types";
 import { CountryCard } from "@/components/common/CountryCard";
 import { UserDialog } from "@/components/common/UserDialog";
+import { RouteLine } from "@/components/atlas";
+import { regionTheme } from "@/lib/regionTheme";
 import { useCountrySearch } from "@/hooks/useCountrySearch";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { formatDate } from "@/lib/format";
@@ -26,8 +28,12 @@ import {
   SITE_OWNER,
   SITE_TAGLINE,
   SITE_URL,
+  SOURCE_NAME,
+  SOURCE_URL,
   toTitle,
 } from "@/lib/seo";
+import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { ALL_REGIONS } from "@/lib/countries";
 
 const COUNTRIES_PER_PAGE = 18;
@@ -228,7 +234,7 @@ const Home = () => {
       <div className="shell">
         <section
           aria-labelledby="hero-heading"
-          className="notebook-surface relative -mx-5 overflow-hidden border-b-2 border-foreground px-5 pb-14 pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-16 lg:pt-20"
+          className="lamplight notebook-surface relative -mx-5 overflow-hidden border-b-2 border-foreground px-5 pb-14 pt-12 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 lg:pb-16 lg:pt-20"
         >
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
             <div className="max-w-3xl">
@@ -261,14 +267,13 @@ const Home = () => {
               </h1>
 
               <p className="mt-8 max-w-xl text-base leading-7 text-foreground/80 sm:text-lg sm:leading-8">
-                Discover developers around the world through their GitHub
-                activity. Explore country rankings and see who's contributing to
-                open source.
+                A chart of the world's open-source contributors. Pick a
+                destination and see who's building there.
               </p>
 
               <div className="mt-7 flex flex-wrap gap-3">
                 <a href="#explore-heading" className="button-primary">
-                  Explore countries{" "}
+                  Pick a destination{" "}
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </a>
                 <a href="#how-it-works" className="button-secondary">
@@ -368,14 +373,20 @@ const Home = () => {
               </div>
             ))}
           </dl>
+
+          {/* Decorative dashed route that draws itself in once, on scroll */}
+          <RouteLine className="mt-10 max-w-3xl" />
         </section>
-        <div className="sticky top-16 z-30 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div
+          className="sticky z-30 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-4 backdrop-blur-md sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          style={{ top: "var(--nav-height)" }}
+        >
           {/* Region navigation and sort. Country search lives in the navbar. */}
           <div>
             {/* Region filter row: label, sort and the active query */}
             <div className="mb-2.5 flex items-center justify-between gap-3">
-              <p className="min-w-0 truncate font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                Explore by region
+              <p className="min-w-0 truncate font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-muted-foreground">
+                Pick a region — a leg of the route
 
                 <span className="text-foreground">
                   {" · "}
@@ -395,7 +406,7 @@ const Home = () => {
                 <button
                   type="button"
                   onClick={toggleSort}
-                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border-2 border-foreground bg-card px-2.5 font-mono text-[10px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 border-2 border-foreground bg-card px-3 font-mono text-[11px] font-bold uppercase tracking-wide text-foreground shadow-[3px_3px_0_var(--foreground)] transition-[box-shadow,transform,background-color] hover:bg-secondary active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   aria-label={`Sort countries ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                   title={`Sort ${sortOrder === "asc" ? "Z to A" : "A to Z"}`}
                 >
@@ -451,15 +462,12 @@ const Home = () => {
                         : "border-foreground/20 bg-card text-muted-foreground hover:border-foreground hover:text-foreground"
                     }`}
                   >
-                    <span>{region.name}</span>
-
                     <span
-                      className={`border px-1.5 py-0.5 text-[10px] ${
-                        isActive ? "border-background/30" : "border-current/20"
-                      }`}
-                    >
-                      {region.count}
-                    </span>
+                      aria-hidden="true"
+                      className="h-2.5 w-2.5 shrink-0 rounded-full border-2 border-foreground"
+                      style={{ background: regionTheme(region.name).fill }}
+                    />
+                    <span>{region.name}</span>
                   </button>
                 );
               })}
@@ -467,7 +475,7 @@ const Home = () => {
           </div>
         </div>
 
-        <section aria-labelledby="explore-heading" className="scroll-mt-40">
+        <section aria-labelledby="explore-heading" className="scroll-mt-[calc(var(--nav-height)+5.5rem)]">
           {/* Section heading */}
           <div className="relative mb-6 border-b-2 border-foreground pb-5 pt-8">
             <div className="flex flex-wrap items-end justify-between gap-4">
@@ -518,7 +526,7 @@ const Home = () => {
                   <p className="font-display text-xl font-extrabold leading-none text-foreground tabular-nums">
                     {isLoadingCountries ? "..." : filteredCountries.length}
                   </p>
-                  <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground">
+                  <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                     {isLoadingCountries
                       ? "Indexing"
                       : filteredCountries.length === 1
@@ -683,32 +691,38 @@ const Home = () => {
           )}
         </section>
 
-        {/* <section
+
+        {/* Indigo feature band: how the rankings are built (one per page) */}
+        <section
           id="how-it-works"
-          className="mt-20 scroll-mt-24 border-t border-border pt-12 lg:mt-24 lg:pt-16"
+          className="indigo-band relative mt-16 scroll-mt-[calc(var(--nav-height)+2rem)] overflow-hidden border-y-2 border-foreground lg:mt-20"
+          aria-labelledby="how-heading"
         >
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
+          <div aria-hidden="true" className="pattern-lattice pointer-events-none absolute inset-x-0 top-0 h-16 text-[var(--band-fg)] opacity-[0.14]" />
+          <div className="relative grid gap-8 px-5 py-12 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16 lg:px-8 lg:py-16">
             <div>
-              <div className="flex items-center gap-2">
-                <Sparkles
-                  className="h-3.5 w-3.5 text-brand-ink"
-                  aria-hidden="true"
-                />
-                <p className="eyebrow">How it works</p>
-              </div>
-              <h2 className="mt-4 font-display text-4xl leading-[0.98] text-foreground sm:text-5xl">
+              <p
+                className="font-mono text-[11px] font-medium uppercase tracking-[0.18em]"
+                style={{ color: "var(--band-accent)" }}
+              >
+                How it works
+              </p>
+              <h2
+                id="how-heading"
+                className="mt-4 font-display text-4xl font-extrabold uppercase leading-[0.98] tracking-tight text-[var(--band-fg)] sm:text-5xl"
+              >
                 A simple measure,
                 <br />
                 honestly presented.
               </h2>
-              <p className="mt-5 max-w-sm text-sm leading-6 text-muted-foreground">
+              <p className="mt-5 max-w-sm text-sm leading-6 text-[var(--band-fg-muted)]">
                 TopPerformers is not a measure of skill or seniority. It is a
                 transparent snapshot of public open-source activity, grouped by
                 the country listed on each GitHub profile.
               </p>
             </div>
 
-            <div className="divide-y divide-border border-y border-border">
+            <div className="divide-y-2 divide-dashed divide-[var(--band-line)]">
               {[
                 {
                   index: "01",
@@ -722,35 +736,39 @@ const Home = () => {
                 },
                 {
                   index: "03",
-                  title: "Updated daily",
-                  body: `Country indexes are refreshed every day from ${SOURCE_NAME} and enriched with public GitHub profile data.`,
+                  title: "Refreshed by the data pipeline",
+                  body: `Country indexes are regenerated from ${SOURCE_NAME} whenever the data pipeline runs — the stamp on each country page shows the exact date of the current data.`,
                 },
               ].map((item) => (
                 <div
                   key={item.index}
                   className="grid grid-cols-[auto_1fr] gap-5 py-6 sm:gap-8"
                 >
-                  <span className="font-mono text-[11px] text-muted-foreground">
+                  <span
+                    className="font-mono text-xs"
+                    style={{ color: "var(--band-accent)" }}
+                  >
                     {item.index}
                   </span>
                   <div>
-                    <h3 className="text-base font-semibold text-foreground">
+                    <h3 className="text-base font-semibold text-[var(--band-fg)]">
                       {item.title}
                     </h3>
-                    <p className="mt-1.5 max-w-md text-sm leading-6 text-muted-foreground">
+                    <p className="mt-1.5 max-w-md text-sm leading-6 text-[var(--band-fg-muted)]">
                       {item.body}
                     </p>
                   </div>
                 </div>
               ))}
               <div className="flex flex-col gap-3 py-6 sm:flex-row sm:items-center sm:justify-between">
-                <p className="max-w-md text-xs leading-5 text-muted-foreground">
+                <p className="max-w-md text-xs leading-5 text-[var(--band-fg-muted)]">
                   Rankings are read from{" "}
                   <a
                     href={SOURCE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
+                    className="font-medium text-[var(--band-fg)] underline underline-offset-4"
+                    style={{ textDecorationColor: "var(--band-accent)" }}
                   >
                     {SOURCE_NAME}
                   </a>
@@ -759,15 +777,15 @@ const Home = () => {
                 </p>
                 <Link
                   to="/"
-                  className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-foreground"
+                  className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-[var(--band-fg)]"
                 >
-                  Browse countries
+                  Browse destinations
                   <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </div>
             </div>
           </div>
-        </section> */}
+        </section>
 
         <p className="sr-only">{SITE_TAGLINE}</p>
       </div>

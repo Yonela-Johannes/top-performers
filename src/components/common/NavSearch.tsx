@@ -3,7 +3,7 @@ import { ArrowRight, Globe, Search, X } from "lucide-react";
 import { useCountrySearch } from "@/hooks/useCountrySearch";
 
 const inputClassName =
-  "h-10 w-full min-w-0 border-2 border-foreground bg-card pl-9 pr-9 text-sm font-medium text-foreground shadow-[3px_3px_0_var(--foreground)] outline-none transition-[background-color,box-shadow] placeholder:font-normal placeholder:text-muted-foreground hover:bg-surface-muted focus-visible:bg-card [&::-webkit-search-cancel-button]:appearance-none";
+  "h-10 w-full min-w-0 border-2 border-foreground bg-card pl-9 pr-9 text-base font-medium text-foreground shadow-[3px_3px_0_var(--foreground)] outline-none transition-[background-color,box-shadow] placeholder:font-normal placeholder:text-muted-foreground placeholder:text-sm hover:bg-surface-muted focus-visible:bg-card [&::-webkit-search-cancel-button]:appearance-none";
 
 export const NavSearch = () => {
   const inputId = useId();
@@ -84,10 +84,10 @@ export const NavSearch = () => {
         <button
           type="button"
           onClick={clearSearch}
-          className="absolute right-0.5 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="absolute right-0.5 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center text-foreground transition-colors hover:bg-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Clear country search"
         >
-          <X className="h-3.5 w-3.5" aria-hidden="true" />
+          <X className="h-4 w-4" aria-hidden="true" />
         </button>
       )}
     </div>

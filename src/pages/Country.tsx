@@ -8,6 +8,8 @@ import { useGetCountriesQuery } from "@/api/countriesApi";
 import { useGetFlagsQuery } from "@/api/flagsApi";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { Stamp, RegionBadge, RouteLine, LanternIllustration } from "@/components/atlas";
+import { regionTheme } from "@/lib/regionTheme";
 import {
   ArrowDown,
   ArrowLeft,
@@ -18,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { getDynamicDescription, SEO_KEYWORDS } from "./constants";
+import { buildCountryToRegion, getCountryRegion as getCountryRegionFromFlags } from "@/lib/countries";
 import {
   absoluteUrl,
   defaultOgImage,
@@ -225,11 +228,31 @@ const Country = () => {
   const formattedCountryName =
     country?.name ||
     currentData?.country?.name ||
-    slug
-      ?.split(/[-_]/)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ") ||
-    "";
+    (slug
+      ? slug
+          .split(/[-_]/)
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+      : "");
+
+  // "More in <Region>": the next countries in the same region by indexed
+  // position in the country list (deterministic, from real data). Excludes the
+  // current country; falls back to wrapping around the region's list.
+  const moreInRegion = useMemo(() => {
+    if (!country || !region) return [];
+    const regionMap = buildCountryToRegion(flagsData);
+    const inRegion = countries.filter(
+      (item) =>
+        item.slug !== country.slug &&
+        getCountryRegionFromFlags(regionMap, item.name) === region,
+    );
+    const startIndex = inRegion.findIndex((item) => item.name > country.name);
+    const ordered =
+      startIndex >= 0
+        ? [...inRegion.slice(startIndex), ...inRegion.slice(0, startIndex)]
+        : inRegion;
+    return ordered.slice(0, 4);
+  }, [country, region, countries, flagsData]);
 
   if (!slug) {
     return (
@@ -410,9 +433,20 @@ const Country = () => {
                 className="inline-flex items-center gap-1.5 rounded-md font-medium underline-offset-4 hover:text-foreground hover:underline"
               >
                 <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-                Countries
+                World index
               </Link>
             </li>
+            {region && (
+              <>
+                <li aria-hidden="true">/</li>
+                <li
+                  aria-current="location"
+                  className="hidden truncate font-mono text-xs uppercase tracking-[0.08em] text-muted-foreground sm:block"
+                >
+                  {region}
+                </li>
+              </>
+            )}
             <li aria-hidden="true">/</li>
             <li
               aria-current="page"
@@ -437,18 +471,13 @@ const Country = () => {
             />
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <p className="eyebrow">Country leaderboard</p>
-                {region && (
-                  <p className="font-mono text-xs uppercase tracking-[0.08em] text-foreground/70">
-                    <span aria-hidden="true">· </span>
-                    {region}
-                  </p>
-                )}
-                {generatedAt && (
-                  <p className="stamp-badge">
-                    Updated{" "}
-                    <time dateTime={generatedAt}>{formatDate(generatedAt)}</time>
-                  </p>
+              <RegionBadge region={region} />
+              {generatedAt && (
+                  <Stamp
+                    country={formattedCountryName}
+                    region={region}
+                    date={formatDate(generatedAt)}
+                  />
                 )}
               </div>
               <h1
@@ -501,7 +530,10 @@ const Country = () => {
         </section>
 
         {/* Toolbar */}
-        <div className="sticky top-16 z-20 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div
+          className="sticky z-20 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
+          style={{ top: "var(--nav-height)" }}
+        >
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="relative min-w-0 flex-1">
               <label htmlFor="developer-search" className="sr-only">
@@ -579,16 +611,20 @@ const Country = () => {
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="surface flex flex-col items-center px-6 py-20 text-center">
-            <div className="flex h-12 w-12 -rotate-3 items-center justify-center rounded-lg border-2 border-foreground bg-brand shadow-[2px_2px_0_var(--ink)]">
-              <SearchX className="h-5 w-5 text-foreground" aria-hidden="true" />
-            </div>
+            {searchQuery ? (
+              <div className="flex h-12 w-12 -rotate-3 items-center justify-center rounded-lg border-2 border-foreground bg-brand shadow-[2px_2px_0_var(--ink)]">
+                <SearchX className="h-5 w-5 text-foreground" aria-hidden="true" />
+              </div>
+            ) : (
+              <LanternIllustration className="bob" />
+            )}
             <h2 className="mt-5 font-display text-3xl font-extrabold uppercase leading-[0.92] tracking-[-0.02em] text-foreground">
-              {searchQuery ? "No developers found" : "No ranking data yet"}
+              {searchQuery ? "No developers found" : "Nothing recorded here yet"}
             </h2>
             <p className="mt-3 max-w-sm text-base leading-7 text-foreground/80">
               {searchQuery
                 ? `Nobody in ${formattedCountryName} matches “${searchQuery}”. Try a different name or clear the search.`
-                : `TopPerformers hasn't collected public activity for ${formattedCountryName} yet. Check back after the next daily refresh.`}
+                : `No public commit activity has been collected for ${formattedCountryName} in the current dataset. This is not an error — the page will fill in whenever the data pipeline records activity here.`}
             </p>
             {searchQuery ? (
               <button
@@ -647,10 +683,58 @@ const Country = () => {
           </>
         )}
 
+        {/* Next stops: same region, deterministic order from the country list */}
+        {moreInRegion.length > 0 && (
+          <section aria-labelledby="next-stops-heading" className="mt-16 lg:mt-20">
+            <div className="border-t-[3px] border-foreground pt-8">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <p className="eyebrow">Next stops</p>
+                  <h2
+                    id="next-stops-heading"
+                    className="mt-2 font-display text-2xl font-extrabold uppercase leading-[0.95] tracking-tight text-foreground sm:text-3xl"
+                  >
+                    More in {region}.
+                  </h2>
+                  <p className="mt-2 max-w-lg text-sm text-muted-foreground">
+                    Other indexed destinations in {region}, listed in the same
+                    order as the world index.
+                  </p>
+                </div>
+                <RouteLine className="hidden h-10 max-w-xs lg:block" />
+              </div>
+
+              <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {moreInRegion.map((item) => (
+                  <li key={item.slug}>
+                    <Link
+                      to={`/${item.slug}`}
+                      className="group flex min-h-16 items-center gap-3 rounded-xl border-2 border-foreground bg-card px-4 py-3 shadow-[3px_3px_0_var(--ink)] transition-[transform,box-shadow] hover:shadow-[5px_5px_0_var(--ink)] motion-safe:hover:-translate-x-px motion-safe:hover:-translate-y-px motion-reduce:transition-none focus-visible:outline-none focus-visible:outline-[3px] focus-visible:outline-offset-3 focus-visible:outline-[color:var(--focus)]"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="h-3 w-3 shrink-0 rounded-full border-2 border-[var(--ink)]"
+                        style={{ background: regionTheme(region).fill }}
+                      />
+                      <span className="min-w-0 flex-1 truncate font-display text-sm font-bold uppercase tracking-tight text-foreground">
+                        {item.name}
+                      </span>
+                      <ArrowUpRight
+                        className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
         {/* Always rendered so the "About this ranking" anchor never dead-ends */}
         <section
           id="about-this-leaderboard"
-          className="mt-16 scroll-mt-40 border-t-[3px] border-foreground pt-10 lg:mt-20"
+          className="mt-16 scroll-mt-[calc(var(--nav-height)+4rem)] border-t-[3px] border-foreground pt-10 lg:mt-20"
         >
           <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
             <div>
@@ -667,9 +751,11 @@ const Country = () => {
                 rating of skill, seniority, or employability.
               </p>
               <p>
-                {SITE_DESCRIPTION} Rankings refresh once a day. A developer can
-                appear in a country ranking when their GitHub location is public
-                and their activity is visible.
+                {SITE_DESCRIPTION} Rankings are regenerated whenever the data
+                pipeline runs; the stamp at the top of this page shows the
+                exact date of the current dataset. A developer can appear in a
+                country ranking when their GitHub location is public and their
+                activity is visible.
               </p>
               <Link to="/#how-it-works" className={inlineLink}>
                 Read how rankings are built

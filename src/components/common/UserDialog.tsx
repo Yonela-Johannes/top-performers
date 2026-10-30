@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ArrowUpRight, BadgeCheck, Check, Copy, MapPin } from "lucide-react";
+import { ArrowUpRight, Check, Copy, MapPin, Share2 } from "lucide-react";
 import { ErrorMessage } from "./ErrorMessage";
 import type { Committer } from "@/types";
 import { useGetGitHubUserByUsernameQuery } from "@/api";
@@ -163,7 +163,7 @@ export const UserDialog = ({
                 </p>
               )}
 
-              <dl className="grid grid-cols-3 divide-x divide-border rounded-xl border border-border">
+              <dl className="grid grid-cols-3 divide-x divide-border rounded-xl border-2 border-border">
                 {[
                   { label: "Followers", value: userInfo.followers },
                   { label: "Following", value: userInfo.following },
@@ -173,7 +173,7 @@ export const UserDialog = ({
                     <dd className="stat-value text-lg font-medium text-foreground">
                       {stat.value.toLocaleString()}
                     </dd>
-                    <dt className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+                    <dt className="mt-0.5 text-[11px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
                       {stat.label}
                     </dt>
                   </div>
@@ -181,10 +181,10 @@ export const UserDialog = ({
               </dl>
 
               {countrySlug && (
-                <section className="rounded-xl border border-border bg-secondary/40 p-4">
+                <section className="mt-4 overflow-hidden rounded-xl border-2 border-border bg-secondary/40 p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="flex items-start gap-2.5">
-                      <BadgeCheck
+                      <Share2
                         className="mt-0.5 h-4 w-4 shrink-0 text-brand-ink"
                         aria-hidden="true"
                       />
@@ -198,8 +198,8 @@ export const UserDialog = ({
                       </div>
                     </div>
 
-                    <div
-                      className="grid grid-cols-2 rounded-lg border border-border bg-card p-0.5"
+                  <div
+                      className="grid grid-cols-2 rounded-lg border-2 border-border bg-card p-0.5"
                       role="group"
                       aria-label="Badge type"
                     >
@@ -250,13 +250,13 @@ export const UserDialog = ({
                   </div>
 
                   <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
-                    <code className="block max-h-24 min-w-0 overflow-auto whitespace-pre-wrap break-all rounded-lg border border-border bg-card px-3 py-2 font-mono text-[11px] leading-5 text-muted-foreground">
+                    <code className="block max-h-24 min-w-0 overflow-auto whitespace-pre-wrap break-all rounded-lg border-2 border-border bg-card px-3 py-2 font-mono text-xs leading-5 text-muted-foreground">
                       {badgeMarkdown}
                     </code>
                     <button
                       type="button"
                       onClick={copyBadge}
-                      className="flex min-h-10 w-11 shrink-0 items-center justify-center rounded-lg bg-foreground text-background transition-opacity hover:opacity-90"
+                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-foreground text-background transition-opacity hover:opacity-90"
                       aria-label="Copy badge markdown"
                     >
                       {copied ? (

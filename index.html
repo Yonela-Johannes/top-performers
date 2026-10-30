@@ -1,14 +1,13 @@
 <!doctype html>
-<html lang="en" class="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#FBF9F4" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0e1014" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#FBF9F4" />
     <meta name="application-name" content="TopPerformers" />
     <meta name="apple-mobile-web-app-title" content="TopPerformers" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -84,16 +83,8 @@
       content="https://topperformers.vercel.app/og-image.png"
     />
     <script>
-      (function () {
-        try {
-          var stored = localStorage.getItem("theme");
-          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-          var theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
-          document.documentElement.classList.remove("light", "dark");
-          document.documentElement.classList.add(theme);
-          document.documentElement.style.colorScheme = theme;
-        } catch (e) {}
-      })();
+      // One-time cleanup: the site is light-only now, so drop the old theme key.
+      try { localStorage.removeItem("theme"); } catch (e) {}
     </script>
   </head>
   <body>

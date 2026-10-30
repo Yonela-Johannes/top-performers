@@ -3,7 +3,6 @@ import { Github, Globe, Info, ArrowUpRight } from "lucide-react";
 
 import { Brand } from "./Brand";
 import { NavSearch } from "./NavSearch";
-import { Switcher } from "./Switcher";
 
 import {
   Tooltip,
@@ -94,9 +93,10 @@ export const Header = () => {
                   About the index
                 </p>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                  Rankings are sourced from {SOURCE_NAME} and refreshed daily.
-                  Profiles are enriched with public GitHub data. Commit activity
-                  is one signal of contribution, not a measure of skill.
+                  Rankings are sourced from {SOURCE_NAME} and regenerated
+                  whenever the data pipeline runs. Profiles are enriched with
+                  public GitHub data. Commit activity is one signal of
+                  contribution, not a measure of skill.
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -115,8 +115,6 @@ export const Header = () => {
                 aria-hidden="true"
               />
             </a>
-
-            <Switcher />
           </div>
         </div>
       </div>
