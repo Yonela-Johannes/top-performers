@@ -39,7 +39,7 @@
     --content-width: 78rem;
     --content-wide: 86rem;
     --page-padding: clamp(1.25rem, 4vw, 2.5rem);
-    --ease: cubic-bezier(.2, .8, .2, 1);
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
     --transition-fast: 150ms;
     --transition-normal: 250ms;
     --border-width: 2px;
@@ -112,20 +112,29 @@
     overflow-x: clip;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     text-wrap: pretty;
   }
 
-  img, svg {
+  img,
+  svg {
     display: block;
   }
 
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     font: inherit;
   }
 
   /* Light-only form controls, even when the OS is dark */
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     color-scheme: light;
   }
   input:-webkit-autofill,
@@ -228,41 +237,67 @@
   /* Notebook page surface for editorial (level A) sections */
   .notebook-surface {
     background-color: var(--paper);
-    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in srgb, var(--rule) 56%, transparent) 31px, color-mix(in srgb, var(--rule) 56%, transparent) 32px);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      color-mix(in srgb, var(--rule) 56%, transparent) 31px,
+      color-mix(in srgb, var(--rule) 56%, transparent) 32px
+    );
   }
 
   /* Buttons */
-  .button-primary, .button-secondary {
+  .button-primary,
+  .button-secondary {
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
     justify-content: center;
-    gap: .5rem;
+    gap: 0.5rem;
     border: 2px solid var(--ink);
-    border-radius: .625rem;
+    border-radius: 0.625rem;
     padding: 0 1rem;
-    font-size: .875rem;
+    font-size: 0.875rem;
     font-weight: 700;
     text-decoration: none;
-    transition: transform var(--transition-fast) var(--ease), box-shadow var(--transition-fast) var(--ease), background-color var(--transition-fast) var(--ease);
+    transition:
+      transform var(--transition-fast) var(--ease),
+      box-shadow var(--transition-fast) var(--ease),
+      background-color var(--transition-fast) var(--ease);
   }
-  .button-primary { background: var(--sun); color: var(--ink); box-shadow: 3px 3px 0 var(--ink); }
-  .button-secondary { background: var(--surface); color: var(--ink); box-shadow: 2px 2px 0 var(--ink); }
-  .button-primary:hover, .button-secondary:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
-  .button-primary:active, .button-secondary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+  .button-primary {
+    background: var(--sun);
+    color: var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .button-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+  }
+  .button-primary:hover,
+  .button-secondary:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .button-primary:active,
+  .button-secondary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
 
   /* Stamp-style technical label used for factual metadata only */
   .stamp-badge {
     display: inline-flex;
     align-items: center;
-    gap: .35rem;
+    gap: 0.35rem;
     border: 2px dashed var(--ink);
     border-radius: 6px;
-    padding: .2rem .55rem;
+    padding: 0.2rem 0.55rem;
     font-family: "DM Mono", ui-monospace, monospace;
-    font-size: .6875rem;
+    font-size: 0.6875rem;
     font-weight: 500;
-    letter-spacing: .12em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--ink);
     background: var(--surface);
@@ -296,8 +331,20 @@
   /* Geometric lattice band: generic star-and-grid geometry, low contrast */
   .pattern-lattice {
     background-image:
-      repeating-linear-gradient(45deg, transparent 0, transparent 17px, color-mix(in srgb, currentColor 10%, transparent) 17px, color-mix(in srgb, currentColor 10%, transparent) 18px),
-      repeating-linear-gradient(-45deg, transparent 0, transparent 17px, color-mix(in srgb, currentColor 7%, transparent) 17px, color-mix(in srgb, currentColor 7%, transparent) 18px);
+      repeating-linear-gradient(
+        45deg,
+        transparent 0,
+        transparent 17px,
+        color-mix(in srgb, currentColor 10%, transparent) 17px,
+        color-mix(in srgb, currentColor 10%, transparent) 18px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0,
+        transparent 17px,
+        color-mix(in srgb, currentColor 7%, transparent) 17px,
+        color-mix(in srgb, currentColor 7%, transparent) 18px
+      );
   }
 
   /* Door reveal: entering a country wipes the panel open (progressive) */
@@ -312,8 +359,12 @@
     transform-origin: left center;
   }
   @keyframes doorWipe {
-    from { clip-path: inset(0 100% 0 0); }
-    to { clip-path: inset(0 0 0 0); }
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
   }
 
   /* Gentle bob for the single decorative sticker per page */
@@ -321,13 +372,24 @@
     animation: bobbing 5.5s ease-in-out infinite;
   }
   @keyframes bobbing {
-    0%, 100% { transform: translateY(0) rotate(var(--bob-tilt, -2deg)); }
-    50% { transform: translateY(-6px) rotate(var(--bob-tilt, -2deg)); }
+    0%,
+    100% {
+      transform: translateY(0) rotate(var(--bob-tilt, -2deg));
+    }
+    50% {
+      transform: translateY(-6px) rotate(var(--bob-tilt, -2deg));
+    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .bob { animation: none; }
-    .door-panel { animation: none; }
-    .stamp-badge { transform: none; }
+    .bob {
+      animation: none;
+    }
+    .door-panel {
+      animation: none;
+    }
+    .stamp-badge {
+      transform: none;
+    }
   }
 
   /* Route line: dashed ink path that draws in once on scroll */
@@ -361,14 +423,30 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .bg-surface-muted { background-color: var(--surface-muted); }
-  .bg-paper { background-color: var(--paper); }
-  .text-ink { color: var(--ink); }
-  .border-ink { border-color: var(--ink); }
-  .bg-pastel-pink { background-color: var(--pink); }
-  .bg-pastel-sky { background-color: var(--sky); }
-  .bg-pastel-mint { background-color: var(--mint); }
-  .bg-pastel-lilac { background-color: var(--lilac); }
+  .bg-surface-muted {
+    background-color: var(--surface-muted);
+  }
+  .bg-paper {
+    background-color: var(--paper);
+  }
+  .text-ink {
+    color: var(--ink);
+  }
+  .border-ink {
+    border-color: var(--ink);
+  }
+  .bg-pastel-pink {
+    background-color: var(--pink);
+  }
+  .bg-pastel-sky {
+    background-color: var(--sky);
+  }
+  .bg-pastel-mint {
+    background-color: var(--mint);
+  }
+  .bg-pastel-lilac {
+    background-color: var(--lilac);
+  }
 }
 
 ::-webkit-scrollbar {

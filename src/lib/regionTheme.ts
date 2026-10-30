@@ -1,10 +1,5 @@
 import { REGION_ORDER } from "./countries";
 
-/**
- * One fixed region-to-token mapping. Colour never carries meaning alone:
- * every region label is also shown as text next to its swatch.
- * All values reference existing CSS custom properties from index.css.
- */
 export interface RegionTheme {
   /** Fill for swatches/stamps (CSS var reference). */
   fill: string;

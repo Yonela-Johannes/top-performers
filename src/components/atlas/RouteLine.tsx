@@ -24,7 +24,9 @@ export const RouteLine = ({
   const [drawn, setDrawn] = useState(false);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (reduced || !ref.current) {
       setDrawn(true);
       return;
@@ -74,8 +76,22 @@ export const RouteLine = ({
         }}
       />
       {/* Waypoint dots at each end, like chart pins */}
-      <circle cx="8" cy="78" r="4.5" fill="var(--tangerine)" stroke="var(--ink)" strokeWidth="2" />
-      <circle cx="592" cy="44" r="4.5" fill="var(--sun)" stroke="var(--ink)" strokeWidth="2" />
+      <circle
+        cx="8"
+        cy="78"
+        r="4.5"
+        fill="var(--tangerine)"
+        stroke="var(--ink)"
+        strokeWidth="2"
+      />
+      <circle
+        cx="592"
+        cy="44"
+        r="4.5"
+        fill="var(--sun)"
+        stroke="var(--ink)"
+        strokeWidth="2"
+      />
     </svg>
   );
 };

@@ -11,7 +11,12 @@ interface StampProps {
   className?: string;
 }
 
-export const Stamp = ({ country, region, date, className = "" }: StampProps) => {
+export const Stamp = ({
+  country,
+  region,
+  date,
+  className = "",
+}: StampProps) => {
   const theme = regionTheme(region);
 
   return (
