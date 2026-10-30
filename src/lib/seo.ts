@@ -4,7 +4,7 @@ export const SITE_URL =
 export const SITE_NAME = "TopPerformers";
 export const SITE_TAGLINE =
   "The world's most active developers, ranked by country.";
-export const SITE_OWNER = "Rensith Udara Gonalagoda";
+export const SITE_OWNER = "Yonela Johannes";
 export const SITE_DESCRIPTION =
   "Explore daily-updated rankings of the most active open-source developers by country, with public commit data and contributor profiles.";
 export const SITE_KEYWORDS = [
@@ -18,12 +18,12 @@ export const SITE_KEYWORDS = [
   "country developer leaderboard",
   "open source contributors",
 ];
-export const SOURCE_NAME = "committers.top";
-export const SOURCE_URL = "https://committers.top";
-export const AUTHOR_URL = "https://rensithudara.com/";
-export const GITHUB_URL = "https://github.com/RensithUdara";
+export const SOURCE_NAME = "topperformers.vercel.app";
+export const SOURCE_URL = "https://topperformers.vercel.app";
+export const AUTHOR_URL = "https://yonelajohannes.vercel.app/";
+export const GITHUB_URL = "https://github.com/Yonela-Johannes";
 export const LINKEDIN_URL =
-  "https://www.linkedin.com/in/rensith-udara-gonalagoda/";
+  "https://www.linkedin.com/in/yonela-johannes/";
 
 export const defaultOgImage = `${SITE_URL}/og-image.png`;
 

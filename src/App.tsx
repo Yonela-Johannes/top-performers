@@ -33,8 +33,8 @@ const toastBase = {
   color: "hsl(var(--foreground))",
   border: "1px solid hsl(var(--border))",
   borderRadius: "12px",
-  boxShadow: "0 12px 40px -12px hsl(var(--shadow-color) / 0.28)",
-  fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+  boxShadow: "0 2px 4px rgba(20,18,24,.08), 0 22px 36px -22px rgba(20,18,24,.45)",
+  fontFamily: "Figtree, ui-sans-serif, system-ui, sans-serif",
   fontSize: "13px",
   fontWeight: 500,
 } as const;

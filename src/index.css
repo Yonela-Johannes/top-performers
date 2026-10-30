@@ -153,13 +153,8 @@
   }
 
   ::selection {
-    background: hsl(var(--brand) / 0.45);
-    color: hsl(var(--foreground));
-  }
-
-  :focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 2px;
+    background: var(--sun);
+    color: var(--ink);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -183,7 +178,9 @@
   }
 
   .surface {
-    @apply rounded-xl border border-border bg-card shadow-card;
+    border-width: var(--border-width);
+    border-color: var(--ink);
+    box-shadow: var(--shadow-small);
   }
 
   .surface-flat {
@@ -191,7 +188,8 @@
   }
 
   .eyebrow {
-    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground;
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.18em];
+    color: var(--ink-secondary);
   }
 
   .stat-value {
@@ -205,6 +203,15 @@
       hsl(var(--brand)) 30%,
       hsl(var(--border)) 30%,
       hsl(var(--border)) 100%
+    );
+  }
+
+  .marker-highlight {
+    background-image: linear-gradient(
+      transparent 55%,
+      var(--sun) 55%,
+      var(--sun) 90%,
+      transparent 90%
     );
   }
 
@@ -261,63 +268,19 @@
 }
 
 
-/* TopPerformers notebook design system additions */
-:root {
-  --paper: #fbf9f4;
-  --surface: #ffffff;
-  --surface-muted: #f5f1e8;
-  --ink: #141218;
-  --ink-secondary: #48434f;
-  --muted-ink: #706a75;
-  --rule: #e2e8f1;
-  --margin-line: #f3b4b4;
-  --sun: #ffc21a;
-  --tangerine: #ff6f3c;
-  --green: #0f7a4a;
-  --pink: #ffb4c8;
-  --sky: #8fc8ff;
-  --mint: #9be3bf;
-  --lilac: #c9b6ff;
-  --focus: #0d79c7;
-  --content-width: 78rem;
-  --content-wide: 86rem;
-  --page-padding: clamp(1.25rem, 4vw, 2.5rem);
-  --ease: cubic-bezier(.2, .8, .2, 1);
-  --transition-fast: 150ms;
-  --transition-normal: 250ms;
-  --border-width: 2px;
-  --border-strong: 3px;
-  --shadow-small: 2px 2px 0 var(--ink);
-  --shadow-medium: 4px 4px 0 var(--ink);
-  --shadow-large: 6px 6px 0 var(--ink);
-}
-
-.dark {
-  --paper: #17151a;
-  --surface: #201e24;
-  --surface-muted: #2a272e;
-  --ink: #f6f1e7;
-  --ink-secondary: #d8d1dd;
-  --muted-ink: #b2aab7;
-  --rule: #34323c;
-  --margin-line: #714c56;
-  --green: #59ce91;
-  --pink: #7e465b;
-  --sky: #385b78;
-  --mint: #3d7158;
-  --lilac: #635587;
-  --focus: #72c8ff;
-}
-
-body {
-  background-color: var(--paper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 31px, color-mix(in srgb, var(--rule) 35%, transparent) 31px, color-mix(in srgb, var(--rule) 35%, transparent) 32px);
-}
+/* TopPerformers notebook design system additions (single source of truth) */
 
 html { scrollbar-gutter: stable; }
 h1, h2, h3, h4 { text-wrap: pretty; }
+body { overflow-x: clip; }
 button, input, select, textarea { font: inherit; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* Add the missing shadow steps so every level of the scale is available. */
+:root {
+  --shadow-xs: var(--shadow-small);
+  --shadow-xl: 8px 8px 0 var(--ink);
+}
 
 .notebook-surface {
   background-color: var(--paper);

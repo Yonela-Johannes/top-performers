@@ -69,7 +69,7 @@ export const UserTable = ({
   return (
     <>
       <div className="surface overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-foreground px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b-[3px] border-foreground px-5 py-4">
           <div>
             <p className="eyebrow">Leaderboard</p>
             <h2 className="mt-1 text-lg font-semibold text-foreground">
@@ -84,7 +84,7 @@ export const UserTable = ({
         <div className="overflow-x-auto">
           <Table className="w-full table-fixed sm:table-auto">
             <TableHeader>
-              <TableRow className="border-b border-border hover:bg-transparent">
+              <TableRow className="border-b-2 border-foreground hover:bg-transparent">
                 <TableHead className="w-16 px-3 text-center text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:w-20 sm:px-5">
                   Rank
                 </TableHead>
@@ -103,7 +103,7 @@ export const UserTable = ({
               {users.map((user) => (
                 <TableRow
                   key={user.username}
-                  className={`group border-b border-border/70 transition-colors last:border-b-0 hover:bg-secondary/60 ${
+                  className={`group border-b-2 border-dashed border-foreground/25 transition-colors last:border-b-0 hover:bg-secondary/60 ${
                     user.rank === 1 ? "bg-brand/[0.055]" : ""
                   }`}
                 >
@@ -170,7 +170,7 @@ export const UserTable = ({
           </Table>
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-border bg-secondary/30 px-5 py-3">
+        <div className="flex items-center justify-between gap-3 border-t-2 border-dashed border-foreground/25 bg-secondary/30 px-5 py-3">
           <p className="text-xs text-muted-foreground">
             Ranked by public commits in {countryName}
           </p>

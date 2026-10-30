@@ -14,7 +14,7 @@ export const ErrorMessage = ({
   return (
     <div
       role="alert"
-      className={`flex flex-col items-center justify-center rounded-xl border-2 border-destructive bg-card px-6 py-10 text-center ${className}`}
+      className={`flex flex-col items-center justify-center rounded-xl border-2 border-destructive bg-card px-6 py-10 text-center shadow-[4px_4px_0_var(--ink)] ${className}`}
     >
       <div className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-destructive bg-destructive/10">
         <AlertTriangle
