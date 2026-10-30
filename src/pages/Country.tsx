@@ -186,21 +186,16 @@ const Country = () => {
           <title>{toTitle("Country not found")}</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <div className="mx-auto max-w-md text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-            404
-          </p>
-          <h1 className="mt-3 font-display text-4xl text-foreground">
+        <div className="surface mx-auto max-w-md px-6 py-10 text-center">
+          <p className="stamp-badge mx-auto inline-flex">404 · Not indexed</p>
+          <h1 className="mt-4 font-display text-4xl font-extrabold uppercase leading-[0.92] tracking-[-0.03em] text-foreground">
             That country isn't indexed
           </h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             TopPerformers currently tracks {countries.length} countries and
             regions. Browse the index to find an available leaderboard.
           </p>
-          <Link
-            to="/"
-            className="mt-6 inline-flex h-10 items-center gap-2 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
-          >
+          <Link to="/" className="button-primary mt-6">
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             Back to countries
           </Link>
@@ -425,7 +420,7 @@ const Country = () => {
           </dl>
         </section>
 
-        <div className="sticky top-16 z-20 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div className="sticky top-16 z-20 -mx-5 border-y border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="relative min-w-0 flex-1">
               <label htmlFor="developer-search" className="sr-only">
@@ -488,13 +483,13 @@ const Country = () => {
               <button
                 type="button"
                 onClick={() => refetch()}
-                className="inline-flex h-10 items-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
+                className="button-primary"
               >
                 Try again
               </button>
               <Link
                 to="/"
-                className="inline-flex h-10 items-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="button-secondary"
               >
                 All countries
               </Link>
@@ -502,8 +497,8 @@ const Country = () => {
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="surface flex flex-col items-center px-6 py-20 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-              <SearchX className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-foreground bg-brand/40">
+              <SearchX className="h-5 w-5 text-foreground" aria-hidden="true" />
             </div>
             <h2 className="mt-4 text-lg font-semibold text-foreground">
               {searchQuery ? "No developers found" : "No ranking data yet"}
@@ -517,14 +512,14 @@ const Country = () => {
               <button
                 type="button"
                 onClick={clearSearch}
-                className="mt-5 inline-flex h-10 items-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="button-secondary mt-5"
               >
                 Clear search
               </button>
             ) : (
               <Link
                 to="/"
-                className="mt-5 inline-flex h-10 items-center rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
+                className="button-primary mt-5"
               >
                 Browse other countries
               </Link>
@@ -548,7 +543,7 @@ const Country = () => {
                   onClick={() =>
                     setVisibleCount((prev) => prev + PAGE_SIZE)
                   }
-                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-foreground/25 hover:bg-secondary"
+                  className="button-secondary"
                 >
                   Load more developers
                   <Trophy className="h-4 w-4" aria-hidden="true" />

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export const BrandMark = ({ className }: { className?: string }) => (
   <span
     className={cn(
-      "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-foreground text-background",
+      "flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] border-2 border-foreground bg-brand text-brand-foreground shadow-[2px_2px_0_var(--ink)]",
       className,
     )}
     aria-hidden="true"
@@ -34,7 +34,7 @@ export const Brand = ({ className }: { className?: string }) => (
     aria-label="TopPerformers home"
   >
     <BrandMark className="transition-transform duration-300 group-hover:-rotate-3" />
-    <span className="font-display text-[22px] leading-none tracking-[-0.01em] text-foreground">
+    <span className="font-display text-[22px] font-extrabold uppercase leading-none tracking-[-0.02em] text-foreground">
       TopPerformers
     </span>
   </Link>

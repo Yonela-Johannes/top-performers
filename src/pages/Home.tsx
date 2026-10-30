@@ -277,9 +277,10 @@ const Home = () => {
 
           <div className="mt-5 grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
             <div className="max-w-3xl">
-              <h1 className="max-w-4xl font-display text-[clamp(3rem,8vw,6.75rem)] font-extrabold uppercase leading-[0.88] tracking-[-0.035em] text-foreground">
-                Find the builders
-                <br className="hidden sm:block" /> shaping open source.
+              <h1 className="font-display text-[clamp(2.6rem,5.4vw,4.75rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.03em] text-foreground">
+                Find the builders{" "}
+                <br className="hidden sm:block" />
+                shaping open source.{" "}
                 <span className="mt-2 block text-brand-ink">Ranked by country.</span>
               </h1>
               <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
@@ -344,7 +345,7 @@ const Home = () => {
         </section>
 
         <section aria-labelledby="explore-heading">
-          <div className="sticky top-16 z-30 -mx-5 border-y-2 border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+          <div className="sticky top-16 z-30 -mx-5 border-y border-foreground bg-background/95 px-5 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="relative min-w-0 flex-1">
                 <label htmlFor="country-search" className="sr-only">
@@ -454,7 +455,7 @@ const Home = () => {
 
           {countriesError ? (
             <div className="surface flex flex-col items-center px-6 py-20 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-destructive bg-card">
                 <ServerCrash
                   className="h-5 w-5 text-destructive"
                   aria-hidden="true"
@@ -470,7 +471,7 @@ const Home = () => {
               <button
                 type="button"
                 onClick={() => refetchCountries()}
-                className="mt-5 inline-flex h-10 items-center gap-2 rounded-lg bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-90"
+                className="button-primary mt-5"
               >
                 <Loader2 className="h-4 w-4" aria-hidden="true" />
                 Try again
@@ -480,8 +481,8 @@ const Home = () => {
             <HomeLoading />
           ) : filteredCountries.length === 0 ? (
             <div className="surface flex flex-col items-center px-6 py-20 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-                <Search className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg border-2 border-foreground bg-brand/40">
+                <Search className="h-5 w-5 text-foreground" aria-hidden="true" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-foreground">
                 No countries found
@@ -496,7 +497,7 @@ const Home = () => {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="mt-5 inline-flex h-10 items-center rounded-lg border border-border bg-card px-4 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
+                className="button-secondary mt-5"
               >
                 Clear filters
               </button>
@@ -521,7 +522,7 @@ const Home = () => {
                     onClick={() =>
                       setVisibleCount((prev) => prev + COUNTRIES_PER_PAGE)
                     }
-                    className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-card px-5 text-sm font-medium text-foreground shadow-sm transition-colors hover:border-foreground/25 hover:bg-secondary"
+                    className="button-secondary"
                   >
                     Load more countries
                     <ArrowDownAZ className="h-4 w-4" aria-hidden="true" />

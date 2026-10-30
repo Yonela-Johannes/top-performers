@@ -13,12 +13,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Figtree", "ui-sans-serif", "system-ui", "sans-serif"],
-        display: [
-          "Bricolage Grotesque",
-          "ui-sans-serif",
-          "system-ui",
-          "sans-serif",
-        ],
+        display: ["Bricolage Grotesque", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: [
           "DM Mono",
           "ui-monospace",

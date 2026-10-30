@@ -24,7 +24,7 @@ export const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-secondary/40">
+    <footer className="notebook-surface border-t-2 border-foreground">
       <div className="shell py-12 lg:py-14">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr] md:gap-8">
           <div className="max-w-sm">

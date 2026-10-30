@@ -356,3 +356,44 @@ button, input, select, textarea { font: inherit; }
 }
 .icon-button:hover:not(:disabled) { background: var(--sun); }
 .surface-flat { border-radius: 12px; }
+
+@layer utilities {
+  .border-y-2 {
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+  }
+}
+
+/* Stamp-style technical label used for factual metadata only. */
+.stamp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  border: 2px dashed var(--ink);
+  border-radius: 6px;
+  padding: .2rem .55rem;
+  font-family: "DM Mono", ui-monospace, monospace;
+  font-size: .6875rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--surface);
+  transform: rotate(-1.5deg);
+}
+
+/* Map the notebook accents onto the Tailwind color tokens already in use. */
+@layer utilities {
+  .bg-surface-muted { background-color: var(--surface-muted); }
+  .bg-paper { background-color: var(--paper); }
+  .text-ink { color: var(--ink); }
+  .border-ink { border-color: var(--ink); }
+  .bg-pastel-pink { background-color: var(--pink); }
+  .bg-pastel-sky { background-color: var(--sky); }
+  .bg-pastel-mint { background-color: var(--mint); }
+  .bg-pastel-lilac { background-color: var(--lilac); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp-badge { transform: none; }
+}

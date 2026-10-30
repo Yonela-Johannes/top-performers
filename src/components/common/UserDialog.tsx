@@ -89,9 +89,9 @@ export const UserDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[min(94vw,640px)] max-w-none gap-0 overflow-hidden rounded-xl border-border bg-card p-0 shadow-pop">
-        <DialogHeader className="border-b border-border px-6 py-5 text-left">
+        <DialogHeader className="border-b-2 border-foreground px-6 py-5 text-left">
           <p className="eyebrow">Contributor profile</p>
-          <DialogTitle className="mt-1 font-display text-2xl font-normal leading-tight text-foreground">
+          <DialogTitle className="mt-1 font-display text-2xl font-extrabold uppercase leading-none tracking-[-0.02em] text-foreground">
             {userInfo?.name || user.username}
           </DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
@@ -133,7 +133,7 @@ export const UserDialog = ({
                 <img
                   src={userInfo.avatar_url}
                   alt=""
-                  className="h-16 w-16 rounded-full border border-border bg-muted"
+                  className="h-16 w-16 rounded-full border-2 border-foreground bg-muted"
                 />
                 <div className="min-w-0 flex-1">
                   <h3 className="truncate text-lg font-semibold text-foreground">

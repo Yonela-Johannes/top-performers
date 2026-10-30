@@ -32,11 +32,11 @@ export const CountryCard = ({ country, region, onUserClick }: CountryCardProps) 
             <img
               src={country.flagUrl}
               alt=""
-              className="h-8 w-11 shrink-0 rounded-md border border-border/70 object-cover"
+              className="h-8 w-11 shrink-0 rounded-md border-2 border-foreground object-cover"
               loading="lazy"
             />
           ) : (
-            <div className="flex h-8 w-11 shrink-0 items-center justify-center rounded-md border border-border bg-muted font-mono text-[10px] text-muted-foreground">
+            <div className="flex h-8 w-11 shrink-0 items-center justify-center rounded-md border-2 border-foreground bg-surface-muted font-mono text-[10px] text-foreground">
               {country.slug.slice(0, 2).toUpperCase()}
             </div>
           )}
