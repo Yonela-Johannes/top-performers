@@ -245,8 +245,8 @@ The exact deployment behaviour depends on the repository's GitHub Actions and Ve
 Clone the repository and install its dependencies:
 
 ```bash
-git clone https://github.com/Yonela-Johannes/TopPerformers.git
-cd TopPerformers
+git clone https://github.com/Yonela-Johannes/top-performers.git
+cd top-performers
 pnpm install
 ```
 
@@ -285,7 +285,7 @@ Configure these variables in your local environment when needed.
 
 The default production URL is:
 
-`https://topperformers.vercel.app`
+`https://top-performers-one.vercel.app/`
 
 Do not commit API tokens or other secrets to the repository.
 
