@@ -11,6 +11,19 @@
 
 ---
 
+<!-- DATA-STATS:START -->
+### 📊 Live Dataset Status
+
+| Metric | Stat |
+|---|---|
+| 🌐 **Countries Indexed** | `151` |
+| 👥 **Developers Tracked** | `38,435` |
+| ⚡ **Public Commits Indexed** | `40,197,616` |
+| 🕒 **Last Dataset Update** | `Oct 29, 2026, 7:55 AM UTC` |
+
+*Updated automatically by GitHub Actions on every dataset refresh.*
+<!-- DATA-STATS:END -->
+
 ## Overview
 
 Open-source development happens everywhere, but discovering the people contributing to it can be difficult.
