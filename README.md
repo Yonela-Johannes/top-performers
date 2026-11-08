@@ -6,8 +6,8 @@
 
 **TopPerformers** is an open-source project that makes it easier to discover active developers around the world. It turns public GitHub commit activity into country-based leaderboards, giving developers a simple way to explore open-source contributions across different countries and regions.
 
-🌐 **Live site:** [topperformers.vercel.app](https://topperformers.vercel.app)  
-🐙 **Source code:** [Yonela-Johannes/TopPerformers](https://github.com/Yonela-Johannes/TopPerformers)
+🌐 **Live site:** [top-performers-one.vercel.app](https://top-performers-one.vercel.app)  
+🐙 **Source code:** [Yonela-Johannes/top-performers](https://github.com/Yonela-Johannes/top-performers)
 
 ---
 

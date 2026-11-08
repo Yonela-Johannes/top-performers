@@ -1,5 +1,5 @@
 export const SITE_URL =
-  import.meta.env.VITE_SITE_URL || "https://topperformers.vercel.app";
+  import.meta.env.VITE_SITE_URL || "https://top-performers-one.vercel.app";
 
 export const SITE_NAME = "TopPerformers";
 export const SITE_TAGLINE =
@@ -22,10 +22,10 @@ export const SITE_KEYWORDS = [
   "country developer leaderboard",
   "open source contributors",
 ];
-export const SOURCE_NAME = "topperformers.vercel.app";
-export const SOURCE_URL = "https://topperformers.vercel.app";
+export const SOURCE_NAME = "top-performers-one.vercel.app";
+export const SOURCE_URL = "https://top-performers-one.vercel.app";
 export const AUTHOR_URL = "https://yonelajohannes.vercel.app/";
-export const GITHUB_URL = "https://github.com/Yonela-Johannes";
+export const GITHUB_URL = "https://github.com/Yonela-Johannes/top-performers";
 export const LINKEDIN_URL =
   "https://www.linkedin.com/in/yonela-johannes/";
 
