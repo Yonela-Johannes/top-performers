@@ -31,7 +31,7 @@ jobs:
 
       - name: Generate sitemap
         env:
-          SITE_URL: https://topperformers.vercel.app
+          SITE_URL: https://top-performers-one.vercel.app
         run: node generate-sitemap.cjs
 
       - name: Commit changes

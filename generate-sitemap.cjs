@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE_URL =
-  process.env.SITE_URL || "https://topperformers.vercel.app";
+  process.env.SITE_URL || "https://top-performers-one.vercel.app";
 const COUNTRIES_FILE = path.join(__dirname, "public", "data", "countries.json");
 
 async function getCountries() {
