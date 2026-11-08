@@ -8,6 +8,10 @@ export const SITE_OWNER = "Yonela Johannes";
 export const SITE_DESCRIPTION =
   "Explore daily-updated rankings of the most active open-source developers by country, with public commit data and contributor profiles.";
 export const SITE_KEYWORDS = [
+  "Yonela Johannes",
+  "Yonela Johannes projects",
+  "Yonela Johannes developer",
+  "Yonela Johannes TopPerformers",
   "top developers by country",
   "GitHub committers ranking",
   "open source leaderboard",

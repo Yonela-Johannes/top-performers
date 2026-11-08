@@ -20,7 +20,10 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import {
   absoluteUrl,
+  AUTHOR_URL,
   defaultOgImage,
+  GITHUB_URL,
+  LINKEDIN_URL,
   SITE_DESCRIPTION,
   SITE_KEYWORDS,
   SITE_NAME,
@@ -135,6 +138,22 @@ const Home = () => {
 
   const homeTitle = toTitle("Global developer rankings by country");
   const homeUrl = absoluteUrl("/");
+
+  const authorPersonSchema = {
+    "@type": "Person",
+    name: SITE_OWNER,
+    url: AUTHOR_URL,
+    sameAs: [GITHUB_URL, LINKEDIN_URL, SITE_URL],
+    jobTitle: "Software Engineer",
+    knowsAbout: [
+      "Software Engineering",
+      "Open Source",
+      "Web Development",
+      "React",
+      "TypeScript",
+    ],
+  };
+
   const homeStructuredData = [
     {
       "@context": "https://schema.org",
@@ -142,10 +161,9 @@ const Home = () => {
       name: SITE_NAME,
       url: SITE_URL,
       description: SITE_DESCRIPTION,
-      publisher: {
-        "@type": "Person",
-        name: SITE_OWNER,
-      },
+      publisher: authorPersonSchema,
+      creator: authorPersonSchema,
+      author: authorPersonSchema,
       potentialAction: {
         "@type": "SearchAction",
         target: `${homeUrl}?search={search_term_string}`,
@@ -158,14 +176,15 @@ const Home = () => {
       name: "TopPerformers global developer rankings",
       description: SITE_DESCRIPTION,
       url: homeUrl,
-      creator: {
-        "@type": "Person",
-        name: SITE_OWNER,
-      },
+      creator: authorPersonSchema,
       license: "https://opensource.org/license/mit",
       keywords: SITE_KEYWORDS,
       temporalCoverage: `${new Date().getFullYear()}`,
       spatialCoverage: "Worldwide",
+    },
+    {
+      "@context": "https://schema.org",
+      ...authorPersonSchema,
     },
   ];
 
