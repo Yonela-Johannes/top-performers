@@ -18,8 +18,8 @@
 |---|---|
 | 🌐 **Countries Indexed** | `151` |
 | 👥 **Developers Tracked** | `38,436` |
-| ⚡ **Public Commits Indexed** | `41,874,829` |
-| 🕒 **Last Dataset Update** | `Nov 21, 2026, 9:12 AM UTC` |
+| ⚡ **Public Commits Indexed** | `41,897,229` |
+| 🕒 **Last Dataset Update** | `Nov 22, 2026, 9:21 AM UTC` |
 
 *Updated automatically by GitHub Actions on every dataset refresh.*
 <!-- DATA-STATS:END -->
